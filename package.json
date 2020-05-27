@@ -1,6 +1,6 @@
 {
   "name": "variojs-toolbox",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Create/maintain variojs (parallax)animations",
   "main": "dist/index.js",
   "scripts": {
@@ -18,14 +18,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jk-wd/variojs-devtools.git"
+    "url": "git+https://github.com/jk-wd/variojs-toolbox.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jk-wd/variojs-devtools/issues"
+    "url": "https://github.com/jk-wd/variojs-toolbox/issues"
   },
-  "homepage": "https://github.com/jk-wd/variojs-devtools#readme",
+  "homepage": "https://github.com/jk-wd/variojs-toolbox#readme",
   "dependencies": {
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.7",
