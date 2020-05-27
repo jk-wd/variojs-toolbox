@@ -5,9 +5,9 @@
   "main": "dist/index.js",
   "scripts": {
     "watch": "NODE_ENV=development webpack --config webpack-lib.config.js --watch",
-    "build": "NODE_ENV=production webpack --mode development --config webpack-lib.config.js",
-    "build-ui": "NODE_ENV=production webpack --mode development",
-    "ui-dev-server": "NODE_ENV=production webpack --mode development --config webpack-lib.config.js",
+    "build": "NODE_ENV=production webpack --mode production --config webpack-lib.config.js",
+    "build-ui": "NODE_ENV=production webpack --mode production",
+    "ui-dev-server": "NODE_ENV=development webpack --mode development --config webpack-lib.config.js",
     "ui-server": "node ./src/server/index.js",
     "socket-server": "node ./src/socket-server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
