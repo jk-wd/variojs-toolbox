@@ -1,0 +1,53 @@
+{
+	"compilerOptions": {
+		"target": "esnext",
+		"strictNullChecks": true,
+		"moduleResolution": "node",
+		"sourceMap": true,
+		"allowJs": true,
+		"noEmit": true,
+		"strict": true,
+		"esModuleInterop": true,
+		"jsx": "react",
+		"baseUrl": "./src",
+        "paths": {
+            "@components/*": [
+                "./components/*"
+            ],
+            "@socketserver/*": [
+                "./socket-server/*"
+            ],
+            "@helpers/*": [
+                "./helpers/*"
+            ],
+            "@context/*": [
+                "./context/*"
+            ],
+            "@interfaces/*": [
+                "./interfaces/*"
+            ]
+        },
+		"lib": [
+			"es2015",
+			"dom.iterable",
+			"es2016.array.include",
+			"es2017.object",
+			"dom"
+		],
+		"module": "es6",
+		"removeComments": true,
+		"skipLibCheck": true,
+		"alwaysStrict": true,
+		"allowUnreachableCode": false,
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+		"forceConsistentCasingInFileNames": true,
+		"importHelpers": true
+	},
+	"include": ["src/**/*"],
+	"exclude": ["node_modules", "dist"]
+}

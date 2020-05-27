@@ -1,0 +1,99 @@
+import React, {useState} from "react";
+import FormInputString from "@components/form-elements/FormInputString";
+import FormFrameBlock from "@components/form-elements/FormFrameBlock";
+import FormLine from "@components/form-elements/FormLine";
+import FormLineSection from "@components/form-elements/FormLineSection";
+import FormLabel from "@components/form-elements/FormLabel";
+import FormFieldset from "@components/form-elements/FormFieldset";
+import FormHeading from "@components/form-elements/FormHeading";
+import DeleteLabel from "@components/typography/DeleteLabel";
+import Button from "@components/Button";
+import FormInputNumber from "@components/form-elements/FormInputNumber";
+import { useAnimationDataState, useAnimationDataDispatch, AnimationDataActions } from '@context/animation-data/AnimaitonDataContext';
+import CtaMain from '@components/cta/CtaMain';
+
+const SectionNumbers = () => {
+    const dispatchAnimationData = useAnimationDataDispatch();
+    const [numberVariable, setNumberVariable] = useState<any>({});
+    const {animationData} = useAnimationDataState();
+
+    return (
+    <div>
+        <br/><br/>
+        <form onSubmit={(event:any) => {
+            event.preventDefault();
+            if(numberVariable.name && numberVariable.value) {
+                dispatchAnimationData({
+                    type: AnimationDataActions.addNumberVariable,
+                    name: numberVariable.name,
+                    value: parseInt(numberVariable.value, 10),
+                });
+            }
+        }}>
+            <FormHeading>
+                Add nummber varable
+            </FormHeading>
+            <FormFieldset>
+                <FormInputString onChange={(event:any) => {
+                    setNumberVariable(
+                        {
+                            ...numberVariable,
+                            name: event.target.value
+                        }
+                    );
+                }} label="Number varaible name"/>
+                <FormInputNumber onChange={(event:any) => {
+                    setNumberVariable(
+                        {
+                            ...numberVariable,
+                            value: event.target.value
+                        }
+                    );
+                }} label="Number varaible value"/>
+            </FormFieldset>
+            <FormFieldset>
+                <button type="submit"><CtaMain>Add variable</CtaMain></button>
+            </FormFieldset>
+        </form>
+        <br/>
+        {
+            (animationData.numbers)?
+            Object.keys(animationData.numbers).reverse().map((numberKey:string) => {
+                const value = (animationData && animationData.numbers && animationData.numbers[numberKey])?animationData.numbers[numberKey]: 0;
+                return(
+                    <FormFrameBlock key={numberKey}>
+                        <FormLine>
+                            <FormLineSection>
+                                <FormLabel className="small">{numberKey}</FormLabel>
+                                <FormInputNumber onChange={(event: any) => {
+                                     dispatchAnimationData({
+                                        type: AnimationDataActions.editNumberVariable,
+                                        name: numberKey,
+                                        value: parseInt(event.target.value,10),
+                                    });
+                                }} defaultValue={value}/>
+                            </FormLineSection>
+                        </FormLine>
+                        <FormLine>
+                            <FormLineSection>
+                                <Button onClick={
+                                    () => {
+                                        dispatchAnimationData({
+                                            type: AnimationDataActions.removeNumberVariable,
+                                            name: numberKey,
+                                            value: value,
+                                        });
+                                    }
+                                }><DeleteLabel>Delete</DeleteLabel></Button>
+                            </FormLineSection>
+                        </FormLine>
+                    </FormFrameBlock>
+                )
+            })
+            :null
+        }
+
+    </div>
+    )
+}
+export default SectionNumbers
