@@ -1,5 +1,7 @@
 #! /usr/bin/env node
 var shell = require("shelljs");
-shell.exec("node ./node_modules/variojs-toolbox/src/server/index.js", {async:true});
-shell.exec("node ./node_modules/variojs-toolbox/src/socket-server/index.js", {async:true});
-shell.exec("./node_modules/variojs-toolbox/node_modules/.bin/open-cli http://localhost:8080");
+var path = require("path");
+console.log(`node ${path.join(__dirname, '../src/server/')}index.js`);
+shell.exec(`node ${path.join(__dirname, '../src/server/')}index.js`, {async:true});
+shell.exec(`node ${path.join(__dirname, '../src/socket-server/')}index.js`, {async:true});
+shell.exec(`${path.join(__dirname, 'node_modules/.bin/')}open-cli http://localhost:8080`);
