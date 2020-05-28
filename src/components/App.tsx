@@ -18,6 +18,7 @@ import SectionNumbers from '@components/sections/SectionNumbers';
 import SectionAnimationDefinitions from '@components/sections/SectionAnimationDefinitions';
 import CtaMain from '@components/cta/CtaMain';
 import { Colors } from '@interfaces/colors';
+import Timeline from '@components/timeline/Timeline';
 
 const AppContent = styled.div`
   border: none;
@@ -67,7 +68,7 @@ const CopyToClipBoard = styled.div`
   position:fixed;
   z-index:2;
   left:0;
-  bottom:0;
+  bottom:30vh;
   width: 100%;
   min-width: 320px;
   max-width: 620px;
@@ -139,6 +140,7 @@ const App = () => {
                     }}><CtaMain>Copy animation JSON to clipboard</CtaMain></Button>
                 </CopyToClipBoard>
             </Panel>
+            <Timeline></Timeline>
         </>
     )
 }

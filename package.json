@@ -7,8 +7,8 @@
     "watch": "NODE_ENV=development webpack --config webpack-lib.config.js --watch",
     "build": "NODE_ENV=production webpack --mode production --config webpack-lib.config.js",
     "build-ui": "NODE_ENV=production webpack --mode production",
-    "ui-dev-server": "NODE_ENV=development webpack --mode development --config webpack-lib.config.js",
-    "ui-server": "node ./src/server/index.js",
+    "ui-webpack-server": "NODE_ENV=development webpack-dev-server --mode development --config webpack.config.js",
+    "ui-dev-server": "node ./src/server/index-dev.js",
     "socket-server": "node ./src/socket-server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "check-types": "tsc"

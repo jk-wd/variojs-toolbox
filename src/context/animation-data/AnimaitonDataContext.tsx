@@ -28,6 +28,7 @@ interface Props {
 
 enum AnimationDataActions {
     setActiveAnimationEntry = 'setActiveAnimationEntry',
+    setActiveTimeline = 'setActiveTimeline',
     setAnimationData = 'setAnimationData',
     addEditAnimationEntry = 'addEditAnimationEntry',
     saveAnimationDefinition = 'saveAnimationDefinition',
@@ -53,6 +54,14 @@ type ActionSetActiveAnimationEntry = {
     type: AnimationDataActions.setActiveAnimationEntry
     activeAnimationEntry: {
       id?:string,
+    }
+}
+
+type ActionSetActiveTimeline = {
+    type: AnimationDataActions.setActiveTimeline
+    timeline: {
+      timelineId:string,
+      parallax:boolean,
     }
 }
 
@@ -193,6 +202,7 @@ type Dispatch = (action:
   ActionConnectAnimationEntryToTimeline |
   ActionDisconnectAnimationEntryFromTimeline |
   ActionAddNumberVariable |
+  ActionSetActiveTimeline |
   ActionRemoveNumberVariable |
   ActionEditNumberVariable |
   ActionAddEditAnimationEntry
@@ -214,6 +224,12 @@ function animationDataReducer(state: AnimationDataState,
         return {
             ...state,
             activeAnimationEntry: action.activeAnimationEntry,
+        }
+      }
+      case AnimationDataActions.setActiveTimeline: {
+        return {
+            ...state,
+            activeTimeline: action.activeTimeline
         }
       }
       case AnimationDataActions.addEditAnimationEntry: {
