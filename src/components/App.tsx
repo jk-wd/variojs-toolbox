@@ -1,8 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import {IBreakpoint} from "variojs";
 import {useNavigationState, useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
-import {useAnimationDataState, useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
+import {useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
 import {copyToClipBoard} from "@helpers/clipboard";
 import {Sections} from "@interfaces/navigation";
 import Panel from "@components/Panel";
@@ -93,7 +92,6 @@ const App = () => {
     const {sections} = useNavigationState();
     const {animationData} = useAnimationDataState();
     const dispatchNavigation = useNavigationDispatch();
-    const dispatchAnimationData = useAnimationDataDispatch();
     const lastActiveSection = sections[sections.length-1];
 
     return (
@@ -110,24 +108,6 @@ const App = () => {
                             <MenuButton>Menu</MenuButton>
                     </Button>
                     <div id="position_indicator"></div>
-                    <select onChange={(event: any) => {
-                        dispatchAnimationData({
-                            type: AnimationDataActions.setBreakpoint,
-                            breakpoint: event.target.value,
-                        });
-                    }} id="selectBreakpoint">
-                        <option value='default'>Select breakpoint</option>
-                        <option value='default'>none</option>
-                        {
-                            (animationData.breakpoints)?
-                                animationData.breakpoints.map((breakpoint: IBreakpoint) => {
-                                return (
-                                    <option  key={breakpoint.id} value={breakpoint.id}>{breakpoint.id} - {breakpoint.definition}</option>
-                                )
-                            }):null
-                        }
-                        
-                    </select>
                 </AppTopSection>
                 <AppContent>
                     {

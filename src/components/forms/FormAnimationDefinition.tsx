@@ -38,7 +38,7 @@ const FormAnimationDefinition = () => {
                 <FormInputString label="Animation definition name" defaultValue={animationDefinition.name} onChange={(event: any) => {
                     animationDataDispatch(
                         {
-                            type: AnimationDataActions.saveAnimationDefinition,
+                            type: AnimationDataActions.addEditAnimationDefinition,
                             animationDefinition: {
                                 ...animationDefinition,
                                 name: event.target.value
@@ -72,7 +72,7 @@ const FormAnimationDefinition = () => {
                         <FormFrameNumberArray frameType={(key === "display")?FrameType.StringFrame: FrameType.NumberFrame} frames={props[key]} onChange={(frames) => {
                             animationDataDispatch(
                                 {
-                                    type: AnimationDataActions.saveAnimationDefinition,
+                                    type: AnimationDataActions.addEditAnimationDefinition,
                                     animationDefinition: {
                                         ...animationDefinition,
                                         props: {
@@ -104,7 +104,7 @@ const FormAnimationDefinition = () => {
                         onDelete={() => {
                             animationDataDispatch(
                                 {
-                                    type: AnimationDataActions.saveAnimationDefinition,
+                                    type: AnimationDataActions.addEditAnimationDefinition,
                                     animationDefinition: {
                                         ...animationDefinition,
                                         props: {
@@ -119,7 +119,7 @@ const FormAnimationDefinition = () => {
 
                             animationDataDispatch(
                                 {
-                                    type: AnimationDataActions.saveAnimationDefinition,
+                                    type: AnimationDataActions.addEditAnimationDefinition,
                                     animationDefinition: {
                                         ...animationDefinition || {},
                                         props: {

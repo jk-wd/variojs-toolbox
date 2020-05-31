@@ -20,11 +20,22 @@ const SectionAddAnimationEntry = () => {
             <form onSubmit={(event:any) => {
                 event.preventDefault();
                 if(selectRef.current && selectRef.current.value) {
+                    const animationDefinitionId = uuidv4();
+                    animationDataDispatch({
+                        type: AnimationDataActions.addEditAnimationDefinition,
+                        animationDefinition: {
+                            id:animationDefinitionId,
+                            props: {}
+                        }
+                    });
                     animationDataDispatch( {
                         type: AnimationDataActions.addEditAnimationEntry,
                         animationEntry: {
                             id: uuidv4(),
-                            domReference: selectRef.current.value
+                            domReference: selectRef.current.value,
+                            animationConnection: {
+                                animationDefinitionId
+                            } 
                         },
                     });
                     navigationDispatch({

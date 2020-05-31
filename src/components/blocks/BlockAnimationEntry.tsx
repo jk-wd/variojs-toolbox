@@ -3,7 +3,7 @@ import {uuidv4} from "@helpers/guid";
 import styled from "styled-components";
 import DeleteLabel from "@components/typography/DeleteLabel";
 import BlockLine from "@components/block-elements/BlockLine";
-import { IAnimationEntry } from 'variojs/lib/types-interfaces';
+import { IAnimationEntry, IAnimationConnection } from 'variojs/lib/types-interfaces';
 import Block from '@components/block-elements/Block';
 import BlockHeading from '@components/block-elements/BlockHeading';
 import BlockSection from '@components/block-elements/BlockSection';
@@ -25,7 +25,12 @@ const RemoveButtonHolder = styled.div`
 
 const BlockAnimationEntry = ({animationEntry}: IProps) => {
     const animationDataDispatch = useAnimationDataDispatch();
-    const {animationData, breakpoint} = useAnimationDataState();
+    const {animationData} = useAnimationDataState();
+    let animationDefinition;
+    if(animationEntry.animationConnection && animationEntry.animationConnection.animationDefinitionId) {
+        animationDefinition = getAnimationDefinitionById(animationData, animationEntry.animationConnection.animationDefinitionId);
+    }
+    
     const navigationDispatch = useNavigationDispatch();
     const placeAddAnimation = useCallback(() => {
         if(!animationData) {
@@ -44,7 +49,7 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
                     const animationDefinitionId = uuidv4();
 
                     animationDataDispatch({
-                        type: AnimationDataActions.saveAnimationDefinition,
+                        type: AnimationDataActions.addEditAnimationDefinition,
                         animationDefinition: {
                             id:animationDefinitionId,
                             props: {}
@@ -72,7 +77,7 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
                 <select onChange={
                     (event:any) => {
                         animationDataDispatch({
-                            type: AnimationDataActions.connectAnimationDefinition,
+                            type: AnimationDataActions.connectAnimationDefinitionToEntry,
                             definitionId: event.target.value,
                             animationEntryId: animationEntry.id,
                         });
@@ -90,61 +95,101 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
                         }, [])
                         
                     }
-                </select><br/><br/>
+                </select><br/>
             </>
         )
     }, [animationData]);
+    const placeAnimation = useCallback((animationConnection:IAnimationConnection, animationDefinition:IAnimationDefinition, privateConneciton:boolean = false) => {
+        let title = (animationDefinition && animationDefinition.name)? animationDefinition.name: (animationDefinition && animationDefinition.id)? animationDefinition.id : '';
+        if(privateConneciton) {
+            title = 'Go to animation definition'
+        }
+       return (
+        <BlockLine key={animationConnection.animationDefinitionId}>
+        <Button onClick={() => {
+            if(!animationDefinition) {
+                return;
+            }
+            animationDataDispatch({
+                type: AnimationDataActions.setActiveAnimationEntry,
+                activeAnimationEntry: {
+                    id: animationEntry.id
+                },
+            });
+            animationDataDispatch({
+                type: AnimationDataActions.setActiveAnimationDefinition,
+                animationDefinitionId: animationDefinition.id
+            });
+            navigationDispatch({
+                type: NavigationActions.setActiveSection,
+                section: Sections.ANIMATION_DEFINITION,
+            });
+        }}>
+            {title}
+        </Button>
+        {(!privateConneciton)?
+        <>
+            <RemoveButtonHolder>
+                <Button onClick={() => {
+                    if(!animationDefinition) {
+                        return;
+                    }
+                    animationDataDispatch({
+                        type: AnimationDataActions.disconnectAnimationDefinitionFromEntry,
+                        definitionId: animationDefinition.id,
+                        animationEntryId: animationEntry.id
+                    });
+                }}><DeleteLabel>Disconnect</DeleteLabel></Button>
+            </RemoveButtonHolder>
+
+            <br />
+            <FormInputString defaultValue={animationConnection.startOffsetPixels} label="Start offsetPixels" onChange={(event: any) => {
+                animationDataDispatch(
+                    {
+                        type: AnimationDataActions.addEditAnimationEntryConnection,
+                        animationEntryId: animationEntry.id,
+                        conneciton: {
+                            ...animationConnection,
+                            startOffsetPixels: event.target.value
+                        },
+                        privateConnection: false
+                    }
+                );
+            }} />
+            <FormInputString defaultValue={animationConnection.startMs} label="Start milliseconds" onChange={(event: any) => {
+                animationDataDispatch(
+                    {
+                        type: AnimationDataActions.addEditAnimationEntryConnection,
+                        animationEntryId: animationEntry.id,
+                        conneciton: {
+                            ...animationConnection,
+                            startMs: event.target.value
+                        },
+                        privateConnection: false
+                    }
+                );
+            }} />
+        </>:null
+        }
+        
+    </BlockLine>
+       )
+    }, [])
     const placeAnimations = useCallback(() => {
-        const animations = animationEntry.animationDefinitions;
-        if(!animations || !animations[breakpoint]){
+        const animationConnections = animationEntry.animationConnections;
+        if(!animationConnections){
             return;
         }
-        return animations[breakpoint].map((animationDefinitionId: string) => {
+        return animationConnections.map((animationConnection: IAnimationConnection) => {
             
-            const animationDefinition = getAnimationDefinitionById(animationData, animationDefinitionId);
+            const animationDefinition = getAnimationDefinitionById(animationData, animationConnection.animationDefinitionId);
 
             if(!animationDefinition) {
                 return
             }
-            return(
-                <BlockLine key={animationDefinitionId}>
-                    <Button onClick={() => {
-                        if(!animationDefinition) {
-                            return;
-                        }
-                        animationDataDispatch({
-                            type: AnimationDataActions.setActiveAnimationEntry,
-                            activeAnimationEntry: {
-                                id: animationEntry.id
-                            },
-                        });
-                        animationDataDispatch({
-                            type: AnimationDataActions.setActiveAnimationDefinition,
-                            animationDefinitionId: animationDefinition.id
-                        });
-                        navigationDispatch({
-                            type: NavigationActions.setActiveSection,
-                            section: Sections.ANIMATION_DEFINITION,
-                        });
-                    }}>
-                        {(animationDefinition && animationDefinition.name)? animationDefinition.name: (animationDefinition && animationDefinition.id)? animationDefinition.id : ''}
-                    </Button>
-                    <RemoveButtonHolder>
-                        <Button onClick={() => {
-                            if(!animationDefinition) {
-                                return;
-                            }
-                            animationDataDispatch({
-                                type: AnimationDataActions.disconnectAnimationDefinition,
-                                definitionId: animationDefinition.id,
-                                animationEntryId: animationEntry.id
-                            });
-                        }}><DeleteLabel>Disconnect</DeleteLabel></Button>
-                    </RemoveButtonHolder>
-                </BlockLine>
-            )
+            return placeAnimation(animationConnection, animationDefinition);
         })
-    }, [animationEntry, breakpoint]);
+    }, [animationEntry]);
     return (
     <Block>
         <BlockSection>
@@ -161,32 +206,14 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
             }} /> 
         </BlockSection>
         <BlockSection>
-                
-                <FormInputString defaultValue={animationEntry.startOffsetPixels} label="Start offsetPixels" onChange={(event: any) => {
-                    animationDataDispatch(
-                        {
-                            type: AnimationDataActions.addEditAnimationEntry,
-                            animationEntry: {
-                                ...animationEntry,
-                                startOffsetPixels: event.target.value
-                            }
-                        }
-                    );
-                }} />
-                <FormInputString defaultValue={animationEntry.startMs} label="Start milliseconds" onChange={(event: any) => {
-                    animationDataDispatch(
-                        {
-                            type: AnimationDataActions.addEditAnimationEntry,
-                            animationEntry: {
-                                ...animationEntry,
-                                startMs: event.target.value
-                            }
-                        }
-                    );
-                }} />
+            {
+                (animationDefinition)? 
+                    placeAnimation(animationEntry.animationConnection, animationDefinition, true)
+                : null
+            }
         </BlockSection>
         <BlockSection>
-            <BlockHeading>Time based animations</BlockHeading>
+            <BlockHeading>Connected animation definitions</BlockHeading>
             {
                 placeConnectAnimation()
             }

@@ -9,7 +9,7 @@ import { useAnimationDataState } from '@context/animation-data/AnimaitonDataCont
 
 const SectionAnimationEntries = () => {
     const navigationDispatch = useNavigationDispatch();
-    const {animationData} = useAnimationDataState();
+    const {animationData, activeTimeline} = useAnimationDataState();
     return (
     <div>
         <div style={{
@@ -18,6 +18,19 @@ const SectionAnimationEntries = () => {
             {
             (animationData && animationData.animationEntries)?
                 animationData.animationEntries.map((animationEntry: IAnimationEntry) => {
+                    if(activeTimeline && activeTimeline.timeline.animationEntries) {
+                        let found = false;
+                        for(let breakpoint of Object.keys(activeTimeline.timeline.animationEntries)) {
+                            if(activeTimeline.timeline.animationEntries[breakpoint] && activeTimeline.timeline.animationEntries[breakpoint].indexOf(animationEntry.id) > -1) {
+                                found = true;
+                            }
+        
+                        }
+                        if(!found) {
+                            return null;
+                        }
+                    }
+                    
                     return <BlockAnimationEntry key={animationEntry.id} animationEntry={animationEntry}/>
                 }):null
             }

@@ -1,11 +1,11 @@
 import React, {useState} from "react";
 import {IParallaxTimeline} from "variojs";
 import FormInputString from "@components/form-elements/FormInputString";
-import BlockParallaxTimeline from "@components/blocks/BlockParallaxTimeline";
 import FormFieldset from "@components/form-elements/FormFieldset";
 import FormHeading from "@components/form-elements/FormHeading";
 import { useAnimationDataState, useAnimationDataDispatch, AnimationDataActions } from '@context/animation-data/AnimaitonDataContext';
 import CtaMain from '@components/cta/CtaMain';
+import BlockTimeline from '@components/blocks/BlockTimeline';
 
 
 
@@ -70,7 +70,7 @@ const SectionParallaxTimelines = () => {
                 if(!timeline) {
                     return;
                 }
-                return <BlockParallaxTimeline key={timeline.id} timeline={timeline}/>
+                return <BlockTimeline key={timeline.id} parallax={true} timeline={timeline}/>
             })
             :null
         }

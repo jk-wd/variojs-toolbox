@@ -7,7 +7,7 @@ interface Props {
 }
 
 const FormFrameBlockEl = styled.div`
-  background-color:${Colors.grey};
+  background-color:${Colors.lightGrey};
   margin-bottom: 10px;
   padding: 8px;
   padding-bottom: 10px;

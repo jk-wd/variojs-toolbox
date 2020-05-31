@@ -6,22 +6,23 @@ import Block from '@components/block-elements/Block';
 import BlockHeading from '@components/block-elements/BlockHeading';
 import BlockSection from '@components/block-elements/BlockSection';
 import Button from '@components/Button';
-import {getAnimationEntryById, IAnimationEntry, ITimeline} from 'variojs';
+import {getAnimationEntryById, IAnimationEntry, ITimeline, IBreakpoint} from 'variojs';
 import {useAnimationDataDispatch, AnimationDataActions, useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
 
 interface IProps {
     timeline: ITimeline
+    parallax: boolean
 }
 
 const RemoveButtonHolder = styled.div`
     float: right;
 `;
 
-const BlockTimeline = ({timeline}: IProps) => {
+const BlockTimeline = ({timeline, parallax}: IProps) => {
     const animationDataDispatch = useAnimationDataDispatch();
     const {animationData} = useAnimationDataState();
    
-    const placeConnectTimeline = useCallback(() => {
+    const placeConnectTimeline = useCallback((breakpoint: string) => {
         if(!animationData || !animationData.animationEntries) {
             return
         }
@@ -32,8 +33,9 @@ const BlockTimeline = ({timeline}: IProps) => {
                         animationDataDispatch({
                             type: AnimationDataActions.connectAnimationEntryToTimeline,
                             timelineId: timeline.id,
+                            breakpoint,
                             animationEntryId: event.target.value,
-                            parallax: false
+                            parallax
                         });
                     }
                 }>
@@ -55,30 +57,52 @@ const BlockTimeline = ({timeline}: IProps) => {
     }, [animationData]);
     const placeAnimationEntries = useCallback(() => {
         const animationEntries = timeline.animationEntries;
+        let breakpoints = (animationData.breakpoints)? animationData.breakpoints: [];
+        breakpoints = [...breakpoints, {
+            id: 'default',
+            order: 0,
+            definition: ''
+        }]
 
         if(!animationEntries){
             return;
         }
-        return animationEntries.map((animationEntryId: string) => {
-            const animationEntry = getAnimationEntryById(animationData, animationEntryId);
-            if(!animationEntry) {
+        return  breakpoints.map((breakpoint: IBreakpoint) => {
+            if(!breakpoint) {
                 return
             }
-            return(
-                <BlockLine key={animationEntryId}>
-                    
-                    {(animationEntry.name)?animationEntry.name:animationEntry.id}
-                    <RemoveButtonHolder>
-                        <Button onClick={() => {
-                            animationDataDispatch({
-                                type: AnimationDataActions.disconnectAnimationEntryFromTimeline,
-                                timelineId: timeline.id,
-                                animationEntryId,
-                                parallax: false,
-                            });
-                        }}><DeleteLabel>Disconnect</DeleteLabel></Button>
-                    </RemoveButtonHolder>
-                </BlockLine>
+            return (
+                <div>
+                    {breakpoint.id}
+                    <br />
+                    {placeConnectTimeline(breakpoint.id)}
+                    {
+                        (animationEntries[breakpoint.id])?
+                        animationEntries[breakpoint.id].map((animationEntryId: string) => {
+                            console.log("hoi hoi");
+                            const animationEntry = getAnimationEntryById(animationData, animationEntryId);
+                            if(!animationEntry) {
+                                return
+                            }
+                            return(
+                                <BlockLine key={animationEntryId}>
+                                    
+                                    {(animationEntry.name)?animationEntry.name:animationEntry.id}
+                                    <RemoveButtonHolder>
+                                        <Button onClick={() => {
+                                            animationDataDispatch({
+                                                type: AnimationDataActions.disconnectAnimationEntryFromTimeline,
+                                                timelineId: timeline.id,
+                                                animationEntryId,
+                                                parallax,
+                                            });
+                                        }}><DeleteLabel>Disconnect</DeleteLabel></Button>
+                                    </RemoveButtonHolder>
+                                </BlockLine>
+                            )
+                        }): null
+                    }
+                </div>
             )
         })
     }, [timeline]);
@@ -92,9 +116,6 @@ const BlockTimeline = ({timeline}: IProps) => {
 
         <BlockSection>
             <BlockHeading>Animation Entries</BlockHeading>
-            {
-                placeConnectTimeline()
-            }
             {
                 placeAnimationEntries()
             }

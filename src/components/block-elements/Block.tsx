@@ -7,7 +7,7 @@ interface IProps {
 }
 
 const BlockEl = styled.div`
-  background-color: ${Colors.grey};
+  background-color: ${Colors.lightGrey};
   padding: 10px;
   margin: 10px 0;
 `;

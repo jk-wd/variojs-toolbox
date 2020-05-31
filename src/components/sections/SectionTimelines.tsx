@@ -51,7 +51,7 @@ const SectionTimelines = () => {
                 if(!timeline) {
                     return;
                 }
-                return <BlockTimeline key={timeline.id} timeline={timeline}/>
+                return <BlockTimeline parallax={false} key={timeline.id} timeline={timeline}/>
             })
             :null
         }

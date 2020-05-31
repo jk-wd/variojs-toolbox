@@ -1,24 +1,15 @@
 import React, {useState} from "react";
-import {ITimelineBase} from "variojs";
 import styled from "styled-components";
 import {useAnimationDataState, useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
-import { Colors } from '@interfaces/colors';
+import { IParallaxTimeline, ITimeline } from 'variojs';
 
-const TimelineSelectEl = styled.div`
-  width: 100%;
-  height: 30vh;
-  position: fixed;
-  background-color: ${Colors.lightGrey};
-  bottom: 0;
-  left: 0;
-  overflow: scroll;
-`;
+const TimelineSelectEl = styled.div``;
 
 const TimelineSelect = () => {
     const [useParallaxTimelines, setUseParallaxTimelines] = useState<boolean>(false);
     const {animationData} = useAnimationDataState();
     const animationDispatch = useAnimationDataDispatch();
-    const timelines = (useParallaxTimelines)? animationData.parallaxTimelines: animationData.timelines;
+    const timelines: any = (useParallaxTimelines)? animationData.parallaxTimelines: animationData.timelines;
     return (
         <TimelineSelectEl>
              <select onChange={(event: any) => {
@@ -38,7 +29,7 @@ const TimelineSelect = () => {
                     }} id="selectTimeline">
                 {
                     (timelines)?
-                    timelines.map((timeline: ITimelineBase) => {
+                    timelines.map((timeline: IParallaxTimeline | ITimeline) => {
                         return (
                             <option  key={timeline.id} value={timeline.id}>{timeline.id}</option>
                         )

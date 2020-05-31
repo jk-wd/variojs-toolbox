@@ -10,7 +10,7 @@ interface IProps {
 
 const CtaMainEl = styled.span`
     display: block;
-    background-color: ${Colors.freshGreen};
+    background-color: ${Colors.darkGrey};
     padding: 10px 20px;
     font-size: 14px;
     color: ${Colors.white};

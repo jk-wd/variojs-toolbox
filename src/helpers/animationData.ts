@@ -1,6 +1,6 @@
 import {uuidv4} from "@helpers/guid";
 import { AnimationDataState } from "context/animation-data/AnimaitonDataContext";
-import { IAnimationEntry, IBreakpoint, ITimeline, IAnimationDefinition, ITimelineBase } from "variojs";
+import { IAnimationEntry, IBreakpoint, ITimeline, IAnimationDefinition, ITimelineBase, IAnimationData, IAnimationConnection } from "variojs";
 
 
 export const addAnimationEntry = ({animationData}: AnimationDataState, id:string) => {
@@ -17,7 +17,7 @@ export const addAnimationEntry = ({animationData}: AnimationDataState, id:string
     }
 }
 
-export const addEditAnimationEntry = ({animationData}: AnimationDataState, animationEntry:IAnimationEntry) => {
+export const addEditAnimationEntry = (animationData: IAnimationData, animationEntry:IAnimationEntry) => {
     const entries = (animationData.animationEntries)?animationData.animationEntries:[];
     let added = false;
     let animationDataResult = {
@@ -187,26 +187,28 @@ export const deleteAnimationDefinition = ({animationData}: AnimationDataState, d
     }
 }
 
-export const connectAnimationDefinition = ({animationData, breakpoint}: AnimationDataState, entryId:string, definitionId:string) => {
+export const connectAnimationEntryToTimeline = ({animationData}: AnimationDataState, timelineId:string, entryId:string, breakpoint:string, parallax:boolean = false) => {
     animationData = JSON.parse(JSON.stringify(animationData));
+    const timelinesIndex = (parallax)? 'parallaxTimelines': 'timelines';
+    const timelines = animationData[timelinesIndex] as ITimeline[];
     return {
         ...animationData,
-        animationEntries: (animationData.animationEntries)?animationData.animationEntries.map((animationEntry:IAnimationEntry) => {
-            if(animationEntry.id === entryId) {
-                const animations = (animationEntry.animationDefinitions && animationEntry.animationDefinitions[breakpoint])? animationEntry.animationDefinitions[breakpoint]: [];
+        [timelinesIndex]: (timelines)?timelines.map((timeline:ITimeline) => {
+            if(timeline.id === timelineId) {
+                const entries = (timeline && timeline.animationEntries && timeline.animationEntries[breakpoint])? timeline.animationEntries[breakpoint]: [];
                 return {
-                    ...animationEntry,
-                    animationDefinitions: {
-                        ...animationEntry.animationDefinitions,
-                        [breakpoint]: ((animations.indexOf(definitionId) <= -1))?[...animations, definitionId] : animations
+                    ...timeline,
+                    animationEntries: {
+                        [breakpoint]: ((entries.indexOf(entryId) <= -1))?[...entries, entryId] : entries
                     }
                 };
             }
-            return animationEntry;
+            return timeline;
         }):[]
     }
 }
-export const connectAnimationEntryToTimeline = ({animationData}: AnimationDataState, timelineId:string, entryId:string, parallax:boolean = false) => {
+
+export const disconnectAnimationEntryFromTimeline = ({animationData}: AnimationDataState, timelineId:string, entryId:string, breakpoint:string, parallax:boolean = false) => {
     animationData = JSON.parse(JSON.stringify(animationData));
     const timelinesIndex = (parallax)? 'parallaxTimelines': 'timelines';
     const timelines = animationData[timelinesIndex] as ITimeline[];
@@ -214,69 +216,25 @@ export const connectAnimationEntryToTimeline = ({animationData}: AnimationDataSt
         ...animationData,
         [timelinesIndex]: (timelines)?timelines.map((timeline:ITimeline) => {
             if(timeline.id === timelineId) {
-                const entries = (timeline && timeline.animationEntries)? timeline.animationEntries: [];
+                const entries = (timeline && timeline.animationEntries && timeline.animationEntries[breakpoint])? timeline.animationEntries[breakpoint]: [];
                 return {
                     ...timeline,
-                    animationEntries: ((entries.indexOf(entryId) <= -1))?[...entries, entryId] : entries
-                };
-            }
-            return timeline;
-        }):[]
-    }
-}
-
-export const disconnectAnimationEntryFromTimeline = ({animationData}: AnimationDataState, timelineId:string, entryId:string, parallax:boolean = false) => {
-    animationData = JSON.parse(JSON.stringify(animationData));
-    const timelinesIndex = (parallax)? 'parallaxTimelines': 'timelines';
-    const timelines = animationData[timelinesIndex] as ITimeline[];
-    return {
-        ...animationData,
-        [timelinesIndex]: (timelines)?timelines.map((timeline:ITimeline) => {
-            if(timeline.id === timelineId) {
-                const entries = (timeline && timeline.animationEntries)? timeline.animationEntries: [];
-                return {
-                    ...timeline,
-                    animationEntries: entries.reduce((result: string[], entry:string) => {
-                        if(entryId != entry){
-                            result.push(entry);
-                        }
-                        return result;
-                    }, [])
-                };
-            }
-            return timeline;
-        }):[]
-    }
-}
-
-export const disconnectAnimationDefinition = ({animationData, breakpoint}: AnimationDataState, entryId:string, definitionId:string) => {
-    animationData = JSON.parse(JSON.stringify(animationData));
-
-    return {
-        ...animationData,
-        animationEntries: (animationData.animationEntries)?animationData.animationEntries.map((animationEntry:IAnimationEntry) => {
-            if(animationEntry.id === entryId) {
-                const animations = (animationEntry.animationDefinitions && animationEntry.animationDefinitions[breakpoint])? animationEntry.animationDefinitions[breakpoint]: [];
-    
-                return {
-                    ...animationEntry,
-                    animationDefinitions: {
-                        ...animationEntry.animationDefinitions,
-                        [breakpoint]: animations.reduce((result: string[], animationId:string) => {
-                            if(animationId != definitionId){
-                                result.push(animationId);
+                    animationEntries: {
+                        [breakpoint]: entries.reduce((result: string[], entry:string) => {
+                            if(entryId != entry){
+                                result.push(entry);
                             }
                             return result;
                         }, [])
                     }
                 };
             }
-            return animationEntry;
+            return timeline;
         }):[]
     }
 }
 
-export const saveAnimationDefinition = ({animationData, activeAnimationEntry, breakpoint}: AnimationDataState, animationDefinition:IAnimationDefinition) => {
+export const addEditAnimationDefinition = (animationData: IAnimationData, animationDefinition:IAnimationDefinition) => {
     if(!animationData || !animationDefinition) {
         return;
     }
@@ -300,24 +258,95 @@ export const saveAnimationDefinition = ({animationData, activeAnimationEntry, br
     if(!added) {
         animationDefinitions.push(animationDefinitionResult);
     }
-    if(!activeAnimationEntry || !activeAnimationEntry.id) {
-        return {
-            ...animationData,
-            animationDefinitions,
-        }
-    }
 
     return {
         ...animationData,
         animationDefinitions,
+    }
+}
+
+export const disconnectAnimationDefinitionFromEntry = ({animationData}: AnimationDataState, animationEntryId:string, animationDefinitionId:string) => {
+    return {
+        ...animationData,
         animationEntries: (animationData.animationEntries)?animationData.animationEntries.map((animationEntry:IAnimationEntry) => {
-            if(animationEntry.id === activeAnimationEntry.id) {
-                const animations = (animationEntry.animationDefinitions && animationEntry.animationDefinitions[breakpoint])? animationEntry.animationDefinitions[breakpoint]: [];
+            const connections = (animationEntry.animationConnections)? animationEntry.animationConnections: [];
+            if(animationEntry.id === animationEntryId) {
                 return {
                     ...animationEntry,
-                    animationDefinitions: {
-                        ...animationEntry.animationDefinitions,
-                        [breakpoint]: ((animations.indexOf(id) <= -1))?[...animations, id] : animations
+                    animationConnections: connections.reduce((result: IAnimationConnection[], connection:IAnimationConnection) => {
+                        if(connection.animationDefinitionId != animationDefinitionId){
+                            result.push(connection);
+                        }
+                        return result;
+                    }, [])
+                }
+            }
+            return animationEntry;
+        }):[]
+    }
+}
+
+export const connectAnimationDefinitionToEntry = ({animationData}: AnimationDataState, animationEntryId:string, animationDefinitionId:string) => {
+    return {
+        ...animationData,
+        animationEntries: (animationData.animationEntries)?animationData.animationEntries.map((animationEntry:IAnimationEntry) => {
+            const connections = (animationEntry.animationConnections)? animationEntry.animationConnections: [];
+            if(!connections.find((connection:IAnimationConnection) => (connection.animationDefinitionId === animationDefinitionId))) {
+                connections.push({
+                    animationDefinitionId
+                });
+            }
+            if(animationEntryId === animationEntryId) {
+                return {
+                    ...animationEntry,
+                    animationConnections: connections
+                }
+            }
+            return animationEntry;
+        }):[]
+    }
+}
+
+export const addEditAnimationEntryConnection = (animationData: IAnimationData, animationEntryId:string, connection:IAnimationConnection, privateConnection: boolean = false) => {
+
+    return {
+        ...animationData,
+        animationEntries: (animationData.animationEntries)?animationData.animationEntries.map((animationEntry:IAnimationEntry) => {
+            const connections = (animationEntry.animationConnections)? animationEntry.animationConnections: [];
+            if(animationEntry.id === animationEntryId) {
+                if(privateConnection) {
+                    return {
+                        ...animationEntry,
+                        animationConnection: connection
+                    }
+                }
+
+                return {
+                    ...animationEntry,
+                    animationConnections: connections.reduce((result: IAnimationConnection[], connectionTarget:IAnimationConnection) => {
+                        if(connectionTarget.animationDefinitionId === connection.animationDefinitionId){
+                            result.push(connection);
+                        } else {
+                            result.push(connectionTarget);
+                        }
+                        return result;
+                    }, [])
+                }
+            }
+            return animationEntry;
+        }):[]
+    }
+}
+
+export const addAnimationDefinitionToEntry = ({animationData}: AnimationDataState, animationEntryId:string, animationDefinitionId:string) => {
+    return {
+        ...animationData,
+        animationEntries: (animationData.animationEntries)?animationData.animationEntries.map((animationEntry:IAnimationEntry) => {
+            if(animationEntry.id === animationEntryId) {
+                return {
+                    ...animationEntry,
+                    animationConnection: {
+                        animationDefinitionId: animationDefinitionId
                     }
                 };
             }
