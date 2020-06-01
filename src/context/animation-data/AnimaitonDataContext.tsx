@@ -1,7 +1,7 @@
 
 import React from 'react';
 import devSocket from "@socketserver/client/dev-socket";
-import { IAnimationData, IAnimationDefinition, IAnimationEntry, ITimeline, getEndOfTimeline, IAnimationConnection, getParallaxTimelineById, getTimelineById } from 'variojs';
+import { IAnimationData, IAnimationDefinition, IAnimationEntry, ITimeline, getEndOfTimeline, IAnimationConnection } from 'variojs';
 import { 
   disconnectAnimationDefinitionFromEntry,
   connectAnimationDefinitionToEntry,
@@ -39,6 +39,7 @@ enum AnimationDataActions {
     connectAnimationDefinitionToEntry = 'connectAnimationDefinitionToEntry',
     disconnectAnimationDefinitionFromEntry = 'connectAnimationDefinitionFromEntry',
     connectAnimationEntryToTimeline = 'connectAnimationEntryToTimeline',
+    setSelectedBreakpoint = 'setSelectedBreakpoint',
     editTimeline = 'editTimeline',
     disconnectAnimationEntryFromTimeline = 'disconnectAnimationEntryFromTimeline',
     setActiveAnimationDefinition = 'setActiveAnimationDefinition',
@@ -62,9 +63,13 @@ type ActionSetActiveAnimationEntry = {
 type ActionSetActiveTimeline = {
     type: AnimationDataActions.setActiveTimeline
     timeline: {
-      timelineId:string,
+      timelineId?:string,
       parallax:boolean,
     }
+}
+type ActionSetSelectedBreakpoint = {
+    type: AnimationDataActions.setSelectedBreakpoint
+    breakpointId: string,
 }
 
 type ActionSetActiveAnimationDefinition = {
@@ -207,6 +212,7 @@ type Dispatch = (action:
   ActionDisconnectAnimationEntryFromTimeline |
   ActionAddNumberVariable |
   ActionSetActiveTimeline |
+  ActionSetSelectedBreakpoint |
   ActionRemoveNumberVariable |
   ActionEditNumberVariable |
   ActionAddEditAnimationEntry
@@ -217,6 +223,7 @@ type AnimationDataState = {
   activeAnimationDefinition: string | undefined
   animationData: IAnimationData
   activeTimeline: IActiveTimeline
+  selectedBreakpoint: string
 }
 
 
@@ -230,15 +237,18 @@ function animationDataReducer(state: AnimationDataState,
             activeAnimationEntry: action.activeAnimationEntry,
         }
       }
+      case AnimationDataActions.setSelectedBreakpoint: {
+        return {
+            ...state,
+            selectedBreakpoint: action.breakpointId,
+        }
+      }
       case AnimationDataActions.setActiveTimeline: {
-
-        const timeline = (action.timeline.parallax)?getParallaxTimelineById(state.animationData, action.timeline.timelineId):getTimelineById(state.animationData, action.timeline.timelineId);
         return {
             ...state,
             activeTimeline: {
               ...action.timeline,
               end: getEndOfTimeline(state.animationData, action.timeline.timelineId, action.timeline.parallax),
-              timeline
             }
         }
       }
@@ -247,7 +257,7 @@ function animationDataReducer(state: AnimationDataState,
         devSocket.setAnimationData(animationData);
         return {
             ...state,
-            animationData
+            animationData,
         }
       }
       case AnimationDataActions.addEditAnimationEntryConnection: {
@@ -312,6 +322,7 @@ function animationDataReducer(state: AnimationDataState,
       }
       case AnimationDataActions.connectAnimationEntryToTimeline: {
         const animationData = cloneObject(connectAnimationEntryToTimeline(state, action.timelineId, action.animationEntryId, action.breakpoint, action.parallax));
+        console.log(animationData);
         devSocket.setAnimationData(animationData);
         return {
             ...state,
@@ -411,6 +422,7 @@ function AnimationDataProvider({children, animationData}: Props) {
     const [state, dispatch] = React.useReducer(animationDataReducer, {
       activeAnimationEntry: undefined,
       activeAnimationDefinition: undefined,
+      selectedBreakpoint: 'default',
       activeTimeline: undefined,
       animationData
     });

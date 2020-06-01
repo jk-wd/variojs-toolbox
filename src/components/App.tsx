@@ -6,6 +6,7 @@ import {copyToClipBoard} from "@helpers/clipboard";
 import {Sections} from "@interfaces/navigation";
 import Panel from "@components/Panel";
 import SectionAnimationEntries from "@components/sections/SectionAnimationEntries";
+import SectionAnimationEntry from "@components/sections/SectionAnimationEntry";
 import SectionAddAnimationEntry from "@components/sections/SectionAddAnimationEntry";
 import Button from '@components/Button';
 import SectionMenu from '@components/sections/SectionMenu';
@@ -78,6 +79,7 @@ const CopyToClipBoard = styled.div`
 
 const contentMap: {[key:string]: React.ReactNode} = {
     [Sections.MENU]: <SectionMenu />,
+    [Sections.ANIMATION_ENTRY]: <SectionAnimationEntry />,
     [Sections.TIMELINES]: <SectionTimelines />,
     [Sections.PARALLAX_TIMELINES]: <SectionParallaxTimelines />,
     [Sections.ANIMATION_ENTRIES]: <SectionAnimationEntries />,

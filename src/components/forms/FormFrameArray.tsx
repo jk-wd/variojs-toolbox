@@ -31,7 +31,7 @@ const sortFrames = (frameA: IFrame, frameB: IFrame) => {
     if(frameA.ms && frameB.ms && frameA.ms < frameB.ms) {
         return -1;
     }
-    if(frameA.offsetPixels && frameB.offsetPixels && frameA.offsetPixels < frameB.offsetPixels) {
+    if((frameA.offsetPixels || frameA.offsetPixels===0) && (frameB.offsetPixels || frameB.offsetPixels===0) && frameA.offsetPixels < frameB.offsetPixels) {
         return -1;
     }
     return 1;

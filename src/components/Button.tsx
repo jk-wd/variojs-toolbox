@@ -3,16 +3,20 @@ import styled from "styled-components";
 
 interface IProps {
     children: React.ReactNode
+    className?: string
     onClick?: (event: any) => void
 }
 
 const ButtonEl = styled.button`
   border: none;
+  &.text-align-left {
+      text-align: left;
+  }
 `;
 
-const Button = ({children, onClick}: IProps) => {
+const Button = ({children, className, onClick}: IProps) => {
     return (
-    <ButtonEl onClick={onClick}>
+    <ButtonEl className={className} onClick={onClick}>
         {children}
     </ButtonEl>
     )

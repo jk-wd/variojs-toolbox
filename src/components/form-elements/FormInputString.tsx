@@ -1,4 +1,4 @@
-import React, {ChangeEvent} from "react";
+import React, {ChangeEvent, useEffect, createRef} from "react";
 import styled from "styled-components";
 import FormElementLabel from "@components/form-elements/FormElementLabel";
 import {Colors} from "@interfaces/colors";
@@ -20,7 +20,14 @@ const FormInputStringEl = styled.div`
     }
 `;
 
-const FormInputString = ({defaultValue = "", label = "", disabled, onChange= () => {}}: IProps) => {
+const FormInputString = ({defaultValue = "", label = "", disabled, onChange= () => {}}: IProps, ref:any) => {
+    const inputRef = createRef<HTMLInputElement>();
+    
+    useEffect(() => {
+        if(inputRef.current) {
+            inputRef.current.value = defaultValue || '';
+        }
+    }, [defaultValue]);
     return (
         <FormInputStringEl>
              {
@@ -28,7 +35,7 @@ const FormInputString = ({defaultValue = "", label = "", disabled, onChange= () 
                 <><FormElementLabel>{label}</FormElementLabel><br /></>
                 : null
             }
-            <input type='text' onChange={onChange} disabled={disabled} defaultValue={defaultValue} />
+            <input type='text' ref={inputRef} onChange={onChange} disabled={disabled} defaultValue={defaultValue} />
         </FormInputStringEl>
     )
 }

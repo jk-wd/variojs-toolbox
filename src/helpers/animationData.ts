@@ -199,6 +199,7 @@ export const connectAnimationEntryToTimeline = ({animationData}: AnimationDataSt
                 return {
                     ...timeline,
                     animationEntries: {
+                        ...timeline.animationEntries,
                         [breakpoint]: ((entries.indexOf(entryId) <= -1))?[...entries, entryId] : entries
                     }
                 };
@@ -220,6 +221,7 @@ export const disconnectAnimationEntryFromTimeline = ({animationData}: AnimationD
                 return {
                     ...timeline,
                     animationEntries: {
+                        ...timeline.animationEntries,
                         [breakpoint]: entries.reduce((result: string[], entry:string) => {
                             if(entryId != entry){
                                 result.push(entry);
@@ -290,13 +292,13 @@ export const connectAnimationDefinitionToEntry = ({animationData}: AnimationData
     return {
         ...animationData,
         animationEntries: (animationData.animationEntries)?animationData.animationEntries.map((animationEntry:IAnimationEntry) => {
-            const connections = (animationEntry.animationConnections)? animationEntry.animationConnections: [];
-            if(!connections.find((connection:IAnimationConnection) => (connection.animationDefinitionId === animationDefinitionId))) {
-                connections.push({
-                    animationDefinitionId
-                });
-            }
-            if(animationEntryId === animationEntryId) {
+            if(animationEntry.id === animationEntryId) {
+                const connections = (animationEntry.animationConnections)? [...animationEntry.animationConnections]: [];
+                if(!connections.find((connection:IAnimationConnection) => (connection.animationDefinitionId === animationDefinitionId))) {
+                    connections.push({
+                        animationDefinitionId
+                    });
+                }
                 return {
                     ...animationEntry,
                     animationConnections: connections

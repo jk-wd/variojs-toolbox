@@ -58,9 +58,9 @@ const TimelineAnimationFrames = ({animationConnection, className, frames = []}: 
     return (
         <TimelineAnimationFramesEl className={className}>
             <TimelineAnimationFramesInner>
-                {frames.map((frame: IFrame) => {
+                {frames.map((frame: IFrame, index:number) => {
                     //@ts-ignore
-                    return <KeyFrame left={`${calculatePosition(frame)}px`}></KeyFrame>
+                    return <KeyFrame key={frame.id +''+ index} left={`${calculatePosition(frame)}px`}></KeyFrame>
                 })}
             </TimelineAnimationFramesInner>
         </TimelineAnimationFramesEl>

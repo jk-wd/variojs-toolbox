@@ -17,6 +17,14 @@ const CtaMainEl = styled.span`
     &.small {
         padding: 8px 14px;
         font-size: 12px;
+    };
+    &.tiny {
+        padding: 6px 10px;
+        font-size: 10px;
+    };
+    &.light {
+        background-color: ${Colors.softWhite};
+        color: ${Colors.darkGrey};
     }
 `;
 

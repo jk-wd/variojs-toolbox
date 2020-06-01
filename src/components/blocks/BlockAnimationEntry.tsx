@@ -1,4 +1,4 @@
-import React, {useCallback} from "react";
+import React, {useCallback, createRef, useEffect} from "react";
 import {uuidv4} from "@helpers/guid";
 import styled from "styled-components";
 import DeleteLabel from "@components/typography/DeleteLabel";
@@ -26,11 +26,7 @@ const RemoveButtonHolder = styled.div`
 const BlockAnimationEntry = ({animationEntry}: IProps) => {
     const animationDataDispatch = useAnimationDataDispatch();
     const {animationData} = useAnimationDataState();
-    let animationDefinition;
-    if(animationEntry.animationConnection && animationEntry.animationConnection.animationDefinitionId) {
-        animationDefinition = getAnimationDefinitionById(animationData, animationEntry.animationConnection.animationDefinitionId);
-    }
-    
+
     const navigationDispatch = useNavigationDispatch();
     const placeAddAnimation = useCallback(() => {
         if(!animationData) {
@@ -67,7 +63,7 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
                 }
             }><CtaMain className="small">Add new animation definition</CtaMain></Button>
         )
-    }, [animationData]);
+    }, [animationData, animationEntry]);
     const placeConnectAnimation = useCallback(() => {
         if(!animationData || !animationData.animationDefinitions) {
             return
@@ -76,6 +72,11 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
             <>
                 <select onChange={
                     (event:any) => {
+                        console.log({
+                            type: AnimationDataActions.connectAnimationDefinitionToEntry,
+                            definitionId: event.target.value,
+                            animationEntryId: animationEntry.id,
+                        });
                         animationDataDispatch({
                             type: AnimationDataActions.connectAnimationDefinitionToEntry,
                             definitionId: event.target.value,
@@ -98,12 +99,9 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
                 </select><br/>
             </>
         )
-    }, [animationData]);
-    const placeAnimation = useCallback((animationConnection:IAnimationConnection, animationDefinition:IAnimationDefinition, privateConneciton:boolean = false) => {
+    }, [animationData, animationEntry]);
+    const placeAnimation = useCallback((animationConnection:IAnimationConnection, animationDefinition:IAnimationDefinition) => {
         let title = (animationDefinition && animationDefinition.name)? animationDefinition.name: (animationDefinition && animationDefinition.id)? animationDefinition.id : '';
-        if(privateConneciton) {
-            title = 'Go to animation definition'
-        }
        return (
         <BlockLine key={animationConnection.animationDefinitionId}>
         <Button onClick={() => {
@@ -127,7 +125,6 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
         }}>
             {title}
         </Button>
-        {(!privateConneciton)?
         <>
             <RemoveButtonHolder>
                 <Button onClick={() => {
@@ -169,12 +166,11 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
                     }
                 );
             }} />
-        </>:null
-        }
+        </>
         
     </BlockLine>
        )
-    }, [])
+    }, [animationData, animationEntry])
     const placeAnimations = useCallback(() => {
         const animationConnections = animationEntry.animationConnections;
         if(!animationConnections){
@@ -189,11 +185,11 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
             }
             return placeAnimation(animationConnection, animationDefinition);
         })
-    }, [animationEntry]);
+    }, [animationData, animationEntry]);
     return (
     <Block>
         <BlockSection>
-           <FormInputString  label="id" defaultValue={(animationEntry.name)?animationEntry.name:animationEntry.id} onChange={(event: any) => {
+           <FormInputString label="id" defaultValue={(animationEntry.name)?animationEntry.name:animationEntry.id} onChange={(event: any) => {
                         animationDataDispatch(
                             {
                                 type: AnimationDataActions.addEditAnimationEntry,
@@ -203,14 +199,8 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
                                 }
                             }
                         );
-            }} /> 
-        </BlockSection>
-        <BlockSection>
-            {
-                (animationDefinition)? 
-                    placeAnimation(animationEntry.animationConnection, animationDefinition, true)
-                : null
-            }
+            }} /> <br/>
+            {animationEntry.domReference}
         </BlockSection>
         <BlockSection>
             <BlockHeading>Connected animation definitions</BlockHeading>

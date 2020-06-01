@@ -1,10 +1,14 @@
 import React from "react";
 import styled from "styled-components";
-import {getAnimationEntryById} from "variojs";
+import {getAnimationEntryById, IBreakpoint, getParallaxTimelineById, getTimelineById} from "variojs";
+import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
+import {Sections} from "@interfaces/navigation";
 import { Colors } from '@interfaces/colors';
-import {useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
+import {useAnimationDataState, useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
 import TimelineSelect from '@components/timeline/TimelineSelect';
 import TimelineAnimationEntry from '@components/timeline/TimelineAnimationEntry';
+import Button from '@components/Button';
+import CtaMain from '@components/cta/CtaMain';
 
 const TimelineEl = styled.div`
   width: 100%;
@@ -43,30 +47,64 @@ const TimelineBreakpointTitle = styled.span`
     width: 100%;
     display: block;
     font-size: 14px;
+    border-bottom: 1px solid ${Colors.midGrey};
     font-weight: bold;
     text-decoration: underline;
     height: 40px;
     padding: 10px 0 6px 14px;
     background-color: ${Colors.darkGrey};
     color: ${Colors.white};
+    button {
+        margin-left: 10px;
+        margin-right: 10px;
+        position: relative;
+        top: -2px;
+        float: right;
+    }
 `;
 
 const Timeline = () => {
     const {animationData, activeTimeline} = useAnimationDataState();
-    
-
+    const dispatchNavigation = useNavigationDispatch();
+    const dispatchAnimationData = useAnimationDataDispatch();
+    let timeline:any;
+    if(activeTimeline) {
+        timeline = (activeTimeline.parallax)? getParallaxTimelineById(animationData, activeTimeline.timelineId): getTimelineById(animationData, activeTimeline.timelineId);
+    }
+    let breakpoints = (animationData.breakpoints)?animationData.breakpoints : [];
+    breakpoints = [...breakpoints, {
+        id: 'default',
+        order: 0,
+        definition: ''
+    }];
     return (
         <TimelineEl>
              <TimelineEntries>
                 {
-                    (activeTimeline && activeTimeline.timeline && activeTimeline.timeline.animationEntries)?
-                    Object.keys(activeTimeline.timeline.animationEntries).map((breakpoint: string) => {
+                    (timeline && timeline.animationEntries)?
+                    breakpoints.map((breakpoint: IBreakpoint, index:number) => {
+                        if(!breakpoint) {
+                            return;
+                        }
                         return (
-                            <div>
-                                <TimelineBreakpointTitle>Breakpoint: {breakpoint}</TimelineBreakpointTitle>
+                            <div key={breakpoint.id +''+ index}>
+                                <TimelineBreakpointTitle>
+                                    Breakpoint: {breakpoint.id}
+                                    <Button onClick={() => {
+                                        dispatchAnimationData({
+                                            type: AnimationDataActions.setSelectedBreakpoint,
+                                            breakpointId: breakpoint.id
+                                        });
+                                        dispatchNavigation({
+                                            type: NavigationActions.setActiveSection,
+                                            section: Sections.ADD_ANIMATION_ENTRY
+                                        });
+                                    }}><CtaMain className='light tiny'>Add animation entry</CtaMain></Button>
+                                </TimelineBreakpointTitle>
                                 {
-                                    (activeTimeline.timeline && activeTimeline.timeline.animationEntries)?
-                                    activeTimeline.timeline.animationEntries[breakpoint].map((entryId: string) => {
+                                    (timeline && timeline.animationEntries && timeline.animationEntries[breakpoint.id])?
+                                    timeline.animationEntries[breakpoint.id].map((entryId: string) => {
+                                        
                                         const entry = getAnimationEntryById(animationData, entryId);
                                         if(!entry) {
                                             return;

@@ -1,4 +1,4 @@
-import React, {ChangeEvent} from "react";
+import React, {ChangeEvent, createRef, useEffect} from "react";
 import styled from "styled-components";
 import FormElementLabel from "@components/form-elements/FormElementLabel";
 import {Colors} from "@interfaces/colors";
@@ -20,6 +20,13 @@ const FormInputNumberEl = styled.div`
 `;
 
 const FormInputNumber = ({defaultValue, label = "", onChange= () => {}}: IProps) => {
+    const inputRef = createRef<HTMLInputElement>();
+    
+    useEffect(() => {
+        if(inputRef.current) {
+            inputRef.current.value = (defaultValue || defaultValue === 0)?''+defaultValue:'';
+        }
+    }, [defaultValue]);
     return (
         <FormInputNumberEl>
             {
@@ -27,7 +34,7 @@ const FormInputNumber = ({defaultValue, label = "", onChange= () => {}}: IProps)
                 <><FormElementLabel>{label}</FormElementLabel><br /></>
                 : null
             }
-            <input type='number' onChange={onChange} defaultValue={defaultValue} />
+            <input type='number' ref={inputRef} onChange={onChange} defaultValue={defaultValue} />
         </FormInputNumberEl>
     )
 }
