@@ -57,9 +57,16 @@ const SectionAddAnimationEntry = () => {
                         breakpoint,
                         parallax: activeTimeline.parallax,
                     });
+
+                    animationDataDispatch({
+                        type: AnimationDataActions.setActiveAnimationEntry,
+                        activeAnimationEntry: {
+                            id: animationEntryId
+                        }
+                    });
                     navigationDispatch({
                         type: NavigationActions.setActiveSection,
-                        section: Sections.ANIMATION_ENTRIES,
+                        section: Sections.ANIMATION_ENTRY,
                     });
                 }
                 

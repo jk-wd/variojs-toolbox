@@ -81,7 +81,7 @@ const Timeline = () => {
         <TimelineEl>
              <TimelineEntries>
                 {
-                    (timeline && timeline.animationEntries)?
+                    (breakpoints)?
                     breakpoints.map((breakpoint: IBreakpoint, index:number) => {
                         if(!breakpoint) {
                             return;

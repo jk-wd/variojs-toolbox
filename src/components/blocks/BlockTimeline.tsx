@@ -64,9 +64,6 @@ const BlockTimeline = ({timeline, parallax}: IProps) => {
             definition: ''
         }]
 
-        if(!animationEntries){
-            return;
-        }
         return  breakpoints.map((breakpoint: IBreakpoint) => {
             if(!breakpoint) {
                 return
@@ -77,7 +74,7 @@ const BlockTimeline = ({timeline, parallax}: IProps) => {
                     <br />
                     {placeConnectTimeline(breakpoint.id)}
                     {
-                        (animationEntries[breakpoint.id])?
+                        (animationEntries && animationEntries[breakpoint.id])?
                         animationEntries[breakpoint.id].map((animationEntryId: string) => {
                             console.log("hoi hoi");
                             const animationEntry = getAnimationEntryById(animationData, animationEntryId);
