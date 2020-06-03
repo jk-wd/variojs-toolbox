@@ -21,6 +21,9 @@ const SectionAnimationDefinitions = () => {
             {
                 (animationData && animationData.animationDefinitions)?
                     animationData.animationDefinitions.map((animationDefinition: IAnimationDefinition) => {
+                        if(!animationDefinition.name) {
+                            return null
+                        }
                         return(
                             <BlockLine key={animationDefinition.id}>
                                 <Button onClick={() => {

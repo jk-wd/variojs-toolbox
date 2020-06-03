@@ -48,8 +48,7 @@ const TimelineBreakpointTitle = styled.span`
     display: block;
     font-size: 14px;
     border-bottom: 1px solid ${Colors.midGrey};
-    font-weight: bold;
-    text-decoration: underline;
+    font-family: "ProximaNova-Bold";
     height: 40px;
     padding: 10px 0 6px 14px;
     background-color: ${Colors.darkGrey};

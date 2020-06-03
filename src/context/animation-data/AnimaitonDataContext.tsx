@@ -19,6 +19,7 @@ import {
   setActiveParallaxTimeline,
   addEditAnimationEntryConnection,
   deleteAnimationDefinition,
+  deleteAnimationEntry,
 } from '@helpers/animationData';
 import { cloneObject } from '@helpers/general';
 import {IActiveTimeline} from '@interfaces/timeline';
@@ -49,6 +50,7 @@ enum AnimationDataActions {
     removeNumberVariable = 'removeNumberVariable',
     editNumberVariable = 'editNumberVariable',
     deleteAnimationDefinition = 'deleteAnimationDefinition',
+    deleteAnimationEntry = 'deleteAnimationEntry',
     addBreakpoint = 'addBreakpoint',
     editBreakpoint = 'editBreakpoint',
     removeBreakpoint = 'removeBreakpoint',
@@ -171,6 +173,11 @@ type ActionDeleteAnimationDefinition = {
   definitionId: string
 }
 
+type ActionDeleteAnimationEntry = {
+  type: AnimationDataActions.deleteAnimationEntry,
+  animationEntryId: string
+}
+
 type ActionRemoveBreakpoint = {
   type: AnimationDataActions.removeBreakpoint,
   id: string
@@ -203,6 +210,7 @@ type Dispatch = (action:
   ActionConnectAnimationDefinitionToEntry |
   ActionEditTimeline |
   ActionDeleteAnimationDefinition |
+  ActionDeleteAnimationEntry |
   ActionRemoveBreakpoint |
   ActionEditBreakpoint |
   ActionAddBreakpoint |
@@ -330,7 +338,15 @@ function animationDataReducer(state: AnimationDataState,
         }
       }
       case AnimationDataActions.deleteAnimationDefinition: {
-        const animationData = cloneObject(deleteAnimationDefinition(state, action.definitionId));
+        const animationData = cloneObject(deleteAnimationDefinition(state.animationData, action.definitionId));
+        devSocket.setAnimationData(animationData);
+        return {
+            ...state,
+            animationData
+        }
+      }
+      case AnimationDataActions.deleteAnimationEntry: {
+        const animationData = cloneObject(deleteAnimationEntry(state.animationData, action.animationEntryId));
         devSocket.setAnimationData(animationData);
         return {
             ...state,

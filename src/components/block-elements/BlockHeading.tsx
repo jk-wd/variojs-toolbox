@@ -7,7 +7,7 @@ interface IProps {
 
 const BlockHeadingEl = styled.span`
     display:block;
-    font-weight: bold;
+    font-family: "ProximaNova-Bold";
     font-size:14px;
     line-height:1.6;
 `;

@@ -12,7 +12,7 @@ interface IProps {
     propKey: string
 }
 
-const offsetLeft = 14;
+const offsetLeft = 22;
 
 const TimelineAnimationPropEl = styled.div`
     width: 100%;

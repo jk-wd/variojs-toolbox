@@ -4,7 +4,7 @@ import {Colors} from "@interfaces/colors";
 const DeleteLabel = styled.span`
     display: block;
     color: ${Colors.happyPink};
-    font-weight: bold;
+    font-family: "ProximaNova-Bold";
 `;
 
 export default DeleteLabel;
