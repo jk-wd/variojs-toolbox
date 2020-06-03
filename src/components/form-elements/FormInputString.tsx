@@ -20,7 +20,7 @@ const FormInputStringEl = styled.div`
     }
 `;
 
-const FormInputString = ({defaultValue = "", label = "", disabled, onChange= () => {}}: IProps, ref:any) => {
+const FormInputString = ({defaultValue = "", label = "", disabled, onChange= () => {}}: IProps) => {
     const inputRef = createRef<HTMLInputElement>();
     
     useEffect(() => {

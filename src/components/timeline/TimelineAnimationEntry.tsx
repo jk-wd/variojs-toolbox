@@ -13,7 +13,7 @@ import { IAnimationConnection } from 'variojs';
 interface IProps {
     animationEntry: IAnimationEntry
 }
-const offsetLeft = 14;
+const offsetLeft = 22;
 const TimelineAnimationEntryEl = styled.div`
     position: relative;
 `;
@@ -22,7 +22,8 @@ const Title = styled.span`
     width: ${300}px;
     padding-top: 6px;
     font-size: 15px;
-    font-weight: bold;
+    font-family: "ProximaNova-Bold";
+    text-decoration: underline;
     background-color: ${Colors.midGrey};
     color: ${Colors.white};
     padding-left: ${offsetLeft}px;

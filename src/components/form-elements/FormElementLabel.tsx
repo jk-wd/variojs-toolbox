@@ -8,7 +8,7 @@ interface IProps {
 
 const FormElementLabelEl = styled.label`
     font-size: 12px;
-    font-weight: bold;
+    font-family: "ProximaNova-Bold";
     line-height:2;
 `;
 

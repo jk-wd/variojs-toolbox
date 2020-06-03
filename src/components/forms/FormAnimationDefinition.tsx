@@ -8,6 +8,8 @@ import FormInputString from "@components/form-elements/FormInputString";
 import {FrameType} from "@interfaces/frames";
 import {useAnimationDataState, useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
 import FormLabel from "@components/form-elements/FormLabel";
+import Button from '@components/Button';
+import CtaMain from '@components/cta/CtaMain';
 
 interface Props {
     animationDefinitionId?: string;
@@ -26,6 +28,7 @@ const FormAnimationDefinition = ({animationDefinitionId} : Props) => {
     const {activeAnimationDefinition, animationData} = useAnimationDataState();
     const targetAnimationDefinitionId = (animationDefinitionId)? animationDefinitionId: activeAnimationDefinition;
     const animationDefinition = getAnimationDefinitionById(animationData, targetAnimationDefinitionId)
+    const [name, setName] = useState((animationDefinition)?animationDefinition.name:undefined);
     const animationDataDispatch = useAnimationDataDispatch();
     if(!animationDefinition) {
         return null;
@@ -34,18 +37,22 @@ const FormAnimationDefinition = ({animationDefinitionId} : Props) => {
         <div>
             <TopSection>
                 <FormLabel>Animation definition {(animationDefinition.name)?`(${animationDefinition.name})`: ''}</FormLabel>
-                <FormInputString label="Animation definition name" defaultValue={animationDefinition.name} onChange={(event: any) => {
+                <FormInputString label="Animation definition name" defaultValue={name} onChange={(event: any) => {
+                    setName(event.target.value);
+                }} />
+                <br />
+                <Button onClick={() => {
                     animationDataDispatch(
                         {
                             type: AnimationDataActions.addEditAnimationDefinition,
                             animationDefinition: {
                                 ...animationDefinition,
-                                name: event.target.value
+                                name
                             }
                         }
                     );
-                }} />
-                <br />
+                    setName(undefined);
+                }}><CtaMain>Update name</CtaMain></Button>
             </TopSection>
             
             {Object.keys(PropTypes).map((key:string) => {

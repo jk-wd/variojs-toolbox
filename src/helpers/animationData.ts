@@ -173,18 +173,38 @@ export const removeBreakpoint = ({animationData}: AnimationDataState, id:string)
     return animationDataResult
 }
 
-export const deleteAnimationDefinition = ({animationData}: AnimationDataState, definitionId:string) => {
+export const deleteAnimationDefinition = (animationData: IAnimationData, definitionId:string) => {
     animationData = JSON.parse(JSON.stringify(animationData));
     const animationDefinitions = (animationData.animationDefinitions)?animationData.animationDefinitions: [];
     return {
         ...animationData,
-        animations: animationDefinitions.reduce((result: IAnimationDefinition[], animation:IAnimationDefinition) => {
+        animationDefinitions: animationDefinitions.reduce((result: IAnimationDefinition[], animation:IAnimationDefinition) => {
             if(animation.id != definitionId){
                 result.push(animation);
             }
             return result;
         }, [])
     }
+}
+export const deleteAnimationEntry = (animationData: IAnimationData, animationEntryId:string) => {
+    animationData = JSON.parse(JSON.stringify(animationData));
+    const animationEntries = (animationData.animationEntries)?animationData.animationEntries: [];
+    let definitionId;
+    const animationDataResult:IAnimationData = {
+        ...animationData,
+        animationEntries: animationEntries.reduce((result: IAnimationEntry[], animation:IAnimationEntry) => {
+            if(animation.id != animationEntryId){
+                result.push(animation);
+            } else {
+                definitionId = animation.animationConnection.animationDefinitionId
+            }
+            return result;
+        }, [])
+    }
+    if(definitionId) {
+        return deleteAnimationDefinition(animationDataResult, definitionId);
+    }
+    return animationDataResult;
 }
 
 export const connectAnimationEntryToTimeline = ({animationData}: AnimationDataState, timelineId:string, entryId:string, breakpoint:string, parallax:boolean = false) => {
@@ -236,6 +256,51 @@ export const disconnectAnimationEntryFromTimeline = ({animationData}: AnimationD
     }
 }
 
+export const makeAnimationDefinitionGlobal = (animationData: IAnimationData, animationDefinition:IAnimationDefinition): IAnimationData => {
+    animationData = JSON.parse(JSON.stringify(animationData));
+    const entries = (animationData.animationEntries)?animationData.animationEntries:[];
+    let newAnimationDefinition;
+    const animationDataResult:IAnimationData = {
+        ...animationData,
+        animationEntries: entries.map((animationEntry: IAnimationEntry) => {
+            if(
+                animationEntry.animationConnection 
+                && animationEntry.animationConnection.animationDefinitionId === animationDefinition.id
+                && animationDefinition.name
+            ){
+                newAnimationDefinition = {
+                    id: uuidv4(),
+                    props: {},
+                };
+
+                return {
+                    ...animationEntry,
+                    animationConnection: {
+                        animationDefinitionId: newAnimationDefinition.id
+                    },
+                    animationConnections: [...animationEntry.animationConnections || [], {
+                        animationDefinitionId: animationDefinition.id
+                    }].reduce((result: IAnimationConnection[], animationConnection:IAnimationConnection) => {
+                        if(!result.find((animationConnectionFind:IAnimationConnection) => (animationConnectionFind.animationDefinitionId === animationConnection.animationDefinitionId))) {
+                            result.push(animationConnection);
+                        }
+                        return result
+                    }, [])
+                }
+            } else {
+                return animationEntry
+            }
+        })
+    }
+    if(newAnimationDefinition) {
+        const newAnimationData = addEditAnimationDefinition(animationDataResult, newAnimationDefinition)
+        if(newAnimationData) {
+           return newAnimationData;
+        }
+        return animationDataResult;
+    }
+    return animationDataResult;
+}
 export const addEditAnimationDefinition = (animationData: IAnimationData, animationDefinition:IAnimationDefinition) => {
     if(!animationData || !animationDefinition) {
         return;
@@ -259,6 +324,13 @@ export const addEditAnimationDefinition = (animationData: IAnimationData, animat
     });
     if(!added) {
         animationDefinitions.push(animationDefinitionResult);
+    } 
+
+    if(added && animationDefinitionResult.name) {
+        return makeAnimationDefinitionGlobal({
+            ...animationData,
+            animationDefinitions,
+        }, animationDefinitionResult);
     }
 
     return {

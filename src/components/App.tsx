@@ -32,7 +32,7 @@ const MenuButton = styled.span`
   display: block;
   font-size: 14px;
   color: ${Colors.white};
-  font-weight: bold;
+  font-family: "ProximaNova-Bold";
   text-decoration:underline;
 `;
 
@@ -54,7 +54,7 @@ const AppTopSection = styled.div`
       text-align: center;
       width: 100%;
       font-size: 12px;
-      font-weight: bold;
+      font-family: "ProximaNova-Bold";
       padding-right: 10px;
       color: ${Colors.white};
   }

@@ -27,7 +27,7 @@ const GlobalStyle = createGlobalStyle`
     }
     * {
         box-sizing: border-box;
-        font-family: Arial, Helvetica, sans-serif
+        font-family: "ProximaNova-Regular";
     }
 `
 

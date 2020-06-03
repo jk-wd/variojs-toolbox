@@ -1,14 +1,22 @@
 import React from "react";
-import BlockAnimationEntry from "@components/blocks/BlockAnimationEntry";
+import styled from "styled-components";
+import DeleteLabel from "@components/typography/DeleteLabel";
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
+import {useAnimationDataDispatch, AnimationDataActions, useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
+import BlockLine from "@components/block-elements/BlockLine";
 import {Sections} from "@interfaces/navigation";
 import {IAnimationEntry, getParallaxTimelineById, getTimelineById} from "variojs";
 import Button from "@components/Button";
 import CtaMain from "@components/cta/CtaMain";
-import { useAnimationDataState } from '@context/animation-data/AnimaitonDataContext';
+
+const RemoveButtonHolder = styled.div`
+    float: right;
+`;
 
 const SectionAnimationEntries = () => {
     const navigationDispatch = useNavigationDispatch();
+    const animationDataDispatch = useAnimationDataDispatch();
+
     const {animationData, activeTimeline} = useAnimationDataState();
     let timeline:any;
     if(activeTimeline) {
@@ -36,7 +44,38 @@ const SectionAnimationEntries = () => {
                         }
                     }
                     
-                    return <BlockAnimationEntry key={animationEntry.id} animationEntry={animationEntry}/>
+                    return(
+                        <BlockLine key={animationEntry.id}>
+                            <Button onClick={() => {
+                                if(!animationEntry) {
+                                    return;
+                                } 
+                                animationDataDispatch({
+                                    type: AnimationDataActions.setActiveAnimationEntry,
+                                    activeAnimationEntry: {
+                                        id: animationEntry.id
+                                    },
+                                });
+                                navigationDispatch({
+                                    type: NavigationActions.setActiveSection,
+                                    section: Sections.ANIMATION_DEFINITION,
+                                });
+                            }}>
+                                {(animationEntry && animationEntry.name)? animationEntry.name: animationEntry.id}
+                            </Button>
+                            <RemoveButtonHolder>
+                                <Button onClick={() => {
+                                    if(!animationEntry) {
+                                        return;
+                                    }
+                                    animationDataDispatch({
+                                        type: AnimationDataActions.deleteAnimationEntry,
+                                        animationEntryId: animationEntry.id,
+                                    });
+                                }}><DeleteLabel>Delete</DeleteLabel></Button>
+                            </RemoveButtonHolder>
+                        </BlockLine>
+                    )
                 }):null
             }
         </div>
