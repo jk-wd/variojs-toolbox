@@ -65,13 +65,14 @@ const FormAnimationDefinition = ({animationDefinitionId} : Props) => {
                     key === 'height' || 
                     key === 'posY' || 
                     key === 'display' || 
+                    key === 'visibility' || 
                     key === 'posX'
                 ){
                     console.log("key", key);
                     return (
                     <div key={animationDefinitionId +''+ key}>
                         <FormLabel className="small">{key}</FormLabel>
-                        <FormFrameNumberArray frameType={(key === "display")?FrameType.StringFrame: FrameType.NumberFrame} frames={props[key]} onChange={(frames) => {
+                        <FormFrameNumberArray frameType={(key === "display" || key === "visibility" )?FrameType.StringFrame: FrameType.NumberFrame} frames={props[key]} onChange={(frames) => {
                             const newProps = {
                                 ...animationDefinition.props,
                                 [key]: frames
