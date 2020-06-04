@@ -10,6 +10,7 @@ interface IProps {
 
 const CtaMainEl = styled.span`
     display: block;
+    font-family: "ProximaNova-Regular";
     background-color: ${Colors.darkGrey};
     padding: 10px 20px;
     font-size: 14px;
@@ -19,12 +20,19 @@ const CtaMainEl = styled.span`
         font-size: 12px;
     };
     &.tiny {
+        font-family: "ProximaNova-Bold";
         padding: 6px 10px;
         font-size: 10px;
     };
     &.light {
         background-color: ${Colors.softWhite};
         color: ${Colors.darkGrey};
+    }
+    &.green {
+        background-color: ${Colors.freshGreen};
+    }
+    &.orange {
+        background-color: ${Colors.sunnyOrange};
     }
 `;
 

@@ -9,7 +9,7 @@ const FormFieldsetEl = styled.fieldset`
     display:block;
     margin: 0;
     padding: 0;
-    margin-bottom:30px;
+    margin-bottom:10px;
     border: none;
 `;
 

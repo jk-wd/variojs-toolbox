@@ -22,52 +22,11 @@ const SectionBreakpoints = () => {
 
     return (
     <div>
-        <br/><br/>
-        <form onSubmit={(event:any) => {
-            event.preventDefault();
-            if(breakPoint.id && breakPoint.definition) {
-                dispatchAnimationData({
-                    type: AnimationDataActions.addBreakpoint,
-                    id: breakPoint.id,
-                    definition: breakPoint.definition,
-                    order: breakPoint.order,
-                });
-            }
-        }}>
-            <FormHeading>
-                Add breakpoint
-            </FormHeading>
-            <FormFieldset>
-                <FormInputString onChange={(event:any) => {
-                    setBreakpoint(
-                        {
-                            ...breakPoint,
-                            id: event.target.value,
-                        }
-                    );
-                }} label="Identifier"/>
-                <FormInputString onChange={(event:any) => {
-                    setBreakpoint(
-                        {
-                            ...breakPoint,
-                            definition: event.target.value,
-                        }
-                    );
-                }} label="Definition"/>
-                <FormInputNumber onChange={(event:any) => {
-                    setBreakpoint(
-                        {
-                            ...breakPoint,
-                            order: parseInt(event.target.value),
-                        }
-                    );
-                }} label="Order index"/>
-            </FormFieldset>
-            <FormFieldset>
-                <button type="submit"><CtaMain>Add breakpoint</CtaMain></button>
-            </FormFieldset>
-        </form>
-        <br/>
+        <FormHeading className="large">Breakpoints</FormHeading>
+        <div style={{
+                paddingTop: '4px',
+                marginBottom: '26px'
+            }}>
         {
             (animationData.breakpoints)?
             animationData.breakpoints.sort(sortBreakpoints).map((breakpoint:IBreakpoint) => {
@@ -115,7 +74,52 @@ const SectionBreakpoints = () => {
             })
             :null
         }
-
+              
+        </div>
+        <form onSubmit={(event:any) => {
+                event.preventDefault();
+                if(breakPoint.id && breakPoint.definition) {
+                    dispatchAnimationData({
+                        type: AnimationDataActions.addBreakpoint,
+                        id: breakPoint.id,
+                        definition: breakPoint.definition,
+                        order: breakPoint.order,
+                    });
+                }
+            }}>
+                <FormHeading>
+                    Add breakpoint
+                </FormHeading>
+                <FormFieldset>
+                    <FormInputString onChange={(event:any) => {
+                        setBreakpoint(
+                            {
+                                ...breakPoint,
+                                id: event.target.value,
+                            }
+                        );
+                    }} label="Identifier"/>
+                    <FormInputString onChange={(event:any) => {
+                        setBreakpoint(
+                            {
+                                ...breakPoint,
+                                definition: event.target.value,
+                            }
+                        );
+                    }} label="Definition"/>
+                    <FormInputNumber onChange={(event:any) => {
+                        setBreakpoint(
+                            {
+                                ...breakPoint,
+                                order: parseInt(event.target.value),
+                            }
+                        );
+                    }} label="Order index"/>
+                </FormFieldset>
+                <FormFieldset>
+                    <button type="submit" style={{marginTop: '10px'}}><CtaMain>Add breakpoint</CtaMain></button>
+                </FormFieldset>
+            </form>
     </div>
     )
 }

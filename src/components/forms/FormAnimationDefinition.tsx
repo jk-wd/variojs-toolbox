@@ -8,14 +8,22 @@ import FormInputString from "@components/form-elements/FormInputString";
 import {FrameType} from "@interfaces/frames";
 import {useAnimationDataState, useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
 import FormLabel from "@components/form-elements/FormLabel";
+import FormHeading from "@components/form-elements/FormHeading";
 import Button from '@components/Button';
 import CtaMain from '@components/cta/CtaMain';
+import { Colors } from '@interfaces/colors';
 
 interface Props {
     animationDefinitionId?: string;
+    propsOfEntry?: boolean;
 }
 
-const TopSection = styled.fieldset`
+const Frames = styled.div`
+    border-bottom: 2px solid ${Colors.darkGrey};
+    padding-bottom: 10px;
+`
+
+const BottomSection = styled.fieldset`
     display:block;
     margin-bottom:30px;
     padding: 0;
@@ -23,8 +31,9 @@ const TopSection = styled.fieldset`
     border: none;
 `;
 
-const FormAnimationDefinition = ({animationDefinitionId} : Props) => {
+const FormAnimationDefinition = ({animationDefinitionId, propsOfEntry = false} : Props) => {
     const [activeProps, setActiveProps] = useState<string[]>([]);
+    const selectPropRef = React.createRef<HTMLSelectElement>();
     const {activeAnimationDefinition, animationData} = useAnimationDataState();
     const targetAnimationDefinitionId = (animationDefinitionId)? animationDefinitionId: activeAnimationDefinition;
     const animationDefinition = getAnimationDefinitionById(animationData, targetAnimationDefinitionId)
@@ -35,25 +44,11 @@ const FormAnimationDefinition = ({animationDefinitionId} : Props) => {
     }
     return (
         <div>
-            <TopSection>
-                <FormLabel>Animation definition {(animationDefinition.name)?`(${animationDefinition.name})`: ''}</FormLabel>
-                <FormInputString label="Animation definition name" defaultValue={name} onChange={(event: any) => {
-                    setName(event.target.value);
-                }} />
-                <br />
-                <Button onClick={() => {
-                    animationDataDispatch(
-                        {
-                            type: AnimationDataActions.addEditAnimationDefinition,
-                            animationDefinition: {
-                                ...animationDefinition,
-                                name
-                            }
-                        }
-                    );
-                    setName(undefined);
-                }}><CtaMain>Update name</CtaMain></Button>
-            </TopSection>
+            {
+                (!propsOfEntry)?
+                <FormHeading subHeading={name} className="large">Animation definition</FormHeading>:null
+            }
+            
             
             {Object.keys(PropTypes).map((key:string) => {
                 
@@ -77,8 +72,8 @@ const FormAnimationDefinition = ({animationDefinitionId} : Props) => {
                 ){
                     console.log("key", key);
                     return (
-                    <div key={animationDefinitionId +''+ key}>
-                        <FormLabel className="small">{key}</FormLabel>
+                    <Frames key={animationDefinitionId +''+ key}>
+                        <FormLabel className="line">{key}</FormLabel>
                         <FormFrameNumberArray frameType={(key === "display" || key === "visibility" )?FrameType.StringFrame: FrameType.NumberFrame} frames={props[key]} onChange={(frames) => {
                             const newProps = {
                                 ...animationDefinition.props,
@@ -98,18 +93,19 @@ const FormAnimationDefinition = ({animationDefinitionId} : Props) => {
                             );
                         }}
                         />
-
-                    <br/>
-                    </div>)
+                    </Frames>)
                 }
                 return;
             })}
-            <div style={{marginTop: '10px'}}>
+            <div style={{marginTop: '10px', marginBottom: '40px'}}>
                 <FormFieldset>
-                    <FormLabel htmlFor="animationProperty">Add property</FormLabel><br />
-                    <select onChange={(event:any) => {
+                    <FormLabel className="small" htmlFor="animationProperty">Add property</FormLabel><br />
+                    <select ref={selectPropRef} onChange={(event:any) => {
                         const value = event.target.value;
                         setActiveProps([...activeProps, value]);
+                        if(selectPropRef.current) {
+                            selectPropRef.current.value = "";
+                        }
                     }} name="animationProperty" id="animationProperty">
                         <option value="">select a property</option>
                         {Object.keys(PropTypes).map((key:string) => {
@@ -124,7 +120,27 @@ const FormAnimationDefinition = ({animationDefinitionId} : Props) => {
                 </FormFieldset>
             </div>
            
-
+            <BottomSection>
+                <FormLabel>{(propsOfEntry)?'Create global definition': 'Definition name'}</FormLabel>
+                <FormInputString defaultValue={name} onChange={(event: any) => {
+                    setName(event.target.value);
+                }} />
+                <div style={{paddingTop: '8px'}}>
+                    <Button onClick={() => {
+                        animationDataDispatch(
+                            {
+                                type: AnimationDataActions.addEditAnimationDefinition,
+                                animationDefinition: {
+                                    ...animationDefinition,
+                                    name
+                                }
+                            }
+                        );
+                        setName(undefined);
+                    }}><CtaMain className="small orange">{(propsOfEntry)?'Create global definition': 'Set name'}</CtaMain></Button>
+                </div>
+               
+            </BottomSection>
         </div>
     )
 }

@@ -34,7 +34,7 @@ const TimelineSelect = () => {
     
     return (
         <TimelineSelectEl>
-             <select defaultValue='time' onChange={(event: any) => {
+             <select defaultValue='time' style={{marginRight:'10px'}} onChange={(event: any) => {
                        setUseParallaxTimelines((event.target.value==='parallax'));
                        animationDispatch({
                         type: AnimationDataActions.setActiveTimeline,

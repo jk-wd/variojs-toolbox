@@ -1,20 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {uuidv4} from "@helpers/guid"
 import {useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
+import FormHeading from "@components/form-elements/FormHeading";
+import FormFieldset from "@components/form-elements/FormFieldset";
+import FormLabel from "@components/form-elements/FormLabel";
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
 import {usePlaceholders} from "@context/placeholders/PlaceholdersContext";
 import { useAnimationDataState } from '@context/animation-data/AnimaitonDataContext';
 import {Sections} from "@interfaces/navigation";
 import FormInputString from "@components/form-elements/FormInputString";
 import CtaMain from '@components/cta/CtaMain';
-import { IAnimationEntry, IBreakpoint } from 'variojs';
+import { IAnimationEntry, IBreakpoint, ITimeline } from 'variojs';
 
 const SectionAddAnimationEntry = () => {
     const animationDataDispatch = useAnimationDataDispatch();
     const navigationDispatch = useNavigationDispatch();
     const [name, setName] = useState<string | undefined>();
     const {animationData, selectedBreakpoint, activeTimeline} = useAnimationDataState();
+    const timelineSelectRef = React.createRef<HTMLSelectElement>();
     const [breakpoint, setBreakpoint] = useState<string>(selectedBreakpoint || 'default');
+    const [timelineId, setTimelineId] = useState<string | undefined>((activeTimeline)?activeTimeline.timelineId:undefined);
     let breakpoints = (animationData.breakpoints)?animationData.breakpoints : [];
     breakpoints = [...breakpoints, {
         id: 'default',
@@ -24,10 +29,20 @@ const SectionAddAnimationEntry = () => {
     const placeholders = usePlaceholders();
     const selectRef = React.createRef<HTMLSelectElement>();
 
+    useEffect(() => {
+        if(activeTimeline && timelineSelectRef.current){
+            setTimelineId(activeTimeline.timelineId);
+            timelineSelectRef.current.value = activeTimeline.timelineId;
+        }
+    }, [activeTimeline]);
+
     return (
         <div>
             <form onSubmit={(event:any) => {
                 event.preventDefault();
+                if(!timelineId) {
+                    return
+                }
                 if(selectRef.current && selectRef.current.value) {
                     const animationDefinitionId = uuidv4();
                     animationDataDispatch({
@@ -52,7 +67,7 @@ const SectionAddAnimationEntry = () => {
 
                     animationDataDispatch({
                         type: AnimationDataActions.connectAnimationEntryToTimeline,
-                        timelineId: activeTimeline.timelineId,
+                        timelineId: timelineId,
                         animationEntryId,
                         breakpoint,
                         parallax: activeTimeline.parallax,
@@ -71,15 +86,29 @@ const SectionAddAnimationEntry = () => {
                 }
                 
             }}>
-                <h1 style={{marginTop: "20px", marginBottom: "10px"}}>Add animation entry</h1>
-                <fieldset>
-                    <label>Name</label><br />
+                <FormHeading className="large">Add animation entry</FormHeading>
+                <FormFieldset>
+                    <FormLabel className="small">Name</FormLabel><br />
                     <FormInputString onChange={(event) => {
                         setName(event.target.value);
                     }} />
-                </fieldset>
-                <fieldset>
-                    <label>Breakpoint</label><br />
+                </FormFieldset>
+                <FormFieldset>
+                    <FormLabel className="small">Timeline</FormLabel><br />
+                    <select ref={timelineSelectRef} defaultValue={timelineId} onChange={(event) => {
+                        setTimelineId(event.target.value);
+                    }}>
+                        {
+                            animationData.timelines.map((timeline: ITimeline) => {
+                                return (
+                                    <option key={timeline.id} value={timeline.id}>{timeline.id}</option>
+                                )
+                            })
+                        }
+                    </select>
+                </FormFieldset>
+                <FormFieldset>
+                    <FormLabel className="small">Breakpoint</FormLabel><br />
                     <select defaultValue={selectedBreakpoint || 'default'} onChange={(event) => {
                         setBreakpoint(event.target.value);
                     }}>
@@ -91,10 +120,10 @@ const SectionAddAnimationEntry = () => {
                             })
                         }
                     </select>
-                </fieldset>
-                <fieldset>
-                    <label htmlFor="animationEntryName">Animation entry</label><br />
-                    <select ref={selectRef} name="animationEntryName" id="animationEntryName">
+                </FormFieldset>
+                <FormFieldset>
+                    <FormLabel className="small">Dom reference</FormLabel><br />
+                    <select ref={selectRef}>
                         {
                             placeholders.reduce((result: React.ReactNode[], id:string, index: number) => {
                                 if(animationData && animationData.animationEntries && animationData.animationEntries.find((animationEntry: IAnimationEntry) => (animationEntry.id ===  id))) {
@@ -106,10 +135,10 @@ const SectionAddAnimationEntry = () => {
                             }, [])
                         }
                     </select>
-                </fieldset>
-                <fieldset>
+                </FormFieldset><br/>
+                <FormFieldset>
                     <button type="submit" ><CtaMain>Add Animation entry</CtaMain></button>
-                </fieldset>
+                </FormFieldset>
             </form>
         </div>
     )

@@ -12,7 +12,7 @@ import CtaMain from '@components/cta/CtaMain';
 
 const TimelineEl = styled.div`
   width: 100%;
-  height: 30vh;
+  height: 35vh;
   position: fixed;
   background-color: ${Colors.softWhite};
   bottom: 0;

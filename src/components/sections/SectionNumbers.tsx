@@ -19,44 +19,12 @@ const SectionNumbers = () => {
 
     return (
     <div>
-        <br/><br/>
-        <form onSubmit={(event:any) => {
-            event.preventDefault();
-            if(numberVariable.name && numberVariable.value) {
-                dispatchAnimationData({
-                    type: AnimationDataActions.addNumberVariable,
-                    name: numberVariable.name,
-                    value: parseInt(numberVariable.value, 10),
-                });
-            }
-        }}>
-            <FormHeading>
-                Add nummber varable
-            </FormHeading>
-            <FormFieldset>
-                <FormInputString onChange={(event:any) => {
-                    setNumberVariable(
-                        {
-                            ...numberVariable,
-                            name: event.target.value
-                        }
-                    );
-                }} label="Number varaible name"/>
-                <FormInputNumber onChange={(event:any) => {
-                    setNumberVariable(
-                        {
-                            ...numberVariable,
-                            value: event.target.value
-                        }
-                    );
-                }} label="Number varaible value"/>
-            </FormFieldset>
-            <FormFieldset>
-                <button type="submit"><CtaMain>Add variable</CtaMain></button>
-            </FormFieldset>
-        </form>
-        <br/>
-        {
+        <FormHeading className="large">Number variables</FormHeading>
+        <div style={{
+                paddingTop: '4px',
+                marginBottom: '26px'
+            }}>
+                 {
             (animationData.numbers)?
             Object.keys(animationData.numbers).reverse().map((numberKey:string) => {
                 const value = (animationData && animationData.numbers && animationData.numbers[numberKey])?animationData.numbers[numberKey]: 0;
@@ -92,7 +60,42 @@ const SectionNumbers = () => {
             })
             :null
         }
-
+        </div>
+        <form onSubmit={(event:any) => {
+            event.preventDefault();
+            if(numberVariable.name && numberVariable.value) {
+                dispatchAnimationData({
+                    type: AnimationDataActions.addNumberVariable,
+                    name: numberVariable.name,
+                    value: parseInt(numberVariable.value, 10),
+                });
+            }
+        }}>
+            <FormHeading>
+                Add nummber varable
+            </FormHeading>
+            <FormFieldset>
+                <FormInputString onChange={(event:any) => {
+                    setNumberVariable(
+                        {
+                            ...numberVariable,
+                            name: event.target.value
+                        }
+                    );
+                }} label="Number varaible name"/>
+                <FormInputNumber onChange={(event:any) => {
+                    setNumberVariable(
+                        {
+                            ...numberVariable,
+                            value: event.target.value
+                        }
+                    );
+                }} label="Number varaible value"/>
+            </FormFieldset>
+            <FormFieldset>
+                <button type="submit"><CtaMain>Add variable</CtaMain></button>
+            </FormFieldset>
+        </form>
     </div>
     )
 }

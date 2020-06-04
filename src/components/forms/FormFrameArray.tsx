@@ -71,7 +71,7 @@ const FormFrameNumberArray = ({frames:framesFromProps = [], frameType = FrameTyp
         }
         <Button onClick={() => {
                 setFrames([...frames, (frameType===FrameType.NumberFrame)?emptyFrameNumber():emptyFrameString()])
-            }}><CtaMain className="small">Add frame</CtaMain></Button>
+            }}><CtaMain className="small green">Add frame</CtaMain></Button>
     </div>
     )
 }

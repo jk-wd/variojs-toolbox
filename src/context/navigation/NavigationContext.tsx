@@ -1,5 +1,6 @@
 
 import React from 'react';
+import {Sections} from '@interfaces/navigation';
 
 interface Props {
     children: React.ReactNode
@@ -43,7 +44,7 @@ const NavigationStateContext = React.createContext<State | undefined>(undefined)
 
 function NavigationProvider({children}: Props) {
     const [state, dispatch] = React.useReducer(navigationReducer, {
-      sections: []
+      sections: [Sections.MENU]
     });
 
     return (

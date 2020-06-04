@@ -84,20 +84,35 @@ export const editTimeline = ({animationData}: AnimationDataState, timeline:ITime
     return animationDataResult
 }
 
-export const removeTimeline = ({animationData}: AnimationDataState, id:string, parallax:boolean = false) => {
+export const deleteTimeline = ({animationData}: AnimationDataState, id:string, parallax:boolean = false) => {
     animationData = JSON.parse(JSON.stringify(animationData));
     const timelinesIndex = (parallax)? 'parallaxTimelines': 'timelines';
 
     const timelines = (animationData[timelinesIndex])?animationData[timelinesIndex]:[];
+    let entries:string[] = [];
     let animationDataResult = {
         ...animationData,
         [timelinesIndex]: timelines.reduce((result: ITimelineBase[], timeline: ITimelineBase) => {
             if(timeline.id !== id) {
                 result.push(timeline);   
+            } else {
+                for(let breakpoint in Object.keys(timeline.animationEntries|| {})) {
+                    if(breakpoint && timeline.animationEntries && timeline.animationEntries[breakpoint]) {
+                        entries = [...entries, ...timeline.animationEntries[breakpoint]]
+                    }
+                    
+                }
             }
             return result;
         }, [])
     } || [];
+
+    if(entries.length > 0){
+        for(let entry in entries) {
+            animationDataResult = deleteAnimationEntry(animationDataResult, entry);
+        }
+    }
+
     return animationDataResult
 }
 

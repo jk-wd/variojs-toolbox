@@ -12,7 +12,7 @@ import {
   removeBreakpoint,
   addEditBreakpoint,
   addTimeline,
-  removeTimeline,
+  deleteTimeline,
   connectAnimationEntryToTimeline,
   disconnectAnimationEntryFromTimeline,
   editTimeline,
@@ -46,7 +46,7 @@ enum AnimationDataActions {
     setActiveAnimationDefinition = 'setActiveAnimationDefinition',
     addNumberVariable = 'addNumberVariable',
     addTimeline = 'addTimeline',
-    removeTimeline = 'removeTimeline',
+    deleteTimeline = 'deleteTimeline',
     removeNumberVariable = 'removeNumberVariable',
     editNumberVariable = 'editNumberVariable',
     deleteAnimationDefinition = 'deleteAnimationDefinition',
@@ -81,7 +81,8 @@ type ActionSetActiveAnimationDefinition = {
 
 type ActionEditTimeline = {
   type: AnimationDataActions.editTimeline
-  timeline: ITimeline
+  timeline: ITimeline,
+  parallax: boolean,
 }
 
 type ActionsetAnimationData = {
@@ -111,9 +112,9 @@ type ActionAddTimeline = {
   parallax: boolean,
 }
 
-type ActionRemoveTimeline = {
-  type: AnimationDataActions.removeTimeline,
-  id: string
+type ActionDeleteTimeline = {
+  type: AnimationDataActions.deleteTimeline,
+  id: string,
   parallax: boolean,
 }
 
@@ -202,7 +203,7 @@ type Dispatch = (action:
   ActionSetActiveAnimationEntry | 
   ActionSetActiveAnimationDefinition | 
   ActionAddTimeline | 
-  ActionRemoveTimeline | 
+  ActionDeleteTimeline | 
   ActionSetActiveParallaxTimeline | 
   ActionsetAnimationData |
   ActionAddEditAnimationDefinition |
@@ -292,8 +293,8 @@ function animationDataReducer(state: AnimationDataState,
             animationData
         }
       }
-      case AnimationDataActions.removeTimeline: {
-        const animationData = cloneObject(removeTimeline(state, action.id, action.parallax));
+      case AnimationDataActions.deleteTimeline: {
+        const animationData = cloneObject(deleteTimeline(state, action.id, action.parallax));
         devSocket.setAnimationData(animationData);
         return {
             ...state,
@@ -330,7 +331,6 @@ function animationDataReducer(state: AnimationDataState,
       }
       case AnimationDataActions.connectAnimationEntryToTimeline: {
         const animationData = cloneObject(connectAnimationEntryToTimeline(state, action.timelineId, action.animationEntryId, action.breakpoint, action.parallax));
-        console.log(animationData);
         devSocket.setAnimationData(animationData);
         return {
             ...state,

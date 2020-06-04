@@ -1,8 +1,7 @@
 import React from "react";
-import BlockAnimationEntry from "@components/blocks/BlockAnimationEntry";
+import FormAnimationEntry from "@components/forms/FormAnimationEntry";
 import {getAnimationEntryById} from "variojs";
 import { useAnimationDataState } from '@context/animation-data/AnimaitonDataContext';
-import FormLabel from '@components/form-elements/FormLabel';
 import FormAnimationDefinition from '@components/forms/FormAnimationDefinition';
 
 const SectionAnimationEntry = () => {
@@ -17,11 +16,10 @@ const SectionAnimationEntry = () => {
     
     return (
     <div>
-        <FormLabel>Animation entry {(animationEntry.name)?`(${animationEntry.name})`: ''}</FormLabel>
-        <BlockAnimationEntry animationEntry={animationEntry}/>
+        <FormAnimationEntry animationEntry={animationEntry}/>
         {
             (animationEntry.animationConnection)?
-            <FormAnimationDefinition animationDefinitionId={animationEntry.animationConnection.animationDefinitionId} />
+            <FormAnimationDefinition propsOfEntry={true} animationDefinitionId={animationEntry.animationConnection.animationDefinitionId} />
             :null
         }
         

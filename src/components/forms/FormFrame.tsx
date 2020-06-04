@@ -30,7 +30,7 @@ const FormFrameNumber = ({onChange = () => {}, frameType=FrameType.NumberFrame, 
             <FormLine>
                 <FormLineSection>
                     <FormInputNumber 
-                        label="offsetPixels"
+                        label="px"
                         onChange={(event: any) => {
                             const value = parseInt(event.target.value);
                             if(value || value === 0) {
@@ -41,18 +41,21 @@ const FormFrameNumber = ({onChange = () => {}, frameType=FrameType.NumberFrame, 
                             }
                         }}
                         defaultValue={frame.offsetPixels} />
-                        <FormInputNumber 
-                        label="milliseconds"
-                        onChange={(event: any) => {
-                            const value = parseInt(event.target.value);
-                            if(value || value === 0) {
-                                setFrame({
-                                    ...frame,
-                                    ms: value
-                                });
-                            }
-                        }}
-                        defaultValue={frame.ms} /><br/>
+                       
+                </FormLineSection>
+                <FormLineSection>
+                    <FormInputNumber 
+                            label="ms"
+                            onChange={(event: any) => {
+                                const value = parseInt(event.target.value);
+                                if(value || value === 0) {
+                                    setFrame({
+                                        ...frame,
+                                        ms: value
+                                    });
+                                }
+                            }}
+                            defaultValue={frame.ms} />
                 </FormLineSection>
                 <FormLineSection>
                     {
@@ -117,15 +120,18 @@ const FormFrameNumber = ({onChange = () => {}, frameType=FrameType.NumberFrame, 
                 }
                 
                 <FormLineSection>
-                    <Button onClick={
-                        () => {
-                            onDelete(frame)
-                        }
-                    }>
-                        <div style={{marginTop: "20px"}}>
-                            <DeleteLabel>Delete frame</DeleteLabel>
-                        </div>
-                    </Button>
+                    <div style={{'float':'right'}}>
+                        <Button onClick={
+                            () => {
+                                onDelete(frame)
+                            }
+                        }>
+                            <div style={{marginTop: "20px"}}>
+                                <DeleteLabel>Delete frame</DeleteLabel>
+                            </div>
+                        </Button>
+                    </div>
+                    
                 </FormLineSection>
             </FormLine>
         </FormFrameBlock>

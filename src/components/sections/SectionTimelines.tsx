@@ -1,61 +1,91 @@
-import React, {useState} from "react";
+import React from "react";
 import {ITimeline} from "variojs";
-import FormInputString from "@components/form-elements/FormInputString";
-import BlockTimeline from "@components/blocks/BlockTimeline";
-import FormFieldset from "@components/form-elements/FormFieldset";
+import styled from "styled-components";
+import DeleteLabel from "@components/typography/DeleteLabel";
 import FormHeading from "@components/form-elements/FormHeading";
+import Button from "@components/Button";
+import CtaMain from "@components/cta/CtaMain";
+import {Sections} from "@interfaces/navigation";
+import BlockLine from "@components/block-elements/BlockLine";
+import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
 import { useAnimationDataState, useAnimationDataDispatch, AnimationDataActions } from '@context/animation-data/AnimaitonDataContext';
-import CtaMain from '@components/cta/CtaMain';
+
+interface Props {
+    parallax: boolean
+}
 
 
+const RemoveButtonHolder = styled.div`
+    float: right;
+`;
 
-const SectionTimelines = () => {
-    const dispatchAnimationData = useAnimationDataDispatch();
-    const [timeline, setTimeline] = useState<any>({});
+
+const SectionTimelines = ({parallax}: Props) => {
+    const animationDataDispatch = useAnimationDataDispatch();
+    const navigationDispatch = useNavigationDispatch();
     const {animationData} = useAnimationDataState();
+    const timelines = (parallax)?animationData.parallaxTimelines:animationData.timelines;
 
     return (
     <div>
-        <br/><br/>
-        <form onSubmit={(event:any) => {
-            event.preventDefault();
-            if(timeline.id) {
-                dispatchAnimationData({
-                    type: AnimationDataActions.addTimeline,
-                    id: timeline.id,
-                    parallax: false
-                });
-            }
+        <FormHeading className="large">{(parallax)?"Parallax timelines":"Timelines"}</FormHeading>
+        <div style={{
+            paddingTop: '4px',
+            marginBottom: '26px'
         }}>
-            <FormHeading>
-                Add timeline
-            </FormHeading>
-            <FormFieldset>
-                <FormInputString onChange={(event:any) => {
-                    setTimeline(
-                        {
-                            ...timeline,
-                            id: event.target.value,
-                        }
-                    );
-                }} label="Identifier"/>
-            </FormFieldset>
-            <FormFieldset>
-                <button type="submit"><CtaMain>Add timeline</CtaMain></button>
-            </FormFieldset>
-        </form>
-        <br/>
         {
-            (animationData.timelines)?
-            animationData.timelines.map((timeline:ITimeline) => {
+            (timelines)?
+            timelines.map((timeline:ITimeline) => {
                 if(!timeline) {
                     return;
                 }
-                return <BlockTimeline parallax={false} key={timeline.id} timeline={timeline}/>
+                return (
+                    <BlockLine key={timeline.id}>
+                            <Button onClick={() => {
+                                if(!timeline) {
+                                    return;
+                                } 
+                                animationDataDispatch({
+                                    type: AnimationDataActions.setActiveTimeline,
+                                    timeline: {
+                                        timelineId: timeline.id,
+                                        parallax,
+                                    }
+                                });
+                                navigationDispatch({
+                                    type: NavigationActions.setActiveSection,
+                                    section: (parallax)?Sections.TIMELINE:Sections.PARALLAX_TIMELINE,
+                                });
+                            }}>
+                                {timeline.id}
+                            </Button>
+                            <RemoveButtonHolder>
+                                <Button onClick={() => {
+                                    if(!timeline) {
+                                        return;
+                                    }
+                                    animationDataDispatch({
+                                        type: AnimationDataActions.deleteTimeline,
+                                        id: timeline.id,
+                                        parallax,
+                                    });
+                                }}><DeleteLabel>Delete</DeleteLabel></Button>
+                            </RemoveButtonHolder>
+                        </BlockLine>
+                )
             })
             :null
         }
+        </div>
+        <Button
+            onClick={() => {
+                navigationDispatch({
+                    type: NavigationActions.setActiveSection,
+                    section: (parallax)?Sections.ADD_PARALLAX_TIMELINE:Sections.ADD_TIMELINE,
+                });
+            }}
 
+        ><CtaMain>Add timeline</CtaMain></Button>
     </div>
     )
 }

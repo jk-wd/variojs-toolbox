@@ -15,7 +15,7 @@ const PanelEl = styled.div`
   width: 100%;
   min-width: 320px;
   max-width: 620px;
-  height: 70vh;
+  height: 65vh;
   border-right: 1px solid ${Colors.darkGrey};
   max-height: 100vh;
   overflow: auto;

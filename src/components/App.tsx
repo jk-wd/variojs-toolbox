@@ -11,8 +11,10 @@ import SectionAddAnimationEntry from "@components/sections/SectionAddAnimationEn
 import Button from '@components/Button';
 import SectionMenu from '@components/sections/SectionMenu';
 import SectionTimelines from '@components/sections/SectionTimelines';
-import SectionParallaxTimelines from '@components/sections/SectionParallaxTimelines';
+import SectionTimeline from '@components/sections/SectionTimeline';
+import SectionAddTimeline from '@components/sections/SectionAddTimeline';
 import SectionAnimationDefinition from '@components/sections/SectionAnimationDefinition';
+import SectionAddAnimationDefinition from '@components/sections/SectionAddAnimationDefinition';
 import SectionBreakpoints from '@components/sections/SectionBreakpoints';
 import SectionNumbers from '@components/sections/SectionNumbers';
 import SectionAnimationDefinitions from '@components/sections/SectionAnimationDefinitions';
@@ -68,7 +70,7 @@ const CopyToClipBoard = styled.div`
   position:fixed;
   z-index:2;
   left:0;
-  bottom:30vh;
+  bottom:35vh;
   width: 100%;
   min-width: 320px;
   max-width: 620px;
@@ -76,17 +78,35 @@ const CopyToClipBoard = styled.div`
       width: 100%;
   }
 `;
+const Logo = styled.img`
+    width: 300px;
+`;
+const LogoHolder = styled.div`
+    position:fixed;
+    top: 0;
+    right: 0;
+    width:60vw;
+    height: 65vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
 
 const contentMap: {[key:string]: React.ReactNode} = {
     [Sections.MENU]: <SectionMenu />,
     [Sections.ANIMATION_ENTRY]: <SectionAnimationEntry />,
-    [Sections.TIMELINES]: <SectionTimelines />,
-    [Sections.PARALLAX_TIMELINES]: <SectionParallaxTimelines />,
+    [Sections.TIMELINES]: <SectionTimelines parallax={false} />,
+    [Sections.TIMELINE]: <SectionTimeline />,
+    [Sections.ADD_TIMELINE]: <SectionAddTimeline parallax={false} />,
+    [Sections.ADD_PARALLAX_TIMELINE]: <SectionAddTimeline parallax={true} />,
+    [Sections.PARALLAX_TIMELINES]: <SectionTimelines parallax={true} />,
+    [Sections.PARALLAX_TIMELINE]: <SectionTimeline />,
     [Sections.ANIMATION_ENTRIES]: <SectionAnimationEntries />,
     [Sections.ANIMATION_DEFINITIONS]: <SectionAnimationDefinitions />,
     [Sections.BREAKPOINTS]: <SectionBreakpoints />,
     [Sections.NUMBERS]: <SectionNumbers />,
     [Sections.ADD_ANIMATION_ENTRY]: <SectionAddAnimationEntry />,
+    [Sections.ADD_ANIMATION_DEFINITION]: <SectionAddAnimationDefinition />,
     [Sections.ANIMATION_DEFINITION]: <SectionAnimationDefinition />,
 }
 
@@ -98,11 +118,13 @@ const App = () => {
 
     return (
         <>
-
+            <LogoHolder>
+                <Logo src="/logo.png" />
+            </LogoHolder>
             <Panel>
                 <AppTopSection>
                     <Button onClick={() => {
-                            dispatchNavigation({
+                            dispatchNavigation({ 
                                 type: NavigationActions.setActiveSection,
                                 section: Sections.MENU,
                             });

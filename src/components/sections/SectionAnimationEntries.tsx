@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import FormHeading from "@components/form-elements/FormHeading";
 import DeleteLabel from "@components/typography/DeleteLabel";
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
 import {useAnimationDataDispatch, AnimationDataActions, useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
@@ -25,8 +26,10 @@ const SectionAnimationEntries = () => {
     
     return (
     <div>
+        <FormHeading className="large">Animation entries</FormHeading>
         <div style={{
-            marginBottom: '30px'
+            paddingTop: '4px',
+            marginBottom: '26px'
         }}>
             {
             (animationData && animationData.animationEntries)?
@@ -58,7 +61,7 @@ const SectionAnimationEntries = () => {
                                 });
                                 navigationDispatch({
                                     type: NavigationActions.setActiveSection,
-                                    section: Sections.ANIMATION_DEFINITION,
+                                    section: Sections.ANIMATION_ENTRY,
                                 });
                             }}>
                                 {(animationEntry && animationEntry.name)? animationEntry.name: animationEntry.id}

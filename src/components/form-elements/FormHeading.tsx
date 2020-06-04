@@ -2,18 +2,34 @@ import React from "react";
 import styled from "styled-components";
 
 interface IProps {
-    children: React.ReactNode
+    children: React.ReactNode,
+    className?: string,
+    subHeading?: string,
 }
 
 const FormHeadingEl = styled.div`
     margin-top: 20px;
     margin-bottom: 10px;
+    font-size: 16px;
+    font-family: "ProximaNova-Bold";
+    &.large {
+        font-size: 18px;
+    }
+    .sub-heading {
+        display: block;
+        font-size: 14px;
+        font-family: "ProximaNova-regular";
+    }
 `;
 
-const FormHeading = ({children}: IProps) => {
+const FormHeading = ({children, className, subHeading}: IProps) => {
     return (
-    <FormHeadingEl>
+    <FormHeadingEl className={className}>
         {children}
+        {
+            (subHeading)?
+            <span className='sub-heading'>{subHeading}</span>:null
+        }
     </FormHeadingEl>
     )
 }
