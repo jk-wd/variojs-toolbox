@@ -37,7 +37,6 @@ export default {
         const data = event.data
         const dataParsed = JSON.parse(data);
         if(dataParsed.action === 'setAnimationData'){
-          console.log("HERE", dataParsed.payload);
           variojs.setAnimationData(dataParsed.payload)
         }
       });

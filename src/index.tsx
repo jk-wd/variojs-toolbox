@@ -71,7 +71,6 @@ const handleScroll = ({scrollOffset, scrollPercentage}: any) => {
 ReactDOM.render(<div>Please refresh the site you want to animate</div>, document.querySelector('#vario-js-toolbox'));
 
 devSocket.init((initialData:any) => {
-    console.log(initialData);
     ReactDOM.render(<Main animationData={(initialData.animationData as any)} placeholders={(initialData.placeholders as any)} />, document.querySelector('#vario-js-toolbox'));
 }, handleScroll);
 

@@ -5581,10 +5581,10 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
-variojs@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/variojs/-/variojs-0.0.1.tgz#1112eaca5eaa06a1b70e557d983a45df0dbb4bd2"
-  integrity sha512-IYCe3qDhREOGM4BCX1xYq4dXDwJcfuO321XTvbX5P/S291uSlaNK2+a170SaArXExdMFLZhuhGUFl9S84k2P2A==
+variojs@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/variojs/-/variojs-0.0.4.tgz#78a6c5bb8386f4f84a307f21a0be1bc931eeaab5"
+  integrity sha512-oc5jYtTntQJ9qJX+cmV18bFBX90UyB2EL6C4J08tQZ1b8yW0BJTzEequPGWFEp+2i/UWrR2G7AfjPom6zt2l9A==
 
 vary@~1.1.2:
   version "1.1.2"

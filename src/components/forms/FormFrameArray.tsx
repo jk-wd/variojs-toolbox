@@ -39,6 +39,7 @@ const sortFrames = (frameA: IFrame, frameB: IFrame) => {
 
 const FormFrameNumberArray = ({frames:framesFromProps = [], frameType = FrameType.NumberFrame, onChange=() => {}}: Props) => {
     const [frames, setFrames] = useState<IFrame[]>(framesFromProps);
+    const sortedFrames = frames.sort(sortFrames);
     useEffect(() => {
         onChange(frames);
     }, [frames]);
@@ -46,7 +47,8 @@ const FormFrameNumberArray = ({frames:framesFromProps = [], frameType = FrameTyp
     return (
     <div>
         {
-            frames.sort(sortFrames).map((frame:IFrame) => {
+            sortedFrames.map((frame:IFrame) => {
+                console.log(frame);
                 return (
                     <FormFrame key={frame.id} frameType={frameType} frame={frame as any} 
                         onDelete={(frameChanged: IFrame) => {

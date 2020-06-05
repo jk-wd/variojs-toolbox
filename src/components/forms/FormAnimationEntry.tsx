@@ -1,4 +1,4 @@
-import React, {useCallback} from "react";
+import React, {useCallback, useEffect} from "react";
 import styled from "styled-components";
 import DeleteLabel from "@components/typography/DeleteLabel";
 import BlockLine from "@components/block-elements/BlockLine";
@@ -26,9 +26,15 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
     const animationDataDispatch = useAnimationDataDispatch();
     const placeholders = usePlaceholders();
     const {animationData} = useAnimationDataState();
-
+    const refSelectDomReference = React.createRef<HTMLSelectElement>();
     const navigationDispatch = useNavigationDispatch();
-   
+    
+    useEffect(() => {
+        if(refSelectDomReference.current) {
+            refSelectDomReference.current.value = animationEntry.domReference;
+        }
+    }, [animationEntry]);
+
     const placeConnectAnimation = useCallback(() => {
         if(!animationData || !animationData.animationDefinitions) {
             return
@@ -37,11 +43,6 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
             <div style={{marginBottom: '14px'}}>
                 <select onChange={
                     (event:any) => {
-                        console.log({
-                            type: AnimationDataActions.connectAnimationDefinitionToEntry,
-                            definitionId: event.target.value,
-                            animationEntryId: animationEntry.id,
-                        });
                         animationDataDispatch({
                             type: AnimationDataActions.connectAnimationDefinitionToEntry,
                             definitionId: event.target.value,
@@ -169,7 +170,7 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
             </FormFieldset>
             <FormFieldset>
                     <FormLabel className="small">Dom reference</FormLabel><br />
-                    <select onChange={(event:any) => {
+                    <select ref={refSelectDomReference} defaultValue={animationEntry.domReference} onChange={(event:any) => {
                         animationDataDispatch(
                             {
                                 type: AnimationDataActions.addEditAnimationEntry,

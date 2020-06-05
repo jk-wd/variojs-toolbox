@@ -70,7 +70,6 @@ const FormAnimationDefinition = ({animationDefinitionId, propsOfEntry = false} :
                     key === 'visibility' || 
                     key === 'posX'
                 ){
-                    console.log("key", key);
                     return (
                     <Frames key={animationDefinitionId +''+ key}>
                         <FormLabel className="line">{key}</FormLabel>

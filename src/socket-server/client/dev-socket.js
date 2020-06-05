@@ -29,7 +29,6 @@ export default {
     },
     setAnimationData: async (animationData) => {
         const ws = await socketConnect();
-        console.log(animationData);
         ws.send(JSON.stringify({
             action: 'setAnimationData',
             payload: animationData,
