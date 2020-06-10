@@ -34,16 +34,17 @@ const GlobalStyle = createGlobalStyle`
 interface Props {
     animationData: IAnimationData
     placeholders: string[]
+    siteUrl: string
 }
 
-const Main = ({animationData, placeholders}:Props) => {
+const Main = ({animationData, placeholders, siteUrl}:Props) => {
     return (
             <NavigationProvider >                    
                     <AnimationDataProvider animationData={animationData} >
                         <PlaceholdersProvider placeholders={placeholders} >
                             <>
                                 <GlobalStyle />
-                                <App />
+                                <App siteUrl={siteUrl} />
                             </>
                         </PlaceholdersProvider>
                     </AnimationDataProvider>
@@ -71,7 +72,7 @@ const handleScroll = ({scrollOffset, scrollPercentage}: any) => {
 ReactDOM.render(<div>Please refresh the site you want to animate</div>, document.querySelector('#vario-js-toolbox'));
 
 devSocket.init((initialData:any) => {
-    ReactDOM.render(<Main animationData={(initialData.animationData as any)} placeholders={(initialData.placeholders as any)} />, document.querySelector('#vario-js-toolbox'));
+    ReactDOM.render(<Main siteUrl={initialData.siteUrl} animationData={(initialData.animationData as any)} placeholders={(initialData.placeholders as any)} />, document.querySelector('#vario-js-toolbox'));
 }, handleScroll);
 
 

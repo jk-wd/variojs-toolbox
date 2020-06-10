@@ -9,12 +9,10 @@ interface Props {
 const PanelEl = styled.div`
   z-index:1;
   position: fixed;
+  width: 26vw;
   padding: 0 10px;
   top:0;
   left:0;
-  width: 100%;
-  min-width: 320px;
-  max-width: 620px;
   height: 65vh;
   border-right: 1px solid ${Colors.darkGrey};
   max-height: 100vh;

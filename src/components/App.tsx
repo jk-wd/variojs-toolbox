@@ -10,6 +10,7 @@ import SectionAnimationEntry from "@components/sections/SectionAnimationEntry";
 import SectionAddAnimationEntry from "@components/sections/SectionAddAnimationEntry";
 import Button from '@components/Button';
 import SectionMenu from '@components/sections/SectionMenu';
+import SiteFrame from '@components/site-frame/SiteFrame';
 import SectionTimelines from '@components/sections/SectionTimelines';
 import SectionTimeline from '@components/sections/SectionTimeline';
 import SectionAddTimeline from '@components/sections/SectionAddTimeline';
@@ -49,8 +50,7 @@ const AppTopSection = styled.div`
   padding: 0 10px;
   height: 40px;
   width: 100%;
-  min-width: 320px;
-  max-width: 620px;
+  width: 26vw;
   background-color: ${Colors.darkGrey};
   > div {
       text-align: center;
@@ -71,9 +71,7 @@ const CopyToClipBoard = styled.div`
   z-index:2;
   left:0;
   bottom:35vh;
-  width: 100%;
-  min-width: 320px;
-  max-width: 620px;
+  width: 26vw;
   & > button {
       width: 100%;
   }
@@ -110,7 +108,11 @@ const contentMap: {[key:string]: React.ReactNode} = {
     [Sections.ANIMATION_DEFINITION]: <SectionAnimationDefinition />,
 }
 
-const App = () => {
+interface IProps {
+    siteUrl:string
+}
+
+const App = ({siteUrl}:IProps) => {
     const {sections} = useNavigationState();
     const {animationData} = useAnimationDataState();
     const dispatchNavigation = useNavigationDispatch();
@@ -118,9 +120,14 @@ const App = () => {
 
     return (
         <>
-            <LogoHolder>
+            {(true)?
+             <SiteFrame siteUrl={siteUrl}/>
+            :
+             <LogoHolder>
                 <Logo src="/logo.png" />
             </LogoHolder>
+            }
+           
             <Panel>
                 <AppTopSection>
                     <Button onClick={() => {
