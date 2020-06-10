@@ -75,6 +75,10 @@ const SectionAnimationDefinitions = () => {
                                             type: AnimationDataActions.setActiveAnimationDefinition,
                                             animationDefinitionId: animationDefinition.id
                                         });
+                                        animationDataDispatch({
+                                            type: AnimationDataActions.setFilterByFrameId,
+                                            frameId: undefined
+                                        })
                                         navigationDispatch({
                                             type: NavigationActions.setActiveSection,
                                             section: Sections.ANIMATION_DEFINITION,

@@ -31,6 +31,7 @@ interface Props {
 
 enum AnimationDataActions {
     setActiveAnimationEntry = 'setActiveAnimationEntry',
+    setFilterByFrameId = 'setFilterByFrameId',
     addEditAnimationEntryConnection = 'addEditAnimationEntryConnection',
     setActiveTimeline = 'setActiveTimeline',
     setActiveParallaxTimeline = 'setActiveParallaxTimeline',
@@ -68,6 +69,10 @@ type ActionSetActiveTimeline = {
       timelineId?:string,
       parallax:boolean,
     }
+}
+type ActionSetFilterByFrameId = {
+    type: AnimationDataActions.setFilterByFrameId
+    frameId:string | undefined
 }
 type ActionSetSelectedBreakpoint = {
     type: AnimationDataActions.setSelectedBreakpoint
@@ -223,6 +228,7 @@ type Dispatch = (action:
   ActionSetActiveTimeline |
   ActionSetSelectedBreakpoint |
   ActionRemoveNumberVariable |
+  ActionSetFilterByFrameId |
   ActionEditNumberVariable |
   ActionAddEditAnimationEntry
 ) => void
@@ -232,6 +238,7 @@ type AnimationDataState = {
   activeAnimationDefinition: string | undefined
   animationData: IAnimationData
   activeTimeline: IActiveTimeline
+  filterByFrameId: string | undefined
   selectedBreakpoint: string
 }
 
@@ -305,6 +312,12 @@ function animationDataReducer(state: AnimationDataState,
         return {
             ...state,
             activeAnimationDefinition: action.animationDefinitionId
+        }
+      }
+      case AnimationDataActions.setFilterByFrameId: {
+        return {
+            ...state,
+            filterByFrameId: action.frameId
         }
       }
       case AnimationDataActions.setAnimationData: {
@@ -439,6 +452,7 @@ function AnimationDataProvider({children, animationData}: Props) {
       activeAnimationEntry: undefined,
       activeAnimationDefinition: undefined,
       selectedBreakpoint: 'default',
+      filterByFrameId: undefined,
       activeTimeline: undefined,
       animationData
     });

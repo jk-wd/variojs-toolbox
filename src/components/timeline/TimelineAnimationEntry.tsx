@@ -41,6 +41,10 @@ const TimelineAnimationEntry = ({animationEntry}: IProps) => {
                     return
                 }
                 dispatchAnimationData({
+                    type: AnimationDataActions.setFilterByFrameId,
+                    frameId: undefined
+                })
+                dispatchAnimationData({
                     type: AnimationDataActions.setActiveAnimationEntry,
                     activeAnimationEntry: {
                         id: animationEntry.id

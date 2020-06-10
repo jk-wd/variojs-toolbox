@@ -46,6 +46,10 @@ const TimelineAnimationDefinition = ({animationConnection}: IProps) => {
                     type: AnimationDataActions.setActiveAnimationDefinition,
                     animationDefinitionId: animationDefinition.id
                 });
+                dispatchAnimationData({
+                    type: AnimationDataActions.setFilterByFrameId,
+                    frameId: undefined
+                })
                 dispatchNavigation({
                     type: NavigationActions.setActiveSection,
                     section: Sections.ANIMATION_DEFINITION,

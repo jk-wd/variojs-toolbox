@@ -84,6 +84,10 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                 type: AnimationDataActions.setActiveAnimationDefinition,
                 animationDefinitionId: animationDefinition.id
             });
+            animationDataDispatch({
+                type: AnimationDataActions.setFilterByFrameId,
+                frameId: undefined
+            })
             navigationDispatch({
                 type: NavigationActions.setActiveSection,
                 section: Sections.ANIMATION_DEFINITION,
@@ -168,6 +172,45 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                                 );
                     }} />
             </FormFieldset>
+            {
+                (animationEntry.animationConnection)?
+                <>
+                <FormFieldset>
+                    <FormInputString label="Starting point px" defaultValue={animationEntry.animationConnection.startOffsetPixels} onChange={(event: any) => {
+                                    animationDataDispatch(
+                                        {
+                                            type: AnimationDataActions.addEditAnimationEntry,
+                                            animationEntry: {
+                                                ...animationEntry,
+                                                animationConnection: {
+                                                    ...animationEntry.animationConnection,
+                                                    startOffsetPixels: event.target.value
+                                                }
+                                                
+                                            }
+                                        }
+                                    );
+                        }} />
+                </FormFieldset>
+                <FormFieldset>
+                    <FormInputString label="Starting point ms" defaultValue={animationEntry.animationConnection.startMs} onChange={(event: any) => {
+                                    animationDataDispatch(
+                                        {
+                                            type: AnimationDataActions.addEditAnimationEntry,
+                                            animationEntry: {
+                                                ...animationEntry,
+                                                animationConnection: {
+                                                    ...animationEntry.animationConnection,
+                                                    startMs: event.target.value
+                                                }
+                                            }
+                                        }
+                                    );
+                        }} />
+                </FormFieldset>
+                </>:null
+            }
+            
             <FormFieldset>
                     <FormLabel className="small">Dom reference</FormLabel><br />
                     <select ref={refSelectDomReference} defaultValue={animationEntry.domReference} onChange={(event:any) => {
