@@ -29,7 +29,7 @@ interface Props {
 }
 
 const sortFrames = (frameA: IFrame, frameB: IFrame) => {
-    if(frameA.ms && frameB.ms && frameA.ms < frameB.ms) {
+    if((frameA.ms || frameA.ms ===0) && (frameB.ms || frameB.ms===0) && frameA.ms < frameB.ms) {
         return -1;
     }
     if((frameA.offsetPixels || frameA.offsetPixels===0) && (frameB.offsetPixels || frameB.offsetPixels===0) && frameA.offsetPixels < frameB.offsetPixels) {
@@ -39,7 +39,7 @@ const sortFrames = (frameA: IFrame, frameB: IFrame) => {
 }
 
 const FormFrameNumberArray = ({frames:framesFromProps = [], filterByFrameId, frameType = FrameType.NumberFrame, onChange=() => {}}: Props) => {
-    const [frames, setFrames] = useState<IFrame[]>(framesFromProps);
+    const [frames, setFrames] = useState<IFrame[]>(framesFromProps.sort(sortFrames));
     const [newFrames, setNewFrames] = useState<IFrame[]>([]);
 
     useEffect(() => {

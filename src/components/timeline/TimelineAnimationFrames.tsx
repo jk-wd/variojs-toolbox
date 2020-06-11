@@ -1,6 +1,6 @@
 import React, {useCallback} from "react";
 import styled from "styled-components";
-import { IFrame, IAnimationConnection, calculateStartValue } from 'variojs';
+import { IFrame, IAnimationConnection, calculateStartValue, getEndOfTimeline } from 'variojs';
 import {useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
 import {useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
@@ -73,12 +73,13 @@ const TimelineAnimationFrames = ({animationConnection, className, frames = []}: 
 
     const calculatePosition = useCallback((frame: IFrame) => {
         const indexAnimationConnection = (activeTimeline.parallax)? 'startOffsetPixels': 'startMs';
+        const timelineEnd = getEndOfTimeline(animationData, activeTimeline.timelineId, activeTimeline.parallax);
         const indexFrame = (activeTimeline.parallax)? 'offsetPixels': 'ms';
         const startValue = calculateStartValue(animationData, animationConnection[indexAnimationConnection] || '');
         let value = frame[indexFrame] || 0;
         value = value + startValue;
-        return (value / activeTimeline.end) * innerWidth
-    }, []);
+        return (value / timelineEnd) * innerWidth
+    }, [activeTimeline, animationConnection, animationData]);
 
     const placeTime = useCallback((frame:IFrame) => {
         const index = (activeTimeline.parallax)? 'offsetPixels': 'ms';
