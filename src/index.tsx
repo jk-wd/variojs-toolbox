@@ -16,6 +16,12 @@ const GlobalStyle = createGlobalStyle`
     button:focus {
         outline: none;
     }
+    .app {
+        display: none;
+    }
+    .app.active {
+        display: block;
+    }
     button {
         background-color: transparent;
         cursor: pointer;
@@ -69,10 +75,19 @@ const handleScroll = ({scrollOffset, scrollPercentage}: any) => {
     (window as any).VarioJsDevTools.scrollPos = {scrollOffset, scrollPercentage};
 }
 
-ReactDOM.render(<div>Please refresh the site you want to animate</div>, document.querySelector('#vario-js-toolbox'));
+if(!document.querySelector('.app.active')) {
+    ReactDOM.render(<div>Please refresh the site you want to animate</div>, document.querySelector('#vario-js-toolbox'));    
+}
+
+
+const sites = []
 
 devSocket.init((initialData:any) => {
-    ReactDOM.render(<Main siteUrl={initialData.siteUrl} animationData={(initialData.animationData as any)} placeholders={(initialData.placeholders as any)} />, document.querySelector('#vario-js-toolbox'));
+    const div = document.createElement("div");
+    div.classList.add('app');
+    sites.push(initialData);
+    document.body.insertBefore(div, document.body.firstChild);
+    ReactDOM.render(<Main siteUrl={initialData.siteUrl} animationData={(initialData.animationData as any)} placeholders={(initialData.placeholders as any)} />, div);
 }, handleScroll);
 
 
