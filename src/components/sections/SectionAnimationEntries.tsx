@@ -54,6 +54,10 @@ const SectionAnimationEntries = () => {
                                     return;
                                 } 
                                 animationDataDispatch({
+                                    type: AnimationDataActions.setFilterByFrameId,
+                                    frameId: undefined
+                                })
+                                animationDataDispatch({
                                     type: AnimationDataActions.setActiveAnimationEntry,
                                     activeAnimationEntry: {
                                         id: animationEntry.id

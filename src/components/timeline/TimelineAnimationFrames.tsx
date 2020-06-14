@@ -1,7 +1,10 @@
 import React, {useCallback} from "react";
 import styled from "styled-components";
-import { IFrame, IAnimationConnection, calculateStartValue } from 'variojs';
+import { IFrame, IAnimationConnection, calculateStartValue, getEndOfTimeline } from 'variojs';
+import {useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
+import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
 import {useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
+import {Sections} from "@interfaces/navigation";
 import { Colors } from '@interfaces/colors';
 
 interface IProps {
@@ -10,7 +13,7 @@ interface IProps {
     animationConnection: IAnimationConnection
 }
 
-const frameLineWidth = 3000;
+const frameLineWidth = (window as any).innerWidth - 360;
 const frameLineHeight = 30;
 const frameIndicatorRadius = 5;
 const timelinePadding = 5;
@@ -34,33 +37,76 @@ const TimelineAnimationFramesEl = styled.div`
     }
 `;
 
-const KeyFrame = styled.div`
-    width: ${frameIndicatorRadius * 2}px;
-    height: ${frameIndicatorRadius * 2}px;
-    border-radius: 100%;
+const KeyFrame = styled.button`
+    border:none;
+    outline: none;
+    padding: 0;
+    > span {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: ${frameIndicatorRadius * 2}px;
+        height: ${frameIndicatorRadius * 2}px;
+        background-color: ${Colors.freshGreen};
+        border-radius: 100%;
+    }
+    &:hover {
+        color: ${Colors.happyPink};
+        > span {
+            background-color: ${Colors.happyPink};
+        }
+    }
     position: absolute;
     top: 50%;
-    background-color: ${Colors.sunnyOrange};
+    color: ${Colors.freshGreen};
     transform: translateY(-50%);
     left: ${(props:any) => props.left};
+    font-size: 12px;
+    padding-left: ${(frameIndicatorRadius * 2)+4}px;
+    line-height: 1;
 `;
 
 const TimelineAnimationFrames = ({animationConnection, className, frames = []}: IProps) => {
     const {animationData, activeTimeline} = useAnimationDataState();
+    const animationDataDispatch = useAnimationDataDispatch();
+    const navigationDispatch = useNavigationDispatch();
 
     const calculatePosition = useCallback((frame: IFrame) => {
-        const startValue = calculateStartValue(animationData, animationConnection.startMs || '');
-        let ms = frame.ms || 0;
-        ms = ms + startValue;
-        return (ms / activeTimeline.end) * innerWidth
-    }, []);
+        const indexAnimationConnection = (activeTimeline.parallax)? 'startOffsetPixels': 'startMs';
+        const timelineEnd = getEndOfTimeline(animationData, activeTimeline.timelineId, activeTimeline.parallax);
+        const indexFrame = (activeTimeline.parallax)? 'offsetPixels': 'ms';
+        const startValue = calculateStartValue(animationData, animationConnection[indexAnimationConnection] || '');
+        let value = frame[indexFrame] || 0;
+        value = value + startValue;
+        return (value / timelineEnd) * innerWidth
+    }, [activeTimeline, animationConnection, animationData]);
+
+    const placeTime = useCallback((frame:IFrame) => {
+        const index = (activeTimeline.parallax)? 'offsetPixels': 'ms';
+        return frame[index];
+    }, [activeTimeline]);
 
     return (
         <TimelineAnimationFramesEl className={className}>
             <TimelineAnimationFramesInner>
                 {frames.map((frame: IFrame, index:number) => {
                     //@ts-ignore
-                    return <KeyFrame key={frame.id +''+ index} left={`${calculatePosition(frame)}px`}></KeyFrame>
+                return <KeyFrame key={frame.id +''+ index} left={`${calculatePosition(frame)}px`} 
+                onClick={() => {
+                    animationDataDispatch({
+                        type: AnimationDataActions.setActiveAnimationDefinition,
+                        animationDefinitionId: animationConnection.animationDefinitionId
+                    })
+                    animationDataDispatch({
+                        type: AnimationDataActions.setFilterByFrameId,
+                        frameId: frame.id
+                    })
+                    navigationDispatch({
+                        type: NavigationActions.setActiveSection,
+                        section: Sections.ANIMATION_DEFINITION,
+                    });
+                }} 
+                ><span></span>{placeTime(frame)}</KeyFrame>
                 })}
             </TimelineAnimationFramesInner>
         </TimelineAnimationFramesEl>

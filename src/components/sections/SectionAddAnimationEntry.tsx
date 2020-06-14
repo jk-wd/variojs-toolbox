@@ -72,7 +72,10 @@ const SectionAddAnimationEntry = () => {
                         breakpoint,
                         parallax: activeTimeline.parallax,
                     });
-
+                    animationDataDispatch({
+                        type: AnimationDataActions.setFilterByFrameId,
+                        frameId: undefined
+                    })
                     animationDataDispatch({
                         type: AnimationDataActions.setActiveAnimationEntry,
                         activeAnimationEntry: {

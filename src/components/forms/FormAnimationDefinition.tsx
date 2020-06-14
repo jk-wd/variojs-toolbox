@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {PropTypes} from "variojs";
 import styled from "styled-components";
 import FormFieldset from "@components/form-elements/FormFieldset";
@@ -34,18 +34,26 @@ const BottomSection = styled.fieldset`
 const FormAnimationDefinition = ({animationDefinitionId, propsOfEntry = false} : Props) => {
     const [activeProps, setActiveProps] = useState<string[]>([]);
     const selectPropRef = React.createRef<HTMLSelectElement>();
-    const {activeAnimationDefinition, animationData} = useAnimationDataState();
+    const {activeAnimationDefinition, filterByFrameId, animationData} = useAnimationDataState();
     const targetAnimationDefinitionId = (animationDefinitionId)? animationDefinitionId: activeAnimationDefinition;
     const animationDefinition = getAnimationDefinitionById(animationData, targetAnimationDefinitionId)
     const [name, setName] = useState((animationDefinition)?animationDefinition.name:undefined);
     const animationDataDispatch = useAnimationDataDispatch();
+
+    useEffect(() => {
+        if(animationDefinition) {
+            setName(animationDefinition.name);
+        }
+        
+    }, [animationDefinition])
+
     if(!animationDefinition) {
         return null;
     }
     return (
         <div>
             {
-                (!propsOfEntry)?
+                (!propsOfEntry && !filterByFrameId)?
                 <FormHeading subHeading={name} className="large">Animation definition</FormHeading>:null
             }
             
@@ -71,9 +79,9 @@ const FormAnimationDefinition = ({animationDefinitionId, propsOfEntry = false} :
                     key === 'posX'
                 ){
                     return (
-                    <Frames key={animationDefinitionId +''+ key}>
+                    <Frames key={animationDefinition.id +''+ key}>
                         <FormLabel className="line">{key}</FormLabel>
-                        <FormFrameNumberArray frameType={(key === "display" || key === "visibility" )?FrameType.StringFrame: FrameType.NumberFrame} frames={props[key]} onChange={(frames) => {
+                        <FormFrameNumberArray frameType={(key === "display" || key === "visibility" )?FrameType.StringFrame: FrameType.NumberFrame} frames={props[key]} filterByFrameId={filterByFrameId} onChange={(frames) => {
                             const newProps = {
                                 ...animationDefinition.props,
                                 [key]: frames
@@ -96,50 +104,56 @@ const FormAnimationDefinition = ({animationDefinitionId, propsOfEntry = false} :
                 }
                 return;
             })}
-            <div style={{marginTop: '10px', marginBottom: '40px'}}>
-                <FormFieldset>
-                    <FormLabel className="small" htmlFor="animationProperty">Add property</FormLabel><br />
-                    <select ref={selectPropRef} onChange={(event:any) => {
-                        const value = event.target.value;
-                        setActiveProps([...activeProps, value]);
-                        if(selectPropRef.current) {
-                            selectPropRef.current.value = "";
-                        }
-                    }} name="animationProperty" id="animationProperty">
-                        <option value="">select a property</option>
-                        {Object.keys(PropTypes).map((key:string) => {
-                            if(animationDefinition && animationDefinition.props[key]) {
-                                return undefined
-                            }
-                            return (
-                                <option key={key} value={key}>{key}</option>
-                            )
-                        })}
-                    </select>
-                </FormFieldset>
-            </div>
-           
-            <BottomSection>
-                <FormLabel>{(propsOfEntry)?'Create global definition': 'Definition name'}</FormLabel>
-                <FormInputString defaultValue={name} onChange={(event: any) => {
-                    setName(event.target.value);
-                }} />
-                <div style={{paddingTop: '8px'}}>
-                    <Button onClick={() => {
-                        animationDataDispatch(
-                            {
-                                type: AnimationDataActions.addEditAnimationDefinition,
-                                animationDefinition: {
-                                    ...animationDefinition,
-                                    name
+            {
+                (!filterByFrameId)?
+                <>
+                   <div style={{marginTop: '10px', marginBottom: '40px'}}>
+                        <FormFieldset>
+                            <FormLabel className="small" htmlFor="animationProperty">Add property</FormLabel><br />
+                            <select ref={selectPropRef} onChange={(event:any) => {
+                                const value = event.target.value;
+                                setActiveProps([...activeProps, value]);
+                                if(selectPropRef.current) {
+                                    selectPropRef.current.value = "";
                                 }
-                            }
-                        );
-                        setName(undefined);
-                    }}><CtaMain className="small orange">{(propsOfEntry)?'Create global definition': 'Set name'}</CtaMain></Button>
-                </div>
-               
-            </BottomSection>
+                            }} name="animationProperty" id="animationProperty">
+                                <option value="">select a property</option>
+                                {Object.keys(PropTypes).map((key:string) => {
+                                    if(animationDefinition && animationDefinition.props[key]) {
+                                        return undefined
+                                    }
+                                    return (
+                                        <option key={key} value={key}>{key}</option>
+                                    )
+                                })}
+                            </select>
+                        </FormFieldset>
+                    </div>
+                
+                    <BottomSection>
+                        <FormLabel>{(propsOfEntry)?'Create global definition': 'Definition name'}</FormLabel>
+                        <FormInputString defaultValue={name} onChange={(event: any) => {
+                            setName(event.target.value);
+                        }} />
+                        <div style={{paddingTop: '8px'}}>
+                            <Button onClick={() => {
+                                animationDataDispatch(
+                                    {
+                                        type: AnimationDataActions.addEditAnimationDefinition,
+                                        animationDefinition: {
+                                            ...animationDefinition,
+                                            name
+                                        }
+                                    }
+                                );
+                                setName(undefined);
+                            }}><CtaMain className="small orange">{(propsOfEntry)?'Create global definition': 'Set name'}</CtaMain></Button>
+                        </div>
+                    
+                    </BottomSection>
+                </>:null
+            }
+         
         </div>
     )
 }

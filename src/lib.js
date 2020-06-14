@@ -22,6 +22,7 @@ export default {
             action: 'initialData',
             payload: {
               animationData: variojs.getAnimationData(),
+              siteUrl: window.location.href,
               placeholders: domNodes.reduce((result, domNode) => {
                 const name = domNode.getAttribute('data-v');
                 if(name && name!= "") {
