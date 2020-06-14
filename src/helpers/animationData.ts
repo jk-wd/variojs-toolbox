@@ -210,7 +210,7 @@ export const deleteAnimationEntry = (animationData: IAnimationData, animationEnt
         animationEntries: animationEntries.reduce((result: IAnimationEntry[], animation:IAnimationEntry) => {
             if(animation.id != animationEntryId){
                 result.push(animation);
-            } else {
+            } else if(animation.animationConnection) {
                 definitionId = animation.animationConnection.animationDefinitionId
             }
             return result;
