@@ -4,7 +4,7 @@ import FormFieldset from "@components/form-elements/FormFieldset";
 import FormHeading from "@components/form-elements/FormHeading";
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
 import { useAnimationDataDispatch, AnimationDataActions } from '@context/animation-data/AnimaitonDataContext';
-import {Sections} from "@interfaces/navigation";
+import {Sections} from "@enums/navigation";
 import CtaMain from '@components/cta/CtaMain';
 
 interface Props {

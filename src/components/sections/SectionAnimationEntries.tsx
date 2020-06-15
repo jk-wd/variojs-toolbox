@@ -5,7 +5,7 @@ import DeleteLabel from "@components/typography/DeleteLabel";
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
 import {useAnimationDataDispatch, AnimationDataActions, useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
 import BlockLine from "@components/block-elements/BlockLine";
-import {Sections} from "@interfaces/navigation";
+import {Sections} from "@enums/navigation";
 import {IAnimationEntry, getParallaxTimelineById, getTimelineById} from "variojs";
 import Button from "@components/Button";
 import CtaMain from "@components/cta/CtaMain";

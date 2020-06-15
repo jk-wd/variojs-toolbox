@@ -1,5 +1,5 @@
 import React from "react";
-import {Colors} from "@interfaces/colors";
+import {Colors} from "@enums/colors";
 import styled from "styled-components";
 
 interface Props {

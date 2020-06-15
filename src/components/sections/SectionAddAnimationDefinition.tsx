@@ -6,7 +6,7 @@ import FormFieldset from "@components/form-elements/FormFieldset";
 import FormLabel from "@components/form-elements/FormLabel";
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
 
-import {Sections} from "@interfaces/navigation";
+import {Sections} from "@enums/navigation";
 import FormInputString from "@components/form-elements/FormInputString";
 import CtaMain from '@components/cta/CtaMain';
 

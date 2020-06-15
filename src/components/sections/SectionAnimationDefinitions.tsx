@@ -8,7 +8,7 @@ import Button from '@components/Button';
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
 import CtaMain from "@components/cta/CtaMain";
 import {useAnimationDataDispatch, AnimationDataActions, useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
-import {Sections} from "@interfaces/navigation";
+import {Sections} from "@enums/navigation";
 
 const RemoveButtonHolder = styled.div`
     float: right;

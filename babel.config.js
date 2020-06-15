@@ -17,6 +17,7 @@ module.exports = function (api) {
                 "@socketserver": "./src/socket-server",
                 "@context": "./src/context",
                 "@interfaces": "./src/interfaces",
+                "@enums": "./src/enums",
             }
           }],
     ]

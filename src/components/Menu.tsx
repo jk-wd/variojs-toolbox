@@ -1,6 +1,6 @@
 import React from "react";
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
-import {Sections} from "@interfaces/navigation";
+import {Sections} from "@enums/navigation";
 import Button from "@components/Button";
 import styled from "styled-components";
 
@@ -21,6 +21,12 @@ const Menu = () => {
     
     return (
     <MenuEl>
+        <Button onClick={() => {
+            dispatch({
+                type: NavigationActions.setActiveSection,
+                section: Sections.SITES,
+            });
+        }}>Sites</Button>
         <Button onClick={() => {
             dispatch({
                 type: NavigationActions.setActiveSection,

@@ -3,10 +3,10 @@ import styled from "styled-components";
 import { IAnimationEntry } from 'variojs/lib/types-interfaces';
 import {useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
-import {Sections} from "@interfaces/navigation";
+import {Sections} from "@enums/navigation";
 import Button from "@components/Button";
 import TimelineAnimationDefinition from "@components/timeline/TimelineAnimationDefinition";
-import { Colors } from '@interfaces/colors';
+import { Colors } from '@enums/colors';
 import { IAnimationConnection } from 'variojs';
 
 

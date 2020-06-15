@@ -4,8 +4,8 @@ import { IFrame, IAnimationConnection, calculateStartValue, getEndOfTimeline } f
 import {useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
 import {useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
-import {Sections} from "@interfaces/navigation";
-import { Colors } from '@interfaces/colors';
+import {Sections} from "@enums/navigation";
+import { Colors } from '@enums/colors';
 
 interface IProps {
     frames: IFrame[]

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { IAnimationConnection, getAnimationDefinitionById } from 'variojs';
 import {useAnimationDataState, useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
-import {Sections} from "@interfaces/navigation";
+import {Sections} from "@enums/navigation";
 import TimelineAnimationProp from "@components/timeline/TimelineAnimationProp";
 import Button from "@components/Button";
 

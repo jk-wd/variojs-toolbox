@@ -1,18 +1,19 @@
-import React, {useCallback, useEffect} from "react";
+import React, {useCallback} from "react";
+import {uuidv4} from "@helpers/guid";
 import styled from "styled-components";
 import DeleteLabel from "@components/typography/DeleteLabel";
 import BlockLine from "@components/block-elements/BlockLine";
 import { IAnimationEntry, IAnimationConnection } from 'variojs/lib/types-interfaces';
+import Block from '@components/block-elements/Block';
+import BlockHeading from '@components/block-elements/BlockHeading';
+import BlockSection from '@components/block-elements/BlockSection';
 import FormInputString from '@components/form-elements/FormInputString';
-import FormLabel from '@components/form-elements/FormLabel';
-import {usePlaceholders} from "@context/placeholders/PlaceholdersContext";
 import Button from '@components/Button';
-import FormHeading from '@components/form-elements/FormHeading';
+import CtaMain from '@components/cta/CtaMain';
 import {getAnimationDefinitionById, IAnimationDefinition} from 'variojs';
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
 import {useAnimationDataDispatch, AnimationDataActions, useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
 import {Sections} from "@enums/navigation";
-import FormFieldset from '@components/form-elements/FormFieldset';
 
 interface IProps {
     animationEntry: IAnimationEntry
@@ -22,25 +23,53 @@ const RemoveButtonHolder = styled.div`
     float: right;
 `;
 
-const FormAnimationEntry = ({animationEntry}: IProps) => {
+const BlockAnimationEntry = ({animationEntry}: IProps) => {
     const animationDataDispatch = useAnimationDataDispatch();
-    const placeholders = usePlaceholders();
     const {animationData} = useAnimationDataState();
-    const refSelectDomReference = React.createRef<HTMLSelectElement>();
-    const navigationDispatch = useNavigationDispatch();
-    
-    useEffect(() => {
-        if(refSelectDomReference.current) {
-            refSelectDomReference.current.value = animationEntry.domReference;
-        }
-    }, [animationEntry]);
 
+    const navigationDispatch = useNavigationDispatch();
+    const placeAddAnimation = useCallback(() => {
+        if(!animationData) {
+            return
+        }
+        return (
+            <Button onClick={
+                () => {
+                    animationDataDispatch({
+                        type: AnimationDataActions.setActiveAnimationEntry,
+                        activeAnimationEntry: {
+                            id:animationEntry.id
+                        }
+                    });
+                    
+                    const animationDefinitionId = uuidv4();
+
+                    animationDataDispatch({
+                        type: AnimationDataActions.addEditAnimationDefinition,
+                        animationDefinition: {
+                            id:animationDefinitionId,
+                            props: {}
+                        }
+                    });
+
+                    animationDataDispatch({
+                        type: AnimationDataActions.setActiveAnimationDefinition,
+                        animationDefinitionId,
+                    });
+                    navigationDispatch({
+                        type: NavigationActions.setActiveSection,
+                        section: Sections.ANIMATION_DEFINITION,
+                    });
+                }
+            }><CtaMain className="small">Add new animation definition</CtaMain></Button>
+        )
+    }, [animationData, animationEntry]);
     const placeConnectAnimation = useCallback(() => {
         if(!animationData || !animationData.animationDefinitions) {
             return
         }
         return (
-            <div style={{marginBottom: '14px'}}>
+            <>
                 <select onChange={
                     (event:any) => {
                         animationDataDispatch({
@@ -63,7 +92,7 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                         
                     }
                 </select><br/>
-            </div>
+            </>
         )
     }, [animationData, animationEntry]);
     const placeAnimation = useCallback((animationConnection:IAnimationConnection, animationDefinition:IAnimationDefinition) => {
@@ -84,10 +113,6 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                 type: AnimationDataActions.setActiveAnimationDefinition,
                 animationDefinitionId: animationDefinition.id
             });
-            animationDataDispatch({
-                type: AnimationDataActions.setFilterByFrameId,
-                frameId: undefined
-            })
             navigationDispatch({
                 type: NavigationActions.setActiveSection,
                 section: Sections.ANIMATION_DEFINITION,
@@ -110,7 +135,7 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
             </RemoveButtonHolder>
 
             <br />
-            <FormInputString defaultValue={animationConnection.startOffsetPixels} label="Starting point px" onChange={(event: any) => {
+            <FormInputString defaultValue={animationConnection.startOffsetPixels} label="Start offsetPixels" onChange={(event: any) => {
                 animationDataDispatch(
                     {
                         type: AnimationDataActions.addEditAnimationEntryConnection,
@@ -123,7 +148,7 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                     }
                 );
             }} />
-            <FormInputString defaultValue={animationConnection.startMs} label="Starting point ms" onChange={(event: any) => {
+            <FormInputString defaultValue={animationConnection.startMs} label="Start milliseconds" onChange={(event: any) => {
                 animationDataDispatch(
                     {
                         type: AnimationDataActions.addEditAnimationEntryConnection,
@@ -157,99 +182,34 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
         })
     }, [animationData, animationEntry]);
     return (
-        <div>
-            <FormHeading subHeading={`${animationEntry.name} - ${animationEntry.domReference}`} className="large">Animation entry</FormHeading>
-            <FormFieldset>
-                <FormInputString label="Name" defaultValue={(animationEntry.name)?animationEntry.name:animationEntry.id} onChange={(event: any) => {
-                                animationDataDispatch(
-                                    {
-                                        type: AnimationDataActions.addEditAnimationEntry,
-                                        animationEntry: {
-                                            ...animationEntry,
-                                            name: event.target.value
-                                        }
-                                    }
-                                );
-                    }} />
-            </FormFieldset>
-            {
-                (animationEntry.animationConnection)?
-                <>
-                <FormFieldset>
-                    <FormInputString label="Starting point px" defaultValue={animationEntry.animationConnection.startOffsetPixels} onChange={(event: any) => {
-                                    animationDataDispatch(
-                                        {
-                                            type: AnimationDataActions.addEditAnimationEntry,
-                                            animationEntry: {
-                                                ...animationEntry,
-                                                animationConnection: {
-                                                    ...animationEntry.animationConnection,
-                                                    startOffsetPixels: event.target.value
-                                                }
-                                                
-                                            }
-                                        }
-                                    );
-                        }} />
-                </FormFieldset>
-                <FormFieldset>
-                    <FormInputString label="Starting point ms" defaultValue={animationEntry.animationConnection.startMs} onChange={(event: any) => {
-                                    animationDataDispatch(
-                                        {
-                                            type: AnimationDataActions.addEditAnimationEntry,
-                                            animationEntry: {
-                                                ...animationEntry,
-                                                animationConnection: {
-                                                    ...animationEntry.animationConnection,
-                                                    startMs: event.target.value
-                                                }
-                                            }
-                                        }
-                                    );
-                        }} />
-                </FormFieldset>
-                </>:null
-            }
-            
-            <FormFieldset>
-                    <FormLabel className="small">Dom reference</FormLabel><br />
-                    <select ref={refSelectDomReference} defaultValue={animationEntry.domReference} onChange={(event:any) => {
+    <Block>
+        <BlockSection>
+           <FormInputString label="id" defaultValue={(animationEntry.name)?animationEntry.name:animationEntry.id} onChange={(event: any) => {
                         animationDataDispatch(
                             {
                                 type: AnimationDataActions.addEditAnimationEntry,
                                 animationEntry: {
                                     ...animationEntry,
-                                    domReference: event.target.value
+                                    name: event.target.value
                                 }
                             }
                         );
-                    }}>
-                        {
-                            placeholders.reduce((result: React.ReactNode[], id:string, index: number) => {
-                                if(animationData && animationData.animationEntries && animationData.animationEntries.find((animationEntry: IAnimationEntry) => (animationEntry.id ===  id))) {
-                                    return result
-                                } else {
-                                    result.push(<option key={`${id}${index}`} value={id || ''}>{id}</option>);
-                                }
-                                return result;
-                            }, [])
-                        }
-                    </select>
-            </FormFieldset>
-            <FormFieldset>
-                <FormLabel>Connected animation definitions</FormLabel><br/>
-                {
-                    placeConnectAnimation()
-                }
-                {
-                    placeAnimations()
-                }
-            </FormFieldset>
-
-                
-                
-
-        </div>
+            }} /> <br/>
+            {animationEntry.domReference}
+        </BlockSection>
+        <BlockSection>
+            <BlockHeading>Connected animation definitions</BlockHeading>
+            {
+                placeConnectAnimation()
+            }
+            {
+                placeAnimations()
+            }
+            {
+                placeAddAnimation()
+            }
+        </BlockSection>
+    </Block>
     )
 }
-export default FormAnimationEntry;
+export default BlockAnimationEntry;

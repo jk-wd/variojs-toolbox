@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { IFrame, IAnimationConnection } from 'variojs';
 import TimelineAnimationFrames from "@components/timeline/TimelineAnimationFrames";
-import { Colors } from '@interfaces/colors';
+import { Colors } from '@enums/colors';
 
 
 interface IProps {

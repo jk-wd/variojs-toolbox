@@ -1,63 +1,9 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import {IAnimationData} from "variojs";
 import devSocket from "@socketserver/client/dev-socket";
-import {createGlobalStyle} from "styled-components";
-import App from "@components/App";
-import {NavigationProvider} from "@context/navigation/NavigationContext";
-import {PlaceholdersProvider} from "@context/placeholders/PlaceholdersContext";
-import {AnimationDataProvider} from "@context/animation-data/AnimaitonDataContext";
-
-
-const GlobalStyle = createGlobalStyle`
-    input:focus,
-    select:focus,
-    textarea:focus,
-    button:focus {
-        outline: none;
-    }
-    .app {
-        display: none;
-    }
-    .app.active {
-        display: block;
-    }
-    button {
-        background-color: transparent;
-        cursor: pointer;
-        padding: 0;
-        margin: 0;
-    }
-    fieldset{
-        border: none;
-    }
-    * {
-        box-sizing: border-box;
-        font-family: "ProximaNova-Regular";
-    }
-`
-
-interface Props {
-    animationData: IAnimationData
-    placeholders: string[]
-    siteUrl: string
-}
-
-const Main = ({animationData, placeholders, siteUrl}:Props) => {
-    return (
-            <NavigationProvider >                    
-                    <AnimationDataProvider animationData={animationData} >
-                        <PlaceholdersProvider placeholders={placeholders} >
-                            <>
-                                <GlobalStyle />
-                                <App siteUrl={siteUrl} />
-                            </>
-                        </PlaceholdersProvider>
-                    </AnimationDataProvider>
-            </NavigationProvider>
-        
-    )
-}
+import {registerSite} from "@helpers/site-select";
+import ChooseSite from "@components/ChooseSite";
+import ReactDOM from "react-dom";
+import { IInitialData } from '@interfaces/data';
 
 (window as any).VarioJsDevTools = {
     scrollPos: {
@@ -76,18 +22,13 @@ const handleScroll = ({scrollOffset, scrollPercentage}: any) => {
 }
 
 if(!document.querySelector('.app.active')) {
-    ReactDOM.render(<div>Please refresh the site you want to animate</div>, document.querySelector('#vario-js-toolbox'));    
+    
 }
 
 
-const sites = []
-
-devSocket.init((initialData:any) => {
-    const div = document.createElement("div");
-    div.classList.add('app');
-    sites.push(initialData);
-    document.body.insertBefore(div, document.body.firstChild);
-    ReactDOM.render(<Main siteUrl={initialData.siteUrl} animationData={(initialData.animationData as any)} placeholders={(initialData.placeholders as any)} />, div);
+devSocket.init((initialData:IInitialData) => {
+    registerSite(initialData);
+    ReactDOM.render(<ChooseSite />, document.querySelector('#vario-js-toolbox'));    
 }, handleScroll);
 
 

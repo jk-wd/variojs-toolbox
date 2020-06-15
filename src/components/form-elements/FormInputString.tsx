@@ -1,7 +1,7 @@
 import React, {ChangeEvent, useEffect, createRef} from "react";
 import styled from "styled-components";
 import FormElementLabel from "@components/form-elements/FormElementLabel";
-import {Colors} from "@interfaces/colors";
+import {Colors} from "@enums/colors";
 
 interface IProps {
     defaultValue?: string,

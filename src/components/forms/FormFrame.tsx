@@ -8,7 +8,7 @@ import FormElementLabel from "@components/form-elements/FormElementLabel";
 import FormFrameBlock from "@components/form-elements/FormFrameBlock";
 import FormInputNumber from "@components/form-elements/FormInputNumber";
 import FormInputString from "@components/form-elements/FormInputString";
-import {FrameType} from "@interfaces/frames";
+import {FrameType} from "@enums/frames";
 
 interface Props {
     onChange: (frame:IFrame) => void,

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import {useNavigationState, useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
 import {useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
 import {copyToClipBoard} from "@helpers/clipboard";
-import {Sections} from "@interfaces/navigation";
+import {Sections} from "@enums/navigation";
 import Panel from "@components/Panel";
 import SectionAnimationEntries from "@components/sections/SectionAnimationEntries";
 import SectionAnimationEntry from "@components/sections/SectionAnimationEntry";
@@ -15,12 +15,13 @@ import SectionTimelines from '@components/sections/SectionTimelines';
 import SectionTimeline from '@components/sections/SectionTimeline';
 import SectionAddTimeline from '@components/sections/SectionAddTimeline';
 import SectionAnimationDefinition from '@components/sections/SectionAnimationDefinition';
+import SectionSelectSite from '@components/sections/SectionSelectSite';
 import SectionAddAnimationDefinition from '@components/sections/SectionAddAnimationDefinition';
 import SectionBreakpoints from '@components/sections/SectionBreakpoints';
 import SectionNumbers from '@components/sections/SectionNumbers';
 import SectionAnimationDefinitions from '@components/sections/SectionAnimationDefinitions';
 import CtaMain from '@components/cta/CtaMain';
-import { Colors } from '@interfaces/colors';
+import { Colors } from '@enums/colors';
 import Timeline from '@components/timeline/Timeline';
 
 const AppContent = styled.div`
@@ -106,6 +107,7 @@ const contentMap: {[key:string]: React.ReactNode} = {
     [Sections.ADD_ANIMATION_ENTRY]: <SectionAddAnimationEntry />,
     [Sections.ADD_ANIMATION_DEFINITION]: <SectionAddAnimationDefinition />,
     [Sections.ANIMATION_DEFINITION]: <SectionAnimationDefinition />,
+    [Sections.SITES]: <SectionSelectSite />,
 }
 
 interface IProps {

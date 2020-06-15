@@ -25,6 +25,9 @@
             ],
             "@interfaces/*": [
                 "./interfaces/*"
+            ],
+            "@enums/*": [
+                "./enums/*"
             ]
         },
 		"lib": [

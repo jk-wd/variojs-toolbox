@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import {Colors} from "@interfaces/colors";
+import {Colors} from "@enums/colors";
 
 const DeleteLabel = styled.span`
     display: block;

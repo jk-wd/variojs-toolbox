@@ -5,7 +5,7 @@ import DeleteLabel from "@components/typography/DeleteLabel";
 import FormHeading from "@components/form-elements/FormHeading";
 import Button from "@components/Button";
 import CtaMain from "@components/cta/CtaMain";
-import {Sections} from "@interfaces/navigation";
+import {Sections} from "@enums/navigation";
 import BlockLine from "@components/block-elements/BlockLine";
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
 import { useAnimationDataState, useAnimationDataDispatch, AnimationDataActions } from '@context/animation-data/AnimaitonDataContext';

@@ -5,13 +5,13 @@ import FormFieldset from "@components/form-elements/FormFieldset";
 import FormFrameNumberArray from "@components/forms/FormFrameArray";
 import {getAnimationDefinitionById} from "variojs";
 import FormInputString from "@components/form-elements/FormInputString";
-import {FrameType} from "@interfaces/frames";
+import {FrameType} from "@enums/frames";
 import {useAnimationDataState, useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
 import FormLabel from "@components/form-elements/FormLabel";
 import FormHeading from "@components/form-elements/FormHeading";
 import Button from '@components/Button';
 import CtaMain from '@components/cta/CtaMain';
-import { Colors } from '@interfaces/colors';
+import { Colors } from '@enums/colors';
 
 interface Props {
     animationDefinitionId?: string;

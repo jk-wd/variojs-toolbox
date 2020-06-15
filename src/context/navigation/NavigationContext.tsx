@@ -1,6 +1,6 @@
 
 import React from 'react';
-import {Sections} from '@interfaces/navigation';
+import {Sections} from '@enums/navigation';
 
 interface Props {
     children: React.ReactNode

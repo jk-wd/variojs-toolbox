@@ -7,7 +7,7 @@ import FormLabel from "@components/form-elements/FormLabel";
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
 import {usePlaceholders} from "@context/placeholders/PlaceholdersContext";
 import { useAnimationDataState } from '@context/animation-data/AnimaitonDataContext';
-import {Sections} from "@interfaces/navigation";
+import {Sections} from "@enums/navigation";
 import FormInputString from "@components/form-elements/FormInputString";
 import CtaMain from '@components/cta/CtaMain';
 import { IAnimationEntry, IBreakpoint, ITimeline } from 'variojs';

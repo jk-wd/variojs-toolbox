@@ -2,7 +2,7 @@ import React, {useState, useEffect, useCallback} from "react";
 import {IFrame, IFrameString, IFrameNumber} from "variojs";
 import FormFrame from "@components/forms/FormFrame";
 import {uuidv4} from "@helpers/guid";
-import {FrameType} from "@interfaces/frames";
+import {FrameType} from "@enums/frames";
 import CtaMain from '@components/cta/CtaMain';
 import Button from '@components/Button';
 

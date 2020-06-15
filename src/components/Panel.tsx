@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {Colors} from "@interfaces/colors";
+import {Colors} from "@enums/colors";
 
 interface Props {
     children: React.ReactNode
