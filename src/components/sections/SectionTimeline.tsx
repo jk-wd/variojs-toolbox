@@ -12,6 +12,9 @@ const SectionTimeline = () => {
     if(activeTimeline) {
         timeline = (activeTimeline.parallax)? getParallaxTimelineById(animationData, activeTimeline.timelineId): getTimelineById(animationData, activeTimeline.timelineId);
     }
+    if(!timeline || !activeTimeline) {
+        return null;
+    }
     return (
     <div>
         <FormTimeline timeline={timeline} parallax={activeTimeline.parallax} />

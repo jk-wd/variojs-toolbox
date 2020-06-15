@@ -1,11 +1,13 @@
 import React from "react";
-import {sites, setActiveSite} from "@helpers/site-select";
 import BlockLine from "@components/block-elements/BlockLine";
+import {useSiteState, useSiteDispatch, SiteActions} from "@context/sites/SiteContext";
 import Button from '@components/Button';
 import FormHeading from "@components/form-elements/FormHeading";
 import { ISite } from '@interfaces/site';
 
 const SectionSelectSite = () => {
+    const {sites} = useSiteState();
+    const siteDispatch = useSiteDispatch();
     return (
         <div>
             <FormHeading className="large" subHeading="select the site you want to animate">Sites</FormHeading>
@@ -19,7 +21,12 @@ const SectionSelectSite = () => {
                             <BlockLine key={site.url}>
                                 <Button onClick={
                                     () => {
-                                        setActiveSite(site.url);
+                                        siteDispatch(
+                                            {
+                                                type: SiteActions.setActiveSite,
+                                                url: site.url
+                                            }
+                                        );
                                     }
                                 }>{site.url}</Button>
                             </BlockLine>

@@ -43,7 +43,7 @@ const SectionAddAnimationEntry = () => {
                 if(!timelineId) {
                     return
                 }
-                if(selectRef.current && selectRef.current.value) {
+                if(selectRef.current && selectRef.current.value && activeTimeline) {
                     const animationDefinitionId = uuidv4();
                     animationDataDispatch({
                         type: AnimationDataActions.addEditAnimationDefinition,

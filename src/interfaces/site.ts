@@ -3,7 +3,8 @@ import {IAnimationData} from "variojs";
 
 export interface ISite {
     animationData: IAnimationData,
-    div: HTMLDivElement
+    animationDataIndex: number,
+    placeholders: string[],
     url: string,
     active: boolean,
 }

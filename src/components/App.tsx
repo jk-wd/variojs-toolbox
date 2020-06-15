@@ -1,7 +1,8 @@
-import React from "react";
+import React, {useEffect, useCallback} from "react";
 import styled from "styled-components";
 import {useNavigationState, useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
-import {useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
+import {useAnimationDataState, useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
+import devSocket from "@socketserver/client/dev-socket";
 import {copyToClipBoard} from "@helpers/clipboard";
 import {Sections} from "@enums/navigation";
 import Panel from "@components/Panel";
@@ -23,6 +24,11 @@ import SectionAnimationDefinitions from '@components/sections/SectionAnimationDe
 import CtaMain from '@components/cta/CtaMain';
 import { Colors } from '@enums/colors';
 import Timeline from '@components/timeline/Timeline';
+import {ISite} from '@interfaces/site';
+import DecisionBox from "@components/DecisionBox";
+import {Modals} from "@enums/modals";
+import Modal from "@components/modal/Modal";
+import {useModalDispatch, ModalActions} from "@context/modal/ModalContext";
 
 const AppContent = styled.div`
   border: none;
@@ -111,19 +117,64 @@ const contentMap: {[key:string]: React.ReactNode} = {
 }
 
 interface IProps {
-    siteUrl:string
+    siteData:ISite
 }
 
-const App = ({siteUrl}:IProps) => {
+const App = ({siteData}:IProps) => {
     const {sections} = useNavigationState();
+    const animationDataDispatch = useAnimationDataDispatch();
     const {animationData} = useAnimationDataState();
     const dispatchNavigation = useNavigationDispatch();
     const lastActiveSection = sections[sections.length-1];
+    const modalId = `${Modals.CONFIRM_DATA_CHANGE}_${siteData.url}`;
+    const modalDispatch = useModalDispatch();
+
+    useEffect(() => {
+        if(JSON.stringify(animationData) !== JSON.stringify(siteData.animationData)) {
+            modalDispatch({
+                type: ModalActions.setActiveModal,
+                modal: modalId
+            });
+        }
+    }, [siteData])
+
+    const onSelectUpdateAnimationData = useCallback(() => {
+        dispatchNavigation({ 
+            type: NavigationActions.setActiveSection,
+            section: Sections.MENU,
+        });
+        modalDispatch({
+            type: ModalActions.setActiveModal,
+            modal: undefined
+        });
+        animationDataDispatch({
+            type: AnimationDataActions.setAnimationData,
+            animationData: siteData.animationData
+        })
+    }, [siteData]);
 
     return (
         <>
+            <Modal modalId={modalId}>
+                <DecisionBox 
+                    title="Data set changed!"
+                    description="The animation data set has changed, do you want to use the updated data set, and override your current changes?"
+                    yesTile="Keep current"
+                    noTitle="Update"
+                    onClickYes={() => {
+                        modalDispatch({
+                            type: ModalActions.setActiveModal,
+                            modal: undefined
+                        });
+                        devSocket.setAnimationData(animationData);
+                    }}
+                    onClickNo={() => {
+                        onSelectUpdateAnimationData();
+                    }}
+                />
+            </Modal>
             {(true)?
-             <SiteFrame siteUrl={siteUrl}/>
+             <SiteFrame siteUrl={siteData.url}/>
             :
              <LogoHolder>
                 <Logo src="/logo.png" />

@@ -1,7 +1,7 @@
 
 import {IAnimationData} from "variojs";
 
-export interface IInitialData {
+export interface ISocketSiteData {
     animationData: IAnimationData,
     siteUrl: string
     placeholders: string[]

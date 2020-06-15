@@ -72,6 +72,9 @@ const TimelineAnimationFrames = ({animationConnection, className, frames = []}: 
     const navigationDispatch = useNavigationDispatch();
 
     const calculatePosition = useCallback((frame: IFrame) => {
+        if(!activeTimeline) {
+            return;
+        }
         const indexAnimationConnection = (activeTimeline.parallax)? 'startOffsetPixels': 'startMs';
         const timelineEnd = getEndOfTimeline(animationData, activeTimeline.timelineId, activeTimeline.parallax);
         const indexFrame = (activeTimeline.parallax)? 'offsetPixels': 'ms';
@@ -82,6 +85,9 @@ const TimelineAnimationFrames = ({animationConnection, className, frames = []}: 
     }, [activeTimeline, animationConnection, animationData]);
 
     const placeTime = useCallback((frame:IFrame) => {
+        if(!activeTimeline) {
+            return;
+        }
         const index = (activeTimeline.parallax)? 'offsetPixels': 'ms';
         return frame[index];
     }, [activeTimeline]);

@@ -1,10 +1,12 @@
 import React from "react";
 import App from "@components/App";
-import {createGlobalStyle} from "styled-components";
+import styled, {createGlobalStyle} from "styled-components";
 import {NavigationProvider} from "@context/navigation/NavigationContext";
+
 import {PlaceholdersProvider} from "@context/placeholders/PlaceholdersContext";
 import {AnimationDataProvider} from "@context/animation-data/AnimaitonDataContext";
-import {IAnimationData} from "variojs";
+import { ISite } from '@interfaces/site';
+import { ModalProvider } from '@context/modal/ModalContext';
 
 const GlobalStyle = createGlobalStyle`
 input:focus,
@@ -34,23 +36,30 @@ fieldset{
 }
 `
 
+const SiteHolder = styled.div`
+    display:none;
+    &.active {
+        display:block
+    }
+`
+
 interface Props {
-animationData: IAnimationData
-placeholders: string[]
-siteUrl: string
+    siteData: ISite
 }
 
-const Main = ({animationData, placeholders, siteUrl}:Props) => {
+const Main = ({siteData}:Props) => {
 return (
         <NavigationProvider >                    
-                <AnimationDataProvider animationData={animationData} >
-                    <PlaceholdersProvider placeholders={placeholders} >
-                        <>
+            <ModalProvider>
+                <AnimationDataProvider animationData={siteData.animationData} >
+                    <PlaceholdersProvider placeholders={siteData.placeholders} >
+                        <SiteHolder className={(siteData.active)?'active':''}>
                             <GlobalStyle />
-                            <App siteUrl={siteUrl} />
-                        </>
+                            <App siteData={siteData} />
+                        </SiteHolder>
                     </PlaceholdersProvider>
                 </AnimationDataProvider>
+            </ModalProvider>
         </NavigationProvider>
     
 )

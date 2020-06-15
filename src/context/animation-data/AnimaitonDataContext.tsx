@@ -21,8 +21,10 @@ import {
   deleteAnimationDefinition,
   deleteAnimationEntry,
 } from '@helpers/animationData';
-import { cloneObject } from '@helpers/general';
+import { cloneObject } from '@helpers/object';
 import {IActiveTimeline} from '@interfaces/timeline';
+
+
 
 interface Props {
     children: React.ReactNode
@@ -237,11 +239,18 @@ type AnimationDataState = {
   activeAnimationEntry: IAnimationEntry | undefined
   activeAnimationDefinition: string | undefined
   animationData: IAnimationData
-  activeTimeline: IActiveTimeline
+  activeTimeline: IActiveTimeline | undefined
   filterByFrameId: string | undefined
   selectedBreakpoint: string
 }
 
+const defaultState = {
+  activeAnimationEntry: undefined,
+  activeAnimationDefinition: undefined,
+  selectedBreakpoint: 'default',
+  filterByFrameId: undefined,
+  activeTimeline: undefined,
+}
 
 function animationDataReducer(state: AnimationDataState, 
   action: any
@@ -321,8 +330,11 @@ function animationDataReducer(state: AnimationDataState,
         }
       }
       case AnimationDataActions.setAnimationData: {
+        if(!action.animationData) {
+          return state;
+        }
         return {
-            ...state,
+            ...defaultState,
             animationData: action.animationData
         }
       }
@@ -449,11 +461,7 @@ const AnimationDataStateContext = React.createContext<AnimationDataState | undef
 
 function AnimationDataProvider({children, animationData}: Props) {
     const [state, dispatch] = React.useReducer(animationDataReducer, {
-      activeAnimationEntry: undefined,
-      activeAnimationDefinition: undefined,
-      selectedBreakpoint: 'default',
-      filterByFrameId: undefined,
-      activeTimeline: undefined,
+      ...defaultState,
       animationData
     });
 

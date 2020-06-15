@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import devSocket from "@socketserver/client/dev-socket";
-import {registerSite} from "@helpers/site-select";
 import ChooseSite from "@components/ChooseSite";
+import Main from "@components/Main";
+import {SiteProvider, useSiteState, useSiteDispatch, SiteActions} from "@context/sites/SiteContext";
+
 import ReactDOM from "react-dom";
-import { IInitialData } from '@interfaces/data';
+import { ISocketSiteData } from '@interfaces/data';
+import { ISite } from '@interfaces/site';
 
 (window as any).VarioJsDevTools = {
     scrollPos: {
@@ -21,14 +24,37 @@ const handleScroll = ({scrollOffset, scrollPercentage}: any) => {
     (window as any).VarioJsDevTools.scrollPos = {scrollOffset, scrollPercentage};
 }
 
-if(!document.querySelector('.app.active')) {
-    
-}
+const SiteSwitcher = () => {
+    const {sites} = useSiteState();
+    const siteDispatch = useSiteDispatch();
 
 
-devSocket.init((initialData:IInitialData) => {
-    registerSite(initialData);
-    ReactDOM.render(<ChooseSite />, document.querySelector('#vario-js-toolbox'));    
-}, handleScroll);
+    useEffect(() => {
+        devSocket.init((socketData:ISocketSiteData) => {
+            siteDispatch(
+                {
+                    type: SiteActions.registerSite,
+                    siteData: socketData
+                }
+            );
+        }, handleScroll);
+    }, [])
+    return (
+            <>
+                {
+                   sites.map((site: ISite) => {
+                        return <Main key={site.url} siteData={site} />
+                   })
+               }
+               {
+                    (!sites.find((site:ISite) => (site.active  === true)))?
+                    <ChooseSite />: null
+               }
+            </>            
+    );
+    }
+
+ReactDOM.render(<SiteProvider><SiteSwitcher /></SiteProvider>, document.querySelector('#vario-js-toolbox'));    
+
 
 

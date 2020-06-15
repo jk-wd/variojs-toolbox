@@ -8,22 +8,16 @@ export default {
       ws.addEventListener('message', function (event) {
         const data = event.data;
         const dataParsed = JSON.parse(data);
-        if(dataParsed.action === 'initialData'){
+        if(dataParsed.action === 'siteData'){
           receivedData = true;
           initCallback(dataParsed.payload);
         }
         if(dataParsed.action === 'calculatePageScroll'){
             scrollCallback(dataParsed.payload);
         }
-        if(dataParsed.action === 'pageReady'){
-          if(!receivedData) {
-            window.location.reload();
-          }
-        }
-
       });
       ws.send(JSON.stringify({
-        action: 'getInitialData'
+        action: 'getSiteData'
       }));
 
     },
