@@ -1,16 +1,17 @@
 import React from "react";
 import styled from "styled-components";
-import { IFrame, IAnimationConnection } from 'variojs';
+import { IFrameDef, IAnimationConnection } from 'variojs';
 import TimelineAnimationFrames from "@components/timeline/TimelineAnimationFrames";
 import { Colors } from '@enums/colors';
 
 
 interface IProps {
-    frames: IFrame[]
+    frames: IFrameDef[]
     first: boolean
     animationConnection: IAnimationConnection
     propKey: string
 }
+
 
 const offsetLeft = 22;
 

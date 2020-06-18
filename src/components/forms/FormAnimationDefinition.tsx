@@ -1,11 +1,10 @@
-import React, {useState, useEffect} from "react";
-import {PropTypes} from "variojs";
+import React, {useState, useEffect, useCallback} from "react";
+import {PropTypes, unitMap, FrameValueTypes, IFrame} from "variojs";
 import styled from "styled-components";
 import FormFieldset from "@components/form-elements/FormFieldset";
 import FormFrameNumberArray from "@components/forms/FormFrameArray";
 import {getAnimationDefinitionById} from "variojs";
-import FormInputString from "@components/form-elements/FormInputString";
-import {FrameType} from "@enums/frames";
+import FormInputString from "@components/form-elements/FormInputText";
 import {useAnimationDataState, useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
 import FormLabel from "@components/form-elements/FormLabel";
 import FormHeading from "@components/form-elements/FormHeading";
@@ -23,6 +22,16 @@ const Frames = styled.div`
     padding-bottom: 10px;
 `
 
+const UnitSelect = styled.div`
+    float: right;
+    span {
+        position: relative;
+        top: 1px;
+        padding-right: 8px;
+        font-family: "ProximaNova-Bold";
+    }
+`;
+
 const BottomSection = styled.fieldset`
     display:block;
     margin-bottom:30px;
@@ -30,6 +39,7 @@ const BottomSection = styled.fieldset`
     margin: 0;
     border: none;
 `;
+
 
 const FormAnimationDefinition = ({animationDefinitionId, propsOfEntry = false} : Props) => {
     const [activeProps, setActiveProps] = useState<string[]>([]);
@@ -39,6 +49,50 @@ const FormAnimationDefinition = ({animationDefinitionId, propsOfEntry = false} :
     const animationDefinition = getAnimationDefinitionById(animationData, targetAnimationDefinitionId)
     const [name, setName] = useState((animationDefinition)?animationDefinition.name:undefined);
     const animationDataDispatch = useAnimationDataDispatch();
+
+    const placeUnitSelect = useCallback((key:string, unit: string) => {
+        const units = (unitMap as any)[key];
+        if(!units || units.length <= 0) {
+            return null;
+        }
+
+        return (
+            <select defaultValue={unit} onChange={
+                (event: any) => {
+
+                    if(animationDefinition && animationDefinition.props) {
+                        const changedProps: {[key:string]:IFrame} = {};
+                        for(let propKey of Object.keys(animationDefinition.props)) {
+                            if(key === propKey) {
+                                changedProps[propKey] = animationDefinition.props[propKey].map((frame: IFrame) => {
+                                    return {
+                                        ...frame,
+                                        unit: event.target.value
+                                    }
+                                })  
+                            } else {
+                                changedProps[propKey] = animationDefinition.props[propKey]
+                            }
+                        }
+                        animationDataDispatch(
+                            {
+                                type: AnimationDataActions.addEditAnimationDefinition,
+                                animationDefinition: {
+                                    ...animationDefinition,
+                                    props:changedProps
+                                }
+                            }
+                        );
+                    }
+                    
+                }
+            }>
+                {units.map((unit:string) => {
+                    return <option value={unit} key={unit}>{unit}</option>
+                })}
+            </select>
+        )
+    }, []);
 
     useEffect(() => {
         if(animationDefinition) {
@@ -61,6 +115,7 @@ const FormAnimationDefinition = ({animationDefinitionId, propsOfEntry = false} :
             {Object.keys(PropTypes).map((key:string) => {
                 
                 const props = animationDefinition.props;
+                const unit = (props[key] && props[key].length > 0)?props[key][0].unit: '';
                 if(!props[key] && !(activeProps.indexOf(key) > -1)) {
                     return
                 }
@@ -79,9 +134,13 @@ const FormAnimationDefinition = ({animationDefinitionId, propsOfEntry = false} :
                     key === 'posX'
                 ){
                     return (
-                    <Frames key={animationDefinition.id +''+ key}>
-                        <FormLabel className="line">{key}</FormLabel>
-                        <FormFrameNumberArray frameType={(key === "display" || key === "visibility" )?FrameType.StringFrame: FrameType.NumberFrame} frames={props[key]} filterByFrameId={filterByFrameId} onChange={(frames) => {
+                    <Frames key={animationDefinition.id +''+ key + unit}>
+                        <FormLabel className="line">{key}
+                        <UnitSelect>
+                            <span>Unit:</span>{placeUnitSelect(key, unit)}
+                        </UnitSelect>
+                        </FormLabel>
+                        <FormFrameNumberArray propType={key as PropTypes} frameType={(key === "display" || key === "visibility" )?FrameValueTypes.string: FrameValueTypes.number} frames={props[key]} filterByFrameId={filterByFrameId} onChange={(frames) => {
                             const newProps = {
                                 ...animationDefinition.props,
                                 [key]: frames

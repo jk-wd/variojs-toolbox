@@ -7,7 +7,7 @@ import { IAnimationEntry, IAnimationConnection } from 'variojs/lib/types-interfa
 import Block from '@components/block-elements/Block';
 import BlockHeading from '@components/block-elements/BlockHeading';
 import BlockSection from '@components/block-elements/BlockSection';
-import FormInputString from '@components/form-elements/FormInputString';
+import FormInputText from '@components/form-elements/FormInputText';
 import Button from '@components/Button';
 import CtaMain from '@components/cta/CtaMain';
 import {getAnimationDefinitionById, IAnimationDefinition} from 'variojs';
@@ -135,20 +135,20 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
             </RemoveButtonHolder>
 
             <br />
-            <FormInputString defaultValue={animationConnection.startOffsetPixels} label="Start offsetPixels" onChange={(event: any) => {
+            <FormInputText defaultValue={animationConnection.startPx} label="Start px" onChange={(event: any) => {
                 animationDataDispatch(
                     {
                         type: AnimationDataActions.addEditAnimationEntryConnection,
                         animationEntryId: animationEntry.id,
                         conneciton: {
                             ...animationConnection,
-                            startOffsetPixels: event.target.value
+                            startPx: event.target.value
                         },
                         privateConnection: false
                     }
                 );
             }} />
-            <FormInputString defaultValue={animationConnection.startMs} label="Start milliseconds" onChange={(event: any) => {
+            <FormInputText defaultValue={animationConnection.startMs} label="Start milliseconds" onChange={(event: any) => {
                 animationDataDispatch(
                     {
                         type: AnimationDataActions.addEditAnimationEntryConnection,
@@ -184,7 +184,7 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
     return (
     <Block>
         <BlockSection>
-           <FormInputString label="id" defaultValue={(animationEntry.name)?animationEntry.name:animationEntry.id} onChange={(event: any) => {
+           <FormInputText label="id" defaultValue={(animationEntry.name)?animationEntry.name:animationEntry.id} onChange={(event: any) => {
                         animationDataDispatch(
                             {
                                 type: AnimationDataActions.addEditAnimationEntry,
@@ -212,4 +212,5 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
     </Block>
     )
 }
+
 export default BlockAnimationEntry;

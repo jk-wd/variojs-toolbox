@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import {IBreakpoint, sortBreakpoints} from "variojs";
-import FormInputString from "@components/form-elements/FormInputString";
-import FormInputNumber from "@components/form-elements/FormInputNumber";
+import FormInputText from "@components/form-elements/FormInputText";
 import FormFrameBlock from "@components/form-elements/FormFrameBlock";
 import FormLine from "@components/form-elements/FormLine";
 import FormLineSection from "@components/form-elements/FormLineSection";
@@ -49,17 +48,17 @@ const SectionBreakpoints = () => {
                         </FormLine>
                         <FormLine>
                             <FormLineSection>
-                                <FormInputNumber onChange={(event: any) => {
+                                <FormInputText onChange={(event: any) => {
                                      dispatchAnimationData({
                                         type: AnimationDataActions.editBreakpoint,
                                         id: breakpoint.id,
                                         definition: breakpoint.definition,
                                         order: parseInt(event.target.value, 10),
                                     });
-                                }} label="Order" defaultValue={breakpoint.order}/>
+                                }} label="Importance" defaultValue={breakpoint.order}/>
                             </FormLineSection>
                             <FormLineSection>
-                                <FormInputString onChange={(event: any) => {
+                                <FormInputText onChange={(event: any) => {
                                      dispatchAnimationData({
                                         type: AnimationDataActions.editBreakpoint,
                                         id: breakpoint.id,
@@ -91,7 +90,7 @@ const SectionBreakpoints = () => {
                     Add breakpoint
                 </FormHeading>
                 <FormFieldset>
-                    <FormInputString onChange={(event:any) => {
+                    <FormInputText onChange={(event:any) => {
                         setBreakpoint(
                             {
                                 ...breakPoint,
@@ -99,7 +98,7 @@ const SectionBreakpoints = () => {
                             }
                         );
                     }} label="Identifier"/>
-                    <FormInputString onChange={(event:any) => {
+                    <FormInputText onChange={(event:any) => {
                         setBreakpoint(
                             {
                                 ...breakPoint,
@@ -107,7 +106,7 @@ const SectionBreakpoints = () => {
                             }
                         );
                     }} label="Definition"/>
-                    <FormInputNumber onChange={(event:any) => {
+                    <FormInputText onChange={(event:any) => {
                         setBreakpoint(
                             {
                                 ...breakPoint,

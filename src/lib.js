@@ -4,7 +4,7 @@ import socketConnect from '@socketserver/client/socket-connect.js';
 
 
 const sendSiteData = (ws, variojs) => {
-  const animationData = variojs.getFetchedAnimationData();
+  const animationData = variojs.getAnimationData();
   if(!animationData) {
     return;
   }

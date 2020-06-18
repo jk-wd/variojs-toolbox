@@ -1,105 +1,171 @@
-import React, {useState, useEffect} from "react";
-import {IFrame, EasingFunctions, IFrameNumber, IFrameString} from "variojs";
+import React, {useState, useEffect, useCallback} from "react";
+import {IFrameDef, EasingFunctions, IBreakpoint} from "variojs";
 import FormLine from "@components/form-elements/FormLine";
+import styled from "styled-components";
 import FormLineSection from "@components/form-elements/FormLineSection";
 import Button from "@components/Button";
 import DeleteLabel from "@components/typography/DeleteLabel";
 import FormElementLabel from "@components/form-elements/FormElementLabel";
+import {useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
 import FormFrameBlock from "@components/form-elements/FormFrameBlock";
-import FormInputNumber from "@components/form-elements/FormInputNumber";
-import FormInputString from "@components/form-elements/FormInputString";
-import {FrameType} from "@enums/frames";
+import FormInputText from "@components/form-elements/FormInputText";
+import {FrameValueTypes, NoBreakpointIdentifier} from "variojs";
 
 interface Props {
-    onChange: (frame:IFrame) => void,
-    onDelete: (frame:IFrame) => void,
-    frameType?: FrameType,
-    frame: IFrameString | IFrameNumber,
+    onChange: (frame:IFrameDef) => void,
+    onDelete: (frame:IFrameDef) => void,
+    frameType?: FrameValueTypes,
+    frame: IFrameDef,
 }
 
+const BreakpointLabel = styled.div`
+    text-align: right;
+    font-family: "ProximaNova-Bold";
+    font-size: 12px;
+    padding-top: 6px;
+`
 
-const FormFrameNumber = ({onChange = () => {}, frameType=FrameType.NumberFrame,  onDelete = () => {}, frame:frameFromProps} : Props) => {
-    const [frame, setFrame] = useState<IFrameString | IFrameNumber>(frameFromProps);
+
+const FormFrameNumber = ({onChange = () => {}, frameType=FrameValueTypes.number, onDelete = () => {}, frame:frameFromProps} : Props) => {
+    const [frame, setFrame] = useState<IFrameDef>(frameFromProps);
+    const {animationData} = useAnimationDataState();
+    const [activeBreakpoints, setActiveBreakpoints] = useState<string[]>(Object.keys(frameFromProps.valueDef || {}));
+    const breakpointSelectRef = React.createRef<HTMLSelectElement>();
+    let breakpoints = (animationData.breakpoints)?animationData.breakpoints : [];
+    breakpoints = [...breakpoints, {
+        id: NoBreakpointIdentifier,
+        order: 0,
+        definition: ''
+    }];
 
     useEffect(() => {
-        onChange(frame);
+        onChange({
+            ...frame,
+            frameValueType: frameType
+        });
     }, [frame]);
 
+    useEffect(() => {
+        if(breakpointSelectRef.current) {
+            breakpointSelectRef.current.value = "Add a breakpoint value";
+        }
+    }, [activeBreakpoints]);
+
+    const placeValueSection = useCallback((breakpoint = NoBreakpointIdentifier, label?:string) => {
+        
+        return (
+            <FormLineSection>
+                {
+                    <FormInputText 
+                    label={label}
+                    unit={frame.unit}
+                    onChange={(event: any) => {
+                        const valueDef = event.target.value;
+                        if(valueDef === '' && frame && frame.valueDef && frame.valueDef[breakpoint]) {
+                            delete frame.valueDef[breakpoint];
+                            setFrame({
+                                ...frame
+                            });
+                            setActiveBreakpoints(activeBreakpoints.filter((activeBreakpoint) => (activeBreakpoint !== breakpoint)))
+                        }else if(valueDef) {
+                            setFrame({
+                                ...frame,
+                                valueDef: {
+                                    ...frame.valueDef,
+                                    [breakpoint]: valueDef
+                                }
+                            });
+                        }
+                    }}
+                    defaultValue={(frame.valueDef && frame.valueDef[breakpoint])?frame.valueDef[breakpoint]:''} />
+                }
+                
+            </FormLineSection>
+        )
+    }, [frame]);
+ 
     return (
         <FormFrameBlock>
             <FormLine>
                 <FormLineSection>
-                    <FormInputNumber 
+                    <FormInputText 
                         label="px"
                         onChange={(event: any) => {
-                            const value = parseInt(event.target.value);
-                            if(value || value === 0) {
+                            const pxDef = event.target.value;
+                            if(pxDef) {
                                 setFrame({
                                     ...frame,
-                                    offsetPixels: value
+                                    pxDef
                                 });
                             }
                         }}
-                        defaultValue={frame.offsetPixels} />
+                        defaultValue={frame.pxDef} />
                        
                 </FormLineSection>
                 <FormLineSection>
-                    <FormInputNumber 
+                    <FormInputText 
                             label="ms"
                             onChange={(event: any) => {
-                                const value = parseInt(event.target.value);
-                                if(value || value === 0) {
+                                const msDef = event.target.value;
+                                if(msDef) {
                                     setFrame({
                                         ...frame,
-                                        ms: value
+                                        msDef
                                     });
                                 }
                             }}
-                            defaultValue={frame.ms} />
+                            defaultValue={frame.msDef} />
+                </FormLineSection>
+                {
+                    placeValueSection(NoBreakpointIdentifier, "value")
+                }
+            </FormLine>
+            {
+                activeBreakpoints.map((breakpoint:string) => {
+                    if(breakpoint === NoBreakpointIdentifier) {
+                        return;
+                    }
+                    return  (
+                        <FormLine>
+                            <FormLineSection></FormLineSection>
+                            <FormLineSection><BreakpointLabel>{breakpoint}</BreakpointLabel></FormLineSection>
+                            {
+                                placeValueSection(breakpoint)
+                            }
+                        </FormLine>
+                    )
+                })
+            }
+            <FormLine>
+                <FormLineSection>
                 </FormLineSection>
                 <FormLineSection>
-                    {
-                        (frameType === FrameType.StringFrame)?
-                        <FormInputString 
-                            label="value"
-                            onChange={(event: any) => {
-                                const value = event.target.value;
-                                if(value || value === 0) {
-                                    setFrame({
-                                        ...frame,
-                                        value
-                                    });
+                </FormLineSection>
+                <FormLineSection>
+                    <select ref={breakpointSelectRef} onChange={(event: any) => {
+                        if(activeBreakpoints.indexOf(event.target.value) <= 0) {
+                            setActiveBreakpoints([...activeBreakpoints, event.target.value]);
+                        }
+                    }}>
+                        <option disabled>Add a breakpoint value</option>
+                        {
+                            breakpoints.map((breakpoint: IBreakpoint) => {
+                                if(breakpoint.id === NoBreakpointIdentifier) {
+                                    return;
                                 }
-                            }}
-                            defaultValue={''+frame.value} />
-                        : null
-                    }
-                    {
-                         (frameType === FrameType.NumberFrame)?
-                        <FormInputNumber 
-                        label="value"
-                        onChange={(event: any) => {
-                            const value = parseInt(event.target.value);
-                            if(value || value === 0) {
-                                setFrame({
-                                    ...frame,
-                                    value
-                                });
-                            }
-                        }}
-                        defaultValue={frame.value as number} />:null
-                    }
-                    
-                    
+                                return <option key={breakpoint.id} value={breakpoint.id}>{breakpoint.id}</option>
+                            })
+                        }
+                    </select>
                 </FormLineSection>
             </FormLine>
             <FormLine>
                 {
-                    (frameType === FrameType.NumberFrame)?
+                    (frameType === FrameValueTypes.number)?
                     <FormLineSection>
                         <FormElementLabel>Easing</FormElementLabel><br />
                         <select 
-                            value={(frame as IFrameNumber).easing}
+                            value={frame.easing}
                             onChange={
                                 (event: any) => {
                                     setFrame({

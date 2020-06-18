@@ -7,7 +7,7 @@ import FormLabel from "@components/form-elements/FormLabel";
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
 
 import {Sections} from "@enums/navigation";
-import FormInputString from "@components/form-elements/FormInputString";
+import FormInputString from "@components/form-elements/FormInputText";
 import CtaMain from '@components/cta/CtaMain';
 
 const SectionAddAnimationDefinition = () => {
@@ -50,7 +50,7 @@ const SectionAddAnimationDefinition = () => {
                 <FormHeading className="large">Add animation definition</FormHeading>
                 <FormFieldset>
                     <FormLabel className="small">Name</FormLabel><br />
-                    <FormInputString onChange={(event) => {
+                    <FormInputString onChange={(event:any) => {
                         setName(event.target.value);
                     }} />
                 </FormFieldset>

@@ -222,7 +222,7 @@ export const deleteAnimationEntry = (animationData: IAnimationData, animationEnt
     return animationDataResult;
 }
 
-export const connectAnimationEntryToTimeline = ({animationData}: AnimationDataState, timelineId:string, entryId:string, breakpoint:string, parallax:boolean = false) => {
+export const connectAnimationEntryToTimeline = ({animationData}: AnimationDataState, timelineId:string, entryId:string, parallax:boolean = false) => {
     animationData = JSON.parse(JSON.stringify(animationData));
     const timelinesIndex = (parallax)? 'parallaxTimelines': 'timelines';
     const timelines = animationData[timelinesIndex] as ITimeline[];
@@ -230,13 +230,10 @@ export const connectAnimationEntryToTimeline = ({animationData}: AnimationDataSt
         ...animationData,
         [timelinesIndex]: (timelines)?timelines.map((timeline:ITimeline) => {
             if(timeline.id === timelineId) {
-                const entries = (timeline && timeline.animationEntries && timeline.animationEntries[breakpoint])? timeline.animationEntries[breakpoint]: [];
+                const entries = (timeline && timeline.animationEntries)? timeline.animationEntries: [];
                 return {
                     ...timeline,
-                    animationEntries: {
-                        ...timeline.animationEntries,
-                        [breakpoint]: ((entries.indexOf(entryId) <= -1))?[...entries, entryId] : entries
-                    }
+                    animationEntries: ((entries.indexOf(entryId) <= -1))?[...entries, entryId] : entries
                 };
             }
             return timeline;
@@ -244,7 +241,7 @@ export const connectAnimationEntryToTimeline = ({animationData}: AnimationDataSt
     }
 }
 
-export const disconnectAnimationEntryFromTimeline = ({animationData}: AnimationDataState, timelineId:string, entryId:string, breakpoint:string, parallax:boolean = false) => {
+export const disconnectAnimationEntryFromTimeline = ({animationData}: AnimationDataState, timelineId:string, entryId:string, parallax:boolean = false) => {
     animationData = JSON.parse(JSON.stringify(animationData));
     const timelinesIndex = (parallax)? 'parallaxTimelines': 'timelines';
     const timelines = animationData[timelinesIndex] as ITimeline[];
@@ -252,18 +249,15 @@ export const disconnectAnimationEntryFromTimeline = ({animationData}: AnimationD
         ...animationData,
         [timelinesIndex]: (timelines)?timelines.map((timeline:ITimeline) => {
             if(timeline.id === timelineId) {
-                const entries = (timeline && timeline.animationEntries && timeline.animationEntries[breakpoint])? timeline.animationEntries[breakpoint]: [];
+                const entries = (timeline && timeline.animationEntries)? timeline.animationEntries: [];
                 return {
                     ...timeline,
-                    animationEntries: {
-                        ...timeline.animationEntries,
-                        [breakpoint]: entries.reduce((result: string[], entry:string) => {
-                            if(entryId != entry){
-                                result.push(entry);
-                            }
-                            return result;
-                        }, [])
-                    }
+                    animationEntries: entries.reduce((result: string[], entry:string) => {
+                        if(entryId != entry){
+                            result.push(entry);
+                        }
+                        return result;
+                    }, [])
                 };
             }
             return timeline;

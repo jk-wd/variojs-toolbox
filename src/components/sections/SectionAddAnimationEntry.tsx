@@ -8,9 +8,9 @@ import {useNavigationDispatch, NavigationActions} from "@context/navigation/Navi
 import {usePlaceholders} from "@context/placeholders/PlaceholdersContext";
 import { useAnimationDataState } from '@context/animation-data/AnimaitonDataContext';
 import {Sections} from "@enums/navigation";
-import FormInputString from "@components/form-elements/FormInputString";
+import FormInputString from "@components/form-elements/FormInputText";
 import CtaMain from '@components/cta/CtaMain';
-import { IAnimationEntry, IBreakpoint, ITimeline } from 'variojs';
+import { IAnimationEntry, IBreakpoint, ITimeline, NoBreakpointIdentifier } from 'variojs';
 
 const SectionAddAnimationEntry = () => {
     const animationDataDispatch = useAnimationDataDispatch();
@@ -18,11 +18,11 @@ const SectionAddAnimationEntry = () => {
     const [name, setName] = useState<string | undefined>();
     const {animationData, selectedBreakpoint, activeTimeline} = useAnimationDataState();
     const timelineSelectRef = React.createRef<HTMLSelectElement>();
-    const [breakpoint, setBreakpoint] = useState<string>(selectedBreakpoint || 'default');
+    const [breakpoint, setBreakpoint] = useState<string>(selectedBreakpoint || NoBreakpointIdentifier);
     const [timelineId, setTimelineId] = useState<string | undefined>((activeTimeline)?activeTimeline.timelineId:undefined);
     let breakpoints = (animationData.breakpoints)?animationData.breakpoints : [];
     breakpoints = [...breakpoints, {
-        id: 'default',
+        id: NoBreakpointIdentifier,
         order: 0,
         definition: ''
     }]
@@ -92,7 +92,7 @@ const SectionAddAnimationEntry = () => {
                 <FormHeading className="large">Add animation entry</FormHeading>
                 <FormFieldset>
                     <FormLabel className="small">Name</FormLabel><br />
-                    <FormInputString onChange={(event) => {
+                    <FormInputString onChange={(event:any) => {
                         setName(event.target.value);
                     }} />
                 </FormFieldset>
@@ -112,7 +112,7 @@ const SectionAddAnimationEntry = () => {
                 </FormFieldset>
                 <FormFieldset>
                     <FormLabel className="small">Breakpoint</FormLabel><br />
-                    <select defaultValue={selectedBreakpoint || 'default'} onChange={(event) => {
+                    <select defaultValue={selectedBreakpoint || NoBreakpointIdentifier} onChange={(event) => {
                         setBreakpoint(event.target.value);
                     }}>
                         {

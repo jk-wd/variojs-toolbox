@@ -3,7 +3,7 @@ import styled from "styled-components";
 import DeleteLabel from "@components/typography/DeleteLabel";
 import BlockLine from "@components/block-elements/BlockLine";
 import { IAnimationEntry, IAnimationConnection } from 'variojs/lib/types-interfaces';
-import FormInputString from '@components/form-elements/FormInputString';
+import FormInputString from '@components/form-elements/FormInputText';
 import FormLabel from '@components/form-elements/FormLabel';
 import {usePlaceholders} from "@context/placeholders/PlaceholdersContext";
 import Button from '@components/Button';
@@ -110,14 +110,14 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
             </RemoveButtonHolder>
 
             <br />
-            <FormInputString defaultValue={animationConnection.startOffsetPixels} label="Starting point px" onChange={(event: any) => {
+            <FormInputString defaultValue={animationConnection.startPx} label="Starting point px" onChange={(event: any) => {
                 animationDataDispatch(
                     {
                         type: AnimationDataActions.addEditAnimationEntryConnection,
                         animationEntryId: animationEntry.id,
                         conneciton: {
                             ...animationConnection,
-                            startOffsetPixels: event.target.value
+                            startPx: event.target.value
                         },
                         privateConnection: false
                     }
@@ -176,7 +176,7 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                 (animationEntry.animationConnection)?
                 <>
                 <FormFieldset>
-                    <FormInputString label="Starting point px" defaultValue={animationEntry.animationConnection.startOffsetPixels} onChange={(event: any) => {
+                    <FormInputString label="Starting point px" defaultValue={animationEntry.animationConnection.startPx} onChange={(event: any) => {
                                     animationDataDispatch(
                                         {
                                             type: AnimationDataActions.addEditAnimationEntry,
@@ -184,7 +184,7 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                                                 ...animationEntry,
                                                 animationConnection: {
                                                     ...animationEntry.animationConnection,
-                                                    startOffsetPixels: event.target.value
+                                                    startPx: event.target.value
                                                 }
                                                 
                                             }

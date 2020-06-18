@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import FormInputString from "@components/form-elements/FormInputString";
+import FormInputText from "@components/form-elements/FormInputText";
 import FormFrameBlock from "@components/form-elements/FormFrameBlock";
 import FormLine from "@components/form-elements/FormLine";
 import FormLineSection from "@components/form-elements/FormLineSection";
@@ -8,7 +8,6 @@ import FormFieldset from "@components/form-elements/FormFieldset";
 import FormHeading from "@components/form-elements/FormHeading";
 import DeleteLabel from "@components/typography/DeleteLabel";
 import Button from "@components/Button";
-import FormInputNumber from "@components/form-elements/FormInputNumber";
 import { useAnimationDataState, useAnimationDataDispatch, AnimationDataActions } from '@context/animation-data/AnimaitonDataContext';
 import CtaMain from '@components/cta/CtaMain';
 
@@ -33,7 +32,7 @@ const SectionNumbers = () => {
                         <FormLine>
                             <FormLineSection>
                                 <FormLabel className="small">{numberKey}</FormLabel>
-                                <FormInputNumber onChange={(event: any) => {
+                                <FormInputText onChange={(event: any) => {
                                      dispatchAnimationData({
                                         type: AnimationDataActions.editNumberVariable,
                                         name: numberKey,
@@ -75,7 +74,7 @@ const SectionNumbers = () => {
                 Add nummber varable
             </FormHeading>
             <FormFieldset>
-                <FormInputString onChange={(event:any) => {
+                <FormInputText onChange={(event:any) => {
                     setNumberVariable(
                         {
                             ...numberVariable,
@@ -83,7 +82,7 @@ const SectionNumbers = () => {
                         }
                     );
                 }} label="Number varaible name"/>
-                <FormInputNumber onChange={(event:any) => {
+                <FormInputText onChange={(event:any) => {
                     setNumberVariable(
                         {
                             ...numberVariable,

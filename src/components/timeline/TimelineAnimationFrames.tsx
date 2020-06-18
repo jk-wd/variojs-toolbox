@@ -1,6 +1,6 @@
 import React, {useCallback} from "react";
 import styled from "styled-components";
-import { IFrame, IAnimationConnection, calculateStartValue, getEndOfTimeline } from 'variojs';
+import { IFrame, IFrameDef, IAnimationConnection, calculateSum, processFrameDef, getEndOfTimeline } from 'variojs';
 import {useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
 import {useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
@@ -8,7 +8,7 @@ import {Sections} from "@enums/navigation";
 import { Colors } from '@enums/colors';
 
 interface IProps {
-    frames: IFrame[]
+    frames: IFrameDef[]
     className: string
     animationConnection: IAnimationConnection
 }
@@ -75,10 +75,10 @@ const TimelineAnimationFrames = ({animationConnection, className, frames = []}: 
         if(!activeTimeline) {
             return;
         }
-        const indexAnimationConnection = (activeTimeline.parallax)? 'startOffsetPixels': 'startMs';
+        const indexAnimationConnection = (activeTimeline.parallax)? 'startPx': 'startMs';
         const timelineEnd = getEndOfTimeline(animationData, activeTimeline.timelineId, activeTimeline.parallax);
-        const indexFrame = (activeTimeline.parallax)? 'offsetPixels': 'ms';
-        const startValue = calculateStartValue(animationData, animationConnection[indexAnimationConnection] || '');
+        const indexFrame = (activeTimeline.parallax)? 'px': 'ms';
+        const startValue = calculateSum(animationData, animationConnection[indexAnimationConnection] || '');
         let value = frame[indexFrame] || 0;
         value = value + startValue;
         return (value / timelineEnd) * innerWidth
@@ -88,15 +88,19 @@ const TimelineAnimationFrames = ({animationConnection, className, frames = []}: 
         if(!activeTimeline) {
             return;
         }
-        const index = (activeTimeline.parallax)? 'offsetPixels': 'ms';
+        const index = (activeTimeline.parallax)? 'px': 'ms';
         return frame[index];
     }, [activeTimeline]);
 
     return (
         <TimelineAnimationFramesEl className={className}>
             <TimelineAnimationFramesInner>
-                {frames.map((frame: IFrame, index:number) => {
-                    //@ts-ignore
+                {frames.map((frameDef: IFrameDef, index:number) => {
+                if(!frameDef) {
+                    return;
+                }
+                const frame = processFrameDef(animationData, frameDef);
+                //@ts-ignore
                 return <KeyFrame key={frame.id +''+ index} left={`${calculatePosition(frame)}px`} 
                 onClick={() => {
                     animationDataDispatch({
@@ -105,7 +109,7 @@ const TimelineAnimationFrames = ({animationConnection, className, frames = []}: 
                     })
                     animationDataDispatch({
                         type: AnimationDataActions.setFilterByFrameId,
-                        frameId: frame.id
+                        frameId: frameDef.id
                     })
                     navigationDispatch({
                         type: NavigationActions.setActiveSection,

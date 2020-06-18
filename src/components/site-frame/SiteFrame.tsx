@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import styled from "styled-components";
+import { Colors } from '@enums/colors';
 
 
 const SiteFrameEl = styled.div`
@@ -11,6 +12,7 @@ const SiteFrameEl = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: ${Colors.softWhite};
     input {
         border-radius: 0;
         border: 1px solid black;
@@ -23,7 +25,8 @@ const SiteFrameEl = styled.div`
 
     }
     iframe {
-        border: none;
+        background-color: ${Colors.white};
+        border: 1px solid ${Colors.softWhite};
         width: ${props => {
             //@ts-ignore
             return props.frameWidth

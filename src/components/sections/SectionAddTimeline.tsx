@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import FormInputString from "@components/form-elements/FormInputString";
+import FormInputText from "@components/form-elements/FormInputText";
 import FormFieldset from "@components/form-elements/FormFieldset";
 import FormHeading from "@components/form-elements/FormHeading";
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
@@ -42,7 +42,7 @@ const SectionAddTimeline = ({parallax}: Props) => {
         }}>
 
             <FormFieldset>
-                <FormInputString onChange={(event:any) => {
+                <FormInputText onChange={(event:any) => {
                     setTimeline(
                         {
                             ...timeline,
