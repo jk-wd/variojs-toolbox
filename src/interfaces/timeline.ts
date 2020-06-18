@@ -1,8 +1,8 @@
-import { ITimeline, IParallaxTimeline } from 'variojs';
+import { ITimeline } from 'variojs';
 
 export interface IActiveTimeline {
     timelineId: string,
     parallax: boolean,
-    timeline: IParallaxTimeline | ITimeline,
+    timeline: ITimeline,
     end: number,
 }
