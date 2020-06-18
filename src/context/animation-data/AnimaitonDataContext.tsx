@@ -39,28 +39,36 @@ interface Props {
 enum AnimationDataActions {
     setActiveAnimationEntry = 'setActiveAnimationEntry',
     setFilterByFrameId = 'setFilterByFrameId',
-    addEditAnimationEntryConnection = 'addEditAnimationEntryConnection',
     setActiveTimeline = 'setActiveTimeline',
     setAnimationData = 'setAnimationData',
-    addEditAnimationEntry = 'addEditAnimationEntry',
-    addEditAnimationDefinition = 'addEditAnimationDefinition',
-    connectAnimationDefinitionToEntry = 'connectAnimationDefinitionToEntry',
-    disconnectAnimationDefinitionFromEntry = 'connectAnimationDefinitionFromEntry',
-    connectAnimationEntryToTimeline = 'connectAnimationEntryToTimeline',
     setSelectedBreakpoint = 'setSelectedBreakpoint',
-    editTimeline = 'editTimeline',
-    disconnectAnimationEntryFromTimeline = 'disconnectAnimationEntryFromTimeline',
     setActiveAnimationDefinition = 'setActiveAnimationDefinition',
-    addNumberVariable = 'addNumberVariable',
+
+    deleteAnimationEntryConnection = 'deleteAnimationEntryConnection',
+    addAnimationEntryConnection = 'addAnimationEntryConnection',
+    editAnimationEntryConnection = 'editAnimationEntryConnection',
+
+    addAnimationEntry = 'addAnimationEntry',
+    editAnimationEntry = 'addAnimationEntry',
+    deleteAnimationEntry = 'deleteAnimationEntry',
+
+    addAnimationDefinition = 'addAnimationDefinition',
+    editAnimationDefinition = 'editAnimationDefinition',
+    deleteAnimationDefinition = 'deleteAnimationDefinition',
+
+    editTimeline = 'editTimeline',
     addTimeline = 'addTimeline',
     deleteTimeline = 'deleteTimeline',
-    removeNumberVariable = 'removeNumberVariable',
-    editNumberVariable = 'editNumberVariable',
-    deleteAnimationDefinition = 'deleteAnimationDefinition',
-    deleteAnimationEntry = 'deleteAnimationEntry',
+
+    connectTimelineAnimationEntry = 'connectTimelineAnimationEntry',
+    disconnectTimelineAnimationEntry = 'disconnectTimelineAnimationEntry',
+
+    addEditNumberVariable = 'addEditNumberVariable',
+    deleteNumberVariable = 'deleteNumberVariable',
+    
     addBreakpoint = 'addBreakpoint',
     editBreakpoint = 'editBreakpoint',
-    removeBreakpoint = 'removeBreakpoint',
+    deleteBreakpoint = 'deleteBreakpoint',
 }
 type ActionSetActiveAnimationEntry = {
     type: AnimationDataActions.setActiveAnimationEntry
@@ -433,7 +441,7 @@ function animationDataReducer(state: AnimationDataState,
         }
       }
       case AnimationDataActions.addEditAnimationDefinition: {
-        const animationData = cloneObject(addEditAnimationDefinition(state.animationData, action.animationDefinition));
+        const animationData = cloneObject(addAnimationDefinition(state.animationData, action.animationDefinition));
         devSocket.setAnimationData(animationData);
         return {
             ...state,
