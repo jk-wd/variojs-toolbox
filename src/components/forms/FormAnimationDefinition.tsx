@@ -76,7 +76,7 @@ const FormAnimationDefinition = ({animationDefinitionId, propsOfEntry = false} :
                         }
                         animationDataDispatch(
                             {
-                                type: AnimationDataActions.addEditAnimationDefinition,
+                                type: AnimationDataActions.editAnimationDefinition,
                                 animationDefinition: {
                                     ...animationDefinition,
                                     props:changedProps
@@ -150,7 +150,7 @@ const FormAnimationDefinition = ({animationDefinitionId, propsOfEntry = false} :
                             }
                             animationDataDispatch(
                                 {
-                                    type: AnimationDataActions.addEditAnimationDefinition,
+                                    type: AnimationDataActions.editAnimationDefinition,
                                     animationDefinition: {
                                         ...animationDefinition,
                                         props: newProps
@@ -198,7 +198,7 @@ const FormAnimationDefinition = ({animationDefinitionId, propsOfEntry = false} :
                             <Button onClick={() => {
                                 animationDataDispatch(
                                     {
-                                        type: AnimationDataActions.addEditAnimationDefinition,
+                                        type: AnimationDataActions.editAnimationDefinition,
                                         animationDefinition: {
                                             ...animationDefinition,
                                             name

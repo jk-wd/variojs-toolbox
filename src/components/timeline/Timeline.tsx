@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {getAnimationEntryById, getParallaxTimelineById, getTimelineById} from "variojs";
+import {getAnimationEntryById, getTimelineById} from "variojs";
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
 import {Sections} from "@enums/navigation";
 import { Colors } from '@enums/colors';
@@ -53,7 +53,7 @@ const Timeline = () => {
     const dispatchNavigation = useNavigationDispatch();
     let timeline:any;
     if(activeTimeline) {
-        timeline = (activeTimeline.parallax)? getParallaxTimelineById(animationData, activeTimeline.timelineId): getTimelineById(animationData, activeTimeline.timelineId);
+        timeline = getTimelineById(animationData, activeTimeline.timelineId);
         
     }
 

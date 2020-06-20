@@ -24,7 +24,9 @@ const SectionTimelines = ({parallax}: Props) => {
     const animationDataDispatch = useAnimationDataDispatch();
     const navigationDispatch = useNavigationDispatch();
     const {animationData} = useAnimationDataState();
-    const timelines = (parallax)?animationData.parallaxTimelines:animationData.timelines;
+    const timelines: any = (parallax)?
+    animationData.timelines.filter((timeline:ITimeline) => (timeline.parallax === true)): 
+    animationData.timelines.filter((timeline:ITimeline) => (timeline.parallax === false));
 
     return (
     <div>
@@ -66,8 +68,7 @@ const SectionTimelines = ({parallax}: Props) => {
                                     }
                                     animationDataDispatch({
                                         type: AnimationDataActions.deleteTimeline,
-                                        id: timeline.id,
-                                        parallax,
+                                        timelineId: timeline.id,
                                     });
                                 }}><DeleteLabel>Delete</DeleteLabel></Button>
                             </RemoveButtonHolder>

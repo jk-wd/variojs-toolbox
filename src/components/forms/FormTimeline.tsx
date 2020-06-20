@@ -32,9 +32,9 @@ const FormTimeline = ({timeline, parallax = false}: IProps) => {
                                 type: AnimationDataActions.editTimeline,
                                 timeline: {
                                     ...timeline,
-                                    loop: (event.target.value === 'on')
-                                },
-                                parallax
+                                    loop: (event.target.value === 'on'),
+                                    parallax
+                                }
                             });
                         }
                     } />
@@ -45,6 +45,7 @@ const FormTimeline = ({timeline, parallax = false}: IProps) => {
         </div>
     )
 }
+
 
 
 export default FormTimeline;

@@ -39,8 +39,8 @@ const SectionBreakpoints = () => {
                                 <Button onClick={
                                     () => {
                                         dispatchAnimationData({
-                                            type: AnimationDataActions.removeBreakpoint,
-                                            id: breakpoint.id,
+                                            type: AnimationDataActions.deleteBreakpoint,
+                                            breakpointId: breakpoint.id,
                                         });
                                     }
                                 }><DeleteLabel>Delete</DeleteLabel></Button>
@@ -51,9 +51,11 @@ const SectionBreakpoints = () => {
                                 <FormInputText onChange={(event: any) => {
                                      dispatchAnimationData({
                                         type: AnimationDataActions.editBreakpoint,
-                                        id: breakpoint.id,
-                                        definition: breakpoint.definition,
-                                        order: parseInt(event.target.value, 10),
+                                        breakpoint: {
+                                            id: breakpoint.id,
+                                            definition: breakpoint.definition,
+                                            order: parseInt(event.target.value, 10),
+                                        }
                                     });
                                 }} label="Importance" defaultValue={breakpoint.order}/>
                             </FormLineSection>
@@ -61,9 +63,11 @@ const SectionBreakpoints = () => {
                                 <FormInputText onChange={(event: any) => {
                                      dispatchAnimationData({
                                         type: AnimationDataActions.editBreakpoint,
-                                        id: breakpoint.id,
-                                        definition: event.target.value,
-                                        order: breakpoint.order,
+                                        breakpoint: {
+                                            id: breakpoint.id,
+                                            definition: event.target.value,
+                                            order: breakpoint.order,
+                                        }
                                     });
                                 }} label="Definition" defaultValue={breakpoint.definition}/>
                             </FormLineSection>
@@ -80,9 +84,11 @@ const SectionBreakpoints = () => {
                 if(breakPoint.id && breakPoint.definition) {
                     dispatchAnimationData({
                         type: AnimationDataActions.addBreakpoint,
-                        id: breakPoint.id,
-                        definition: breakPoint.definition,
-                        order: breakPoint.order,
+                        breakpoint: {
+                            id: breakPoint.id,
+                            definition: breakPoint.definition,
+                            order: breakPoint.order,
+                        }
                     });
                 }
             }}>

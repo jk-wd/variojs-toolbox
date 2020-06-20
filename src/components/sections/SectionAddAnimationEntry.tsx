@@ -10,15 +10,14 @@ import { useAnimationDataState } from '@context/animation-data/AnimaitonDataCont
 import {Sections} from "@enums/navigation";
 import FormInputString from "@components/form-elements/FormInputText";
 import CtaMain from '@components/cta/CtaMain';
-import { IAnimationEntry, IBreakpoint, ITimeline, NoBreakpointIdentifier } from 'variojs';
+import { IAnimationEntry, ITimeline, NoBreakpointIdentifier } from 'variojs';
 
 const SectionAddAnimationEntry = () => {
     const animationDataDispatch = useAnimationDataDispatch();
     const navigationDispatch = useNavigationDispatch();
     const [name, setName] = useState<string | undefined>();
-    const {animationData, selectedBreakpoint, activeTimeline} = useAnimationDataState();
+    const {animationData, activeTimeline} = useAnimationDataState();
     const timelineSelectRef = React.createRef<HTMLSelectElement>();
-    const [breakpoint, setBreakpoint] = useState<string>(selectedBreakpoint || NoBreakpointIdentifier);
     const [timelineId, setTimelineId] = useState<string | undefined>((activeTimeline)?activeTimeline.timelineId:undefined);
     let breakpoints = (animationData.breakpoints)?animationData.breakpoints : [];
     breakpoints = [...breakpoints, {
@@ -46,7 +45,7 @@ const SectionAddAnimationEntry = () => {
                 if(selectRef.current && selectRef.current.value && activeTimeline) {
                     const animationDefinitionId = uuidv4();
                     animationDataDispatch({
-                        type: AnimationDataActions.addEditAnimationDefinition,
+                        type: AnimationDataActions.addAnimationDefinition,
                         animationDefinition: {
                             id:animationDefinitionId,
                             props: {}
@@ -54,7 +53,7 @@ const SectionAddAnimationEntry = () => {
                     });
                     const animationEntryId = uuidv4();
                     animationDataDispatch( {
-                        type: AnimationDataActions.addEditAnimationEntry,
+                        type: AnimationDataActions.addAnimationEntry,
                         animationEntry: {
                             id: animationEntryId,
                             domReference: selectRef.current.value,
@@ -66,11 +65,9 @@ const SectionAddAnimationEntry = () => {
                     });
 
                     animationDataDispatch({
-                        type: AnimationDataActions.connectAnimationEntryToTimeline,
+                        type: AnimationDataActions.connectTimelineAnimationEntry,
                         timelineId: timelineId,
                         animationEntryId,
-                        breakpoint,
-                        parallax: activeTimeline.parallax,
                     });
                     animationDataDispatch({
                         type: AnimationDataActions.setFilterByFrameId,
@@ -105,20 +102,6 @@ const SectionAddAnimationEntry = () => {
                             animationData.timelines.map((timeline: ITimeline) => {
                                 return (
                                     <option key={timeline.id} value={timeline.id}>{timeline.id}</option>
-                                )
-                            })
-                        }
-                    </select>
-                </FormFieldset>
-                <FormFieldset>
-                    <FormLabel className="small">Breakpoint</FormLabel><br />
-                    <select defaultValue={selectedBreakpoint || NoBreakpointIdentifier} onChange={(event) => {
-                        setBreakpoint(event.target.value);
-                    }}>
-                        {
-                            breakpoints.map((breakpoint: IBreakpoint) => {
-                                return (
-                                    <option key={breakpoint.id} value={breakpoint.id}>{breakpoint.id}</option>
                                 )
                             })
                         }

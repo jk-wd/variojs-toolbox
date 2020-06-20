@@ -1,6 +1,6 @@
 import React, {useCallback} from "react";
 import styled from "styled-components";
-import { IFrame, IFrameDef, IAnimationConnection, calculateSum, processFrameDef, getEndOfTimeline } from 'variojs';
+import { IFrame, IFrameDef, IAnimationConnection, calculateSumString, processFrameDef, getEndOfTimeline } from 'variojs';
 import {useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
 import {useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
@@ -76,9 +76,9 @@ const TimelineAnimationFrames = ({animationConnection, className, frames = []}: 
             return;
         }
         const indexAnimationConnection = (activeTimeline.parallax)? 'startPx': 'startMs';
-        const timelineEnd = getEndOfTimeline(animationData, activeTimeline.timelineId, activeTimeline.parallax);
+        const timelineEnd = getEndOfTimeline(animationData, activeTimeline.timelineId);
         const indexFrame = (activeTimeline.parallax)? 'px': 'ms';
-        const startValue = calculateSum(animationData, animationConnection[indexAnimationConnection] || '');
+        const startValue = calculateSumString(animationData, animationConnection[indexAnimationConnection] || '');
         let value = frame[indexFrame] || 0;
         value = value + startValue;
         return (value / timelineEnd) * innerWidth

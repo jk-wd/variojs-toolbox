@@ -40,8 +40,8 @@ export default {
       ws.addEventListener('message', function (event) {
         const data = event.data
         const dataParsed = JSON.parse(data);
-        if(dataParsed.action === 'setAnimationData'){
-          variojs.setAnimationData(dataParsed.payload)
+        if(dataParsed.action === 'updateAnimationData'){
+          variojs.updateAnimationData(dataParsed.payload)
         }
         if(dataParsed.action === 'getSiteData'){
           sendSiteData(ws, variojs)

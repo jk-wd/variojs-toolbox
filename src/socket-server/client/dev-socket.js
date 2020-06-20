@@ -21,10 +21,10 @@ export default {
       }));
 
     },
-    setAnimationData: async (animationData) => {
+    updateAnimationData: async (animationData) => {
         const ws = await socketConnect();
         ws.send(JSON.stringify({
-            action: 'setAnimationData',
+            action: 'updateAnimationData',
             payload: animationData,
           }));
       }

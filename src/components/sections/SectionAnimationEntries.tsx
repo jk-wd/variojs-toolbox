@@ -6,7 +6,7 @@ import {useNavigationDispatch, NavigationActions} from "@context/navigation/Navi
 import {useAnimationDataDispatch, AnimationDataActions, useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
 import BlockLine from "@components/block-elements/BlockLine";
 import {Sections} from "@enums/navigation";
-import {IAnimationEntry, getParallaxTimelineById, getTimelineById} from "variojs";
+import {IAnimationEntry, getTimelineById} from "variojs";
 import Button from "@components/Button";
 import CtaMain from "@components/cta/CtaMain";
 
@@ -21,7 +21,7 @@ const SectionAnimationEntries = () => {
     const {animationData, activeTimeline} = useAnimationDataState();
     let timeline:any;
     if(activeTimeline) {
-        timeline = (activeTimeline.parallax)? getParallaxTimelineById(animationData, activeTimeline.timelineId): getTimelineById(animationData, activeTimeline.timelineId);
+        timeline = getTimelineById(animationData, activeTimeline.timelineId);
     }
     
     return (

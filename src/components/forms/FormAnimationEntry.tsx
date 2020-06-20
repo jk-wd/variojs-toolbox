@@ -44,9 +44,12 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                 <select onChange={
                     (event:any) => {
                         animationDataDispatch({
-                            type: AnimationDataActions.connectAnimationDefinitionToEntry,
-                            definitionId: event.target.value,
+                            type: AnimationDataActions.addAnimationEntryConnection,
+                            animationConnection: {
+                                animationDefinitionId: event.target.value
+                            },
                             animationEntryId: animationEntry.id,
+                            local: false
                         });
                     }
                 }>
@@ -102,9 +105,10 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                         return;
                     }
                     animationDataDispatch({
-                        type: AnimationDataActions.disconnectAnimationDefinitionFromEntry,
-                        definitionId: animationDefinition.id,
-                        animationEntryId: animationEntry.id
+                        type: AnimationDataActions.deleteAnimationEntryConnection,
+                        animationDefinitionId: animationDefinition.id,
+                        animationEntryId: animationEntry.id,
+                        local: false
                     });
                 }}><DeleteLabel>Disconnect</DeleteLabel></Button>
             </RemoveButtonHolder>
@@ -113,26 +117,26 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
             <FormInputString defaultValue={animationConnection.startPx} label="Starting point px" onChange={(event: any) => {
                 animationDataDispatch(
                     {
-                        type: AnimationDataActions.addEditAnimationEntryConnection,
+                        type: AnimationDataActions.editAnimationEntryConnection,
                         animationEntryId: animationEntry.id,
-                        conneciton: {
+                        animationConnection: {
                             ...animationConnection,
                             startPx: event.target.value
                         },
-                        privateConnection: false
+                        local: false
                     }
                 );
             }} />
             <FormInputString defaultValue={animationConnection.startMs} label="Starting point ms" onChange={(event: any) => {
                 animationDataDispatch(
                     {
-                        type: AnimationDataActions.addEditAnimationEntryConnection,
+                        type: AnimationDataActions.editAnimationEntryConnection,
                         animationEntryId: animationEntry.id,
-                        conneciton: {
+                        animationConnection: {
                             ...animationConnection,
                             startMs: event.target.value
                         },
-                        privateConnection: false
+                        local: false
                     }
                 );
             }} />
@@ -163,7 +167,7 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                 <FormInputString label="Name" defaultValue={(animationEntry.name)?animationEntry.name:animationEntry.id} onChange={(event: any) => {
                                 animationDataDispatch(
                                     {
-                                        type: AnimationDataActions.addEditAnimationEntry,
+                                        type: AnimationDataActions.editAnimationEntry,
                                         animationEntry: {
                                             ...animationEntry,
                                             name: event.target.value
@@ -179,7 +183,7 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                     <FormInputString label="Starting point px" defaultValue={animationEntry.animationConnection.startPx} onChange={(event: any) => {
                                     animationDataDispatch(
                                         {
-                                            type: AnimationDataActions.addEditAnimationEntry,
+                                            type: AnimationDataActions.editAnimationEntry,
                                             animationEntry: {
                                                 ...animationEntry,
                                                 animationConnection: {
@@ -196,7 +200,7 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                     <FormInputString label="Starting point ms" defaultValue={animationEntry.animationConnection.startMs} onChange={(event: any) => {
                                     animationDataDispatch(
                                         {
-                                            type: AnimationDataActions.addEditAnimationEntry,
+                                            type: AnimationDataActions.editAnimationEntry,
                                             animationEntry: {
                                                 ...animationEntry,
                                                 animationConnection: {
@@ -216,7 +220,7 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                     <select ref={refSelectDomReference} defaultValue={animationEntry.domReference} onChange={(event:any) => {
                         animationDataDispatch(
                             {
-                                type: AnimationDataActions.addEditAnimationEntry,
+                                type: AnimationDataActions.editAnimationEntry,
                                 animationEntry: {
                                     ...animationEntry,
                                     domReference: event.target.value

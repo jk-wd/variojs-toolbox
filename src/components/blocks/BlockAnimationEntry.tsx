@@ -45,7 +45,7 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
                     const animationDefinitionId = uuidv4();
 
                     animationDataDispatch({
-                        type: AnimationDataActions.addEditAnimationDefinition,
+                        type: AnimationDataActions.addAnimationDefinition,
                         animationDefinition: {
                             id:animationDefinitionId,
                             props: {}
@@ -73,9 +73,12 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
                 <select onChange={
                     (event:any) => {
                         animationDataDispatch({
-                            type: AnimationDataActions.connectAnimationDefinitionToEntry,
-                            definitionId: event.target.value,
+                            type: AnimationDataActions.addAnimationEntryConnection,
+                            animationConnection: {
+                                animationDefinitionId: event.target.value
+                            },
                             animationEntryId: animationEntry.id,
+                            local: false
                         });
                     }
                 }>
@@ -127,9 +130,10 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
                         return;
                     }
                     animationDataDispatch({
-                        type: AnimationDataActions.disconnectAnimationDefinitionFromEntry,
-                        definitionId: animationDefinition.id,
-                        animationEntryId: animationEntry.id
+                        type: AnimationDataActions.deleteAnimationEntryConnection,
+                        animationDefinitionId: animationDefinition.id,
+                        animationEntryId: animationEntry.id,
+                        local: false
                     });
                 }}><DeleteLabel>Disconnect</DeleteLabel></Button>
             </RemoveButtonHolder>
@@ -138,26 +142,26 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
             <FormInputText defaultValue={animationConnection.startPx} label="Start px" onChange={(event: any) => {
                 animationDataDispatch(
                     {
-                        type: AnimationDataActions.addEditAnimationEntryConnection,
+                        type: AnimationDataActions.editAnimationEntryConnection,
                         animationEntryId: animationEntry.id,
-                        conneciton: {
+                        animationConnection: {
                             ...animationConnection,
                             startPx: event.target.value
                         },
-                        privateConnection: false
+                        local: false
                     }
                 );
             }} />
             <FormInputText defaultValue={animationConnection.startMs} label="Start milliseconds" onChange={(event: any) => {
                 animationDataDispatch(
                     {
-                        type: AnimationDataActions.addEditAnimationEntryConnection,
+                        type: AnimationDataActions.editAnimationEntryConnection,
                         animationEntryId: animationEntry.id,
-                        conneciton: {
+                        animationConnection: {
                             ...animationConnection,
                             startMs: event.target.value
                         },
-                        privateConnection: false
+                        local: false
                     }
                 );
             }} />
@@ -184,10 +188,10 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
     return (
     <Block>
         <BlockSection>
-           <FormInputText label="id" defaultValue={(animationEntry.name)?animationEntry.name:animationEntry.id} onChange={(event: any) => {
+           <FormInputText label="name" defaultValue={(animationEntry.name)?animationEntry.name:animationEntry.id} onChange={(event: any) => {
                         animationDataDispatch(
                             {
-                                type: AnimationDataActions.addEditAnimationEntry,
+                                type: AnimationDataActions.editAnimationEntry,
                                 animationEntry: {
                                     ...animationEntry,
                                     name: event.target.value
@@ -197,6 +201,7 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
             }} /> <br/>
             {animationEntry.domReference}
         </BlockSection>
+
         <BlockSection>
             <BlockHeading>Connected animation definitions</BlockHeading>
             {

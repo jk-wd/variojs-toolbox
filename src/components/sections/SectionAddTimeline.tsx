@@ -24,15 +24,14 @@ const SectionAddTimeline = ({parallax}: Props) => {
             if(timeline.id) {
                 dispatchAnimationData({
                     type: AnimationDataActions.addTimeline,
-                    id: timeline.id,
-                    parallax
+                    timeline: {
+                        id: timeline.id,
+                        parallax
+                    }
                 });
                 dispatchAnimationData({
                     type: AnimationDataActions.setActiveTimeline,
-                    timeline: {
-                        timelineId: timeline.id,
-                        parallax,
-                    }
+                    timeline: timeline
                 });
                 navigationDispatch({
                     type: NavigationActions.setActiveSection,

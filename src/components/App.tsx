@@ -166,7 +166,7 @@ const App = ({siteData}:IProps) => {
                             type: ModalActions.setActiveModal,
                             modal: undefined
                         });
-                        devSocket.setAnimationData(animationData);
+                        devSocket.updateAnimationData(animationData);
                     }}
                     onClickNo={() => {
                         onSelectUpdateAnimationData();

@@ -1,7 +1,7 @@
 import React, {useState, useEffect, createRef} from "react";
 import styled from "styled-components";
 import {useAnimationDataState, useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
-import { IParallaxTimeline, ITimeline } from 'variojs';
+import { ITimeline } from 'variojs';
 
 const TimelineSelectEl = styled.div``;
 
@@ -10,7 +10,9 @@ const TimelineSelect = () => {
     const {animationData, activeTimeline} = useAnimationDataState();
     const selectRef = createRef<HTMLSelectElement>();
     const animationDispatch = useAnimationDataDispatch();
-    const timelines: any = (useParallaxTimelines)? animationData.parallaxTimelines: animationData.timelines;
+    const timelines: any = (useParallaxTimelines)?
+        animationData.timelines.filter((timeline:ITimeline) => (timeline.parallax === true)): 
+        animationData.timelines.filter((timeline:ITimeline) => (timeline.parallax === false));
     useEffect(() => {
         if(timelines && timelines[0]) {
             animationDispatch({
@@ -59,7 +61,7 @@ const TimelineSelect = () => {
                 <option value="none">select a timeline</option>
                 {
                     (timelines)?
-                    timelines.map((timeline: IParallaxTimeline | ITimeline) => {
+                    timelines.map((timeline: ITimeline) => {
                         return (
                             <option  key={timeline.id} value={timeline.id}>{timeline.id}</option>
                         )

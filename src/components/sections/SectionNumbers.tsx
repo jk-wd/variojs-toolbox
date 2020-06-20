@@ -27,6 +27,9 @@ const SectionNumbers = () => {
             (animationData.numbers)?
             Object.keys(animationData.numbers).reverse().map((numberKey:string) => {
                 const value = (animationData && animationData.numbers && animationData.numbers[numberKey])?animationData.numbers[numberKey]: 0;
+                if(typeof value === "function") {
+                    return
+                }
                 return(
                     <FormFrameBlock key={numberKey}>
                         <FormLine>
@@ -34,7 +37,7 @@ const SectionNumbers = () => {
                                 <FormLabel className="small">{numberKey}</FormLabel>
                                 <FormInputText onChange={(event: any) => {
                                      dispatchAnimationData({
-                                        type: AnimationDataActions.editNumberVariable,
+                                        type: AnimationDataActions.addEditNumberVariable,
                                         name: numberKey,
                                         value: parseInt(event.target.value,10),
                                     });
@@ -46,9 +49,8 @@ const SectionNumbers = () => {
                                 <Button onClick={
                                     () => {
                                         dispatchAnimationData({
-                                            type: AnimationDataActions.removeNumberVariable,
+                                            type: AnimationDataActions.deleteNumberVariable,
                                             name: numberKey,
-                                            value: value,
                                         });
                                     }
                                 }><DeleteLabel>Delete</DeleteLabel></Button>
@@ -64,7 +66,7 @@ const SectionNumbers = () => {
             event.preventDefault();
             if(numberVariable.name && numberVariable.value) {
                 dispatchAnimationData({
-                    type: AnimationDataActions.addNumberVariable,
+                    type: AnimationDataActions.addEditNumberVariable,
                     name: numberVariable.name,
                     value: parseInt(numberVariable.value, 10),
                 });

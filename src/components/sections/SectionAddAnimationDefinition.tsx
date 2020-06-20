@@ -23,7 +23,7 @@ const SectionAddAnimationDefinition = () => {
                 if(name && name != '') {
                     const animationDefinitionId = uuidv4();
                     animationDataDispatch({
-                        type: AnimationDataActions.addEditAnimationDefinition,
+                        type: AnimationDataActions.addAnimationDefinition,
                         animationDefinition: {
                             name,
                             id:animationDefinitionId,

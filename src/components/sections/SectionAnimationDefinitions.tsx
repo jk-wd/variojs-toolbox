@@ -3,7 +3,7 @@ import styled from "styled-components";
 import FormHeading from "@components/form-elements/FormHeading";
 import DeleteLabel from "@components/typography/DeleteLabel";
 import BlockLine from "@components/block-elements/BlockLine";
-import { IAnimationDefinition, getParallaxTimelineById, getTimelineById, getAnimationEntryById } from 'variojs';
+import { IAnimationDefinition, getTimelineById, getAnimationEntryById } from 'variojs';
 import Button from '@components/Button';
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
 import CtaMain from "@components/cta/CtaMain";
@@ -21,7 +21,7 @@ const SectionAnimationDefinitions = () => {
 
     let timeline:any;
     if(activeTimeline) {
-        timeline = (activeTimeline.parallax)? getParallaxTimelineById(animationData, activeTimeline.timelineId): getTimelineById(animationData, activeTimeline.timelineId);
+        timeline = getTimelineById(animationData, activeTimeline.timelineId);
     }
 
     return (
@@ -93,7 +93,7 @@ const SectionAnimationDefinitions = () => {
                                             }
                                             animationDataDispatch({
                                                 type: AnimationDataActions.deleteAnimationDefinition,
-                                                definitionId: animationDefinition.id,
+                                                animationDefinitionId: animationDefinition.id,
                                             });
                                         }}><DeleteLabel>Delete</DeleteLabel></Button>
                                     </RemoveButtonHolder>
