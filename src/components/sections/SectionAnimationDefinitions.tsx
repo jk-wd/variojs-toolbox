@@ -1,6 +1,7 @@
-import React from "react";
+import React, {useState} from "react";
 import styled from "styled-components";
 import FormHeading from "@components/form-elements/FormHeading";
+import FormLabel from "@components/form-elements/FormLabel";
 import DeleteLabel from "@components/typography/DeleteLabel";
 import BlockLine from "@components/block-elements/BlockLine";
 import { IAnimationDefinition, getTimelineById, getAnimationEntryById } from 'variojs';
@@ -16,6 +17,7 @@ const RemoveButtonHolder = styled.div`
 
 const SectionAnimationDefinitions = () => {
     const animationDataDispatch = useAnimationDataDispatch();
+    const [onlyShowForActiveTime, setOnlyShowForActiveTime] = useState(false);
     const {animationData, activeTimeline} = useAnimationDataState();
     const navigationDispatch = useNavigationDispatch();
 
@@ -27,6 +29,9 @@ const SectionAnimationDefinitions = () => {
     return (
         <div>
             <FormHeading className="large">Animation definitions</FormHeading>
+            <input type="checkbox" onChange={(event: any) => {
+            setOnlyShowForActiveTime(event.target.checked);
+        }} /><span style={{'position':'relative', 'top':'-2px','marginLeft':'6px'}}><FormLabel className="small">Show for active timeline</FormLabel></span>
             <div style={{
                 paddingTop: '4px',
                 marginBottom: '26px'
@@ -34,25 +39,17 @@ const SectionAnimationDefinitions = () => {
                 {
                     (animationData && animationData.animationDefinitions)?
                         animationData.animationDefinitions.map((animationDefinition: IAnimationDefinition) => {
-                            if(timeline && timeline.animationEntries) {
+                            if(onlyShowForActiveTime && timeline && timeline.animationEntries) {
                                 let found = false;
-                                for(let breakpoint of Object.keys(timeline.animationEntries)) {
-                                    if(timeline.animationEntries[breakpoint]) {
-                                        
-                                            for(let entryId of timeline.animationEntries[breakpoint]) {
-                                                const animationEntry = getAnimationEntryById(animationData, entryId);
-                                                if(animationEntry && animationEntry.animationConnections) {
-                                                    for(let connection of animationEntry.animationConnections) {
-                                                        if(connection.animationDefinitionId === animationDefinition.id) {
-                                                            found = true;
-                                                        }
-                                                    }
-                                                }
+                                for(let entryId of timeline.animationEntries) {
+                                    const animationEntry = getAnimationEntryById(animationData, entryId);
+                                    if(animationEntry && animationEntry.animationConnections) {
+                                        for(let connection of animationEntry.animationConnections) {
+                                            if(connection.animationDefinitionId === animationDefinition.id) {
+                                                found = true;
                                             }
-                                        
-                                        
+                                        }
                                     }
-                
                                 }
                                 if(!found) {
                                     return null;

@@ -13,7 +13,7 @@ interface IProps {
 }
 
 
-const offsetLeft = 22;
+const offsetLeft = 28;
 
 const TimelineAnimationPropEl = styled.div`
     width: 100%;

@@ -2,7 +2,7 @@ import { ITimeline } from 'variojs';
 
 export interface IActiveTimeline {
     timelineId: string,
-    parallax: boolean,
+    pixelBased: boolean,
     timeline: ITimeline,
     end: number,
 }

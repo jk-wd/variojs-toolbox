@@ -36,9 +36,9 @@ const Menu = () => {
         <Button onClick={() => {
             dispatch({
                 type: NavigationActions.setActiveSection,
-                section: Sections.PARALLAX_TIMELINES,
+                section: Sections.PIXELBASED_TIMELINES,
             });
-        }}>Parallax Timelines</Button>
+        }}>Pixel based Timelines</Button>
         <Button onClick={() => {
             dispatch({
                 type: NavigationActions.setActiveSection,

@@ -6,25 +6,31 @@ import { ITimeline } from 'variojs';
 const TimelineSelectEl = styled.div``;
 
 const TimelineSelect = () => {
-    const [useParallaxTimelines, setUseParallaxTimelines] = useState<boolean>(false);
+    const [usePixelBasedTimelines, setUsePixelBasedTimelines] = useState<boolean>(false);
     const {animationData, activeTimeline} = useAnimationDataState();
     const selectRef = createRef<HTMLSelectElement>();
+    const selectTimelineTypeRef = createRef<HTMLSelectElement>();
     const animationDispatch = useAnimationDataDispatch();
-    const timelines: any = (useParallaxTimelines)?
-        animationData.timelines.filter((timeline:ITimeline) => (timeline.parallax === true)): 
-        animationData.timelines.filter((timeline:ITimeline) => (timeline.parallax === false));
+    const timelines: any = (usePixelBasedTimelines)?
+        animationData.timelines.filter((timeline:ITimeline) => (timeline.pixelBased === true)): 
+        animationData.timelines.filter((timeline:ITimeline) => (!timeline.pixelBased));
     useEffect(() => {
         if(timelines && timelines[0]) {
             animationDispatch({
                 type: AnimationDataActions.setActiveTimeline,
                 timeline: {
-                    parallax: useParallaxTimelines,
+                    pixelBased: usePixelBasedTimelines,
                     timelineId: timelines[0].id,
                 },
             });
         }
     }, []);
     useEffect(() => {
+        if(activeTimeline && activeTimeline.pixelBased) {
+            setUsePixelBasedTimelines(true);
+        } else {
+            setUsePixelBasedTimelines(false);
+        }
         if(selectRef && selectRef.current) {
             if(activeTimeline && activeTimeline.timelineId) {
                 selectRef.current.value = activeTimeline.timelineId;
@@ -32,28 +38,35 @@ const TimelineSelect = () => {
                 selectRef.current.value = 'none';
             }
         }
+        if(selectTimelineTypeRef && selectTimelineTypeRef.current) {
+            if(activeTimeline && activeTimeline.timelineId) {
+                selectTimelineTypeRef.current.value = (activeTimeline && activeTimeline.pixelBased)?"pixelBased":"time";
+            } else {
+                selectTimelineTypeRef.current.value = 'time';
+            }
+        }
     }, [activeTimeline]);
     
     return (
         <TimelineSelectEl>
-             <select defaultValue='time' style={{marginRight:'10px'}} onChange={(event: any) => {
-                       setUseParallaxTimelines((event.target.value==='parallax'));
+             <select ref={selectTimelineTypeRef} defaultValue={(activeTimeline && activeTimeline.pixelBased)?"pixelBased":"time"} style={{marginRight:'10px'}} onChange={(event: any) => {
+                       setUsePixelBasedTimelines((event.target.value==='pixelBased'));
                        animationDispatch({
                         type: AnimationDataActions.setActiveTimeline,
                         timeline: {
-                            parallax: useParallaxTimelines,
+                            pixelBased: usePixelBasedTimelines,
                             timelineId: undefined,
                         },
                         });
                     }} id="selectTimelineType">
-                <option value='parallax'>Parallax</option>
+                <option value='pixelBased'>Pixel based</option>
                 <option value='time'>Time based</option>
             </select>
             <select ref={selectRef} value={(activeTimeline)?activeTimeline.timelineId:"none"} onChange={(event: any) => {
                         animationDispatch({
                             type: AnimationDataActions.setActiveTimeline,
                             timeline: {
-                                parallax: useParallaxTimelines,
+                                pixelBased: usePixelBasedTimelines,
                                 timelineId: event.target.value,
                             },
                         });

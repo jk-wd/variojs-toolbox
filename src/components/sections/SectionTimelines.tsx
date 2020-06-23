@@ -11,7 +11,7 @@ import {useNavigationDispatch, NavigationActions} from "@context/navigation/Navi
 import { useAnimationDataState, useAnimationDataDispatch, AnimationDataActions } from '@context/animation-data/AnimaitonDataContext';
 
 interface Props {
-    parallax: boolean
+    pixelBased: boolean
 }
 
 
@@ -20,17 +20,17 @@ const RemoveButtonHolder = styled.div`
 `;
 
 
-const SectionTimelines = ({parallax}: Props) => {
+const SectionTimelines = ({pixelBased}: Props) => {
     const animationDataDispatch = useAnimationDataDispatch();
     const navigationDispatch = useNavigationDispatch();
     const {animationData} = useAnimationDataState();
-    const timelines: any = (parallax)?
-    animationData.timelines.filter((timeline:ITimeline) => (timeline.parallax === true)): 
-    animationData.timelines.filter((timeline:ITimeline) => (timeline.parallax === false));
+    const timelines: any = (pixelBased)?
+    animationData.timelines.filter((timeline:ITimeline) => (timeline.pixelBased === true)): 
+    animationData.timelines.filter((timeline:ITimeline) => (!timeline.pixelBased));
 
     return (
     <div>
-        <FormHeading className="large">{(parallax)?"Parallax timelines":"Timelines"}</FormHeading>
+        <FormHeading className="large">{(pixelBased)?"Pixel based timelines":"Timelines"}</FormHeading>
         <div style={{
             paddingTop: '4px',
             marginBottom: '26px'
@@ -51,12 +51,12 @@ const SectionTimelines = ({parallax}: Props) => {
                                     type: AnimationDataActions.setActiveTimeline,
                                     timeline: {
                                         timelineId: timeline.id,
-                                        parallax,
+                                        pixelBased,
                                     }
                                 });
                                 navigationDispatch({
                                     type: NavigationActions.setActiveSection,
-                                    section: (parallax)?Sections.TIMELINE:Sections.PARALLAX_TIMELINE,
+                                    section: (pixelBased)?Sections.TIMELINE:Sections.PIXELBASED_TIMELINE,
                                 });
                             }}>
                                 {timeline.id}
@@ -82,7 +82,7 @@ const SectionTimelines = ({parallax}: Props) => {
             onClick={() => {
                 navigationDispatch({
                     type: NavigationActions.setActiveSection,
-                    section: (parallax)?Sections.ADD_PARALLAX_TIMELINE:Sections.ADD_TIMELINE,
+                    section: (pixelBased)?Sections.ADD_PIXELBASED_TIMELINE:Sections.ADD_TIMELINE,
                 });
             }}
 

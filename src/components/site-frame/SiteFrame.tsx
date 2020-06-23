@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import styled from "styled-components";
 import { Colors } from '@enums/colors';
 
@@ -41,10 +41,19 @@ interface Props {
 
 const SiteFrame = ({siteUrl}:Props) => {
     const [width, setWidth] = useState<number>();
+    const iframeRef = React.createRef<HTMLIFrameElement>();
+    useEffect(() => {
+        if(iframeRef && iframeRef.current) {
+            const iframe = iframeRef.current;
+            setTimeout(() => {
+                iframe.src=siteUrl;
+            }, 2000);
+        }
+    }, [siteUrl]);
     return (
         //@ts-ignore
         <SiteFrameEl frameWidth={(width)?width+"px":"100%"} >
-            <iframe src={siteUrl}></iframe>
+            <iframe ref={iframeRef} ></iframe>
             <input type="number" placeholder="width of screen" onChange={(event) => {
                 const widthToSet = parseInt(event.target.value, 10);
                 setWidth(widthToSet);

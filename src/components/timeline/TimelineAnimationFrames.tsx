@@ -75,9 +75,9 @@ const TimelineAnimationFrames = ({animationConnection, className, frames = []}: 
         if(!activeTimeline) {
             return;
         }
-        const indexAnimationConnection = (activeTimeline.parallax)? 'startPx': 'startMs';
+        const indexAnimationConnection = (activeTimeline.pixelBased)? 'startPx': 'startMs';
         const timelineEnd = getEndOfTimeline(animationData, activeTimeline.timelineId);
-        const indexFrame = (activeTimeline.parallax)? 'px': 'ms';
+        const indexFrame = (activeTimeline.pixelBased)? 'px': 'ms';
         const startValue = calculateSumString(animationData, animationConnection[indexAnimationConnection] || '');
         let value = frame[indexFrame] || 0;
         value = value + startValue;
@@ -88,7 +88,7 @@ const TimelineAnimationFrames = ({animationConnection, className, frames = []}: 
         if(!activeTimeline) {
             return;
         }
-        const index = (activeTimeline.parallax)? 'px': 'ms';
+        const index = (activeTimeline.pixelBased)? 'px': 'ms';
         return frame[index];
     }, [activeTimeline]);
 

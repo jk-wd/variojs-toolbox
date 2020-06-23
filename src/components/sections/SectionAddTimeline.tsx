@@ -8,10 +8,10 @@ import {Sections} from "@enums/navigation";
 import CtaMain from '@components/cta/CtaMain';
 
 interface Props {
-    parallax: boolean
+    pixelBased: boolean
 }
 
-const SectionAddTimeline = ({parallax}: Props) => {
+const SectionAddTimeline = ({pixelBased}: Props) => {
     const dispatchAnimationData = useAnimationDataDispatch();
     const navigationDispatch = useNavigationDispatch();
     const [timeline, setTimeline] = useState<any>({});
@@ -26,7 +26,7 @@ const SectionAddTimeline = ({parallax}: Props) => {
                     type: AnimationDataActions.addTimeline,
                     timeline: {
                         id: timeline.id,
-                        parallax
+                        pixelBased
                     }
                 });
                 dispatchAnimationData({
@@ -35,7 +35,7 @@ const SectionAddTimeline = ({parallax}: Props) => {
                 });
                 navigationDispatch({
                     type: NavigationActions.setActiveSection,
-                    section: (parallax)?Sections.TIMELINE:Sections.PARALLAX_TIMELINE,
+                    section: (pixelBased)?Sections.TIMELINE:Sections.PIXELBASED_TIMELINE,
                 });
             }
         }}>

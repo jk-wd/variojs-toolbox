@@ -48,7 +48,7 @@ enum AnimationDataActions {
     editAnimationEntryConnection = 'editAnimationEntryConnection',
 
     addAnimationEntry = 'addAnimationEntry',
-    editAnimationEntry = 'addAnimationEntry',
+    editAnimationEntry = 'editAnimationEntry',
     deleteAnimationEntry = 'deleteAnimationEntry',
 
     addAnimationDefinition = 'addAnimationDefinition',
@@ -85,7 +85,7 @@ type ActionSetActiveTimeline = {
     type: AnimationDataActions.setActiveTimeline
     timeline: {
       timelineId?:string,
-      parallax:boolean,
+      pixelBased:boolean,
     }
 }
 

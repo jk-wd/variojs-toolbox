@@ -17,7 +17,7 @@ const SectionTimeline = () => {
     }
     return (
     <div>
-        <FormTimeline timeline={timeline} parallax={activeTimeline.parallax} />
+        <FormTimeline timeline={timeline} pixelBased={activeTimeline.pixelBased} />
     </div>
     )
 }

@@ -1,6 +1,7 @@
-import React from "react";
+import React, {useState} from "react";
 import styled from "styled-components";
 import FormHeading from "@components/form-elements/FormHeading";
+import FormLabel from "@components/form-elements/FormLabel";
 import DeleteLabel from "@components/typography/DeleteLabel";
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
 import {useAnimationDataDispatch, AnimationDataActions, useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
@@ -15,6 +16,7 @@ const RemoveButtonHolder = styled.div`
 `;
 
 const SectionAnimationEntries = () => {
+    const [onlyShowForActiveTime, setOnlyShowForActiveTime] = useState(false);
     const navigationDispatch = useNavigationDispatch();
     const animationDataDispatch = useAnimationDataDispatch();
 
@@ -27,6 +29,9 @@ const SectionAnimationEntries = () => {
     return (
     <div>
         <FormHeading className="large">Animation entries</FormHeading>
+        <input type="checkbox" onChange={(event: any) => {
+            setOnlyShowForActiveTime(event.target.checked);
+        }} /><span style={{'position':'relative', 'top':'-2px','marginLeft':'6px'}}><FormLabel className="small">Show for active timeline</FormLabel></span>
         <div style={{
             paddingTop: '4px',
             marginBottom: '26px'
@@ -34,7 +39,7 @@ const SectionAnimationEntries = () => {
             {
             (animationData && animationData.animationEntries)?
                 animationData.animationEntries.map((animationEntry: IAnimationEntry) => {
-                    if(timeline && timeline.animationEntries) {
+                    if(onlyShowForActiveTime && timeline && timeline.animationEntries) {
                         let found = false;
                         for(let breakpoint of Object.keys(timeline.animationEntries)) {
                             if(timeline.animationEntries[breakpoint] && timeline.animationEntries[breakpoint].indexOf(animationEntry.id) > -1) {

@@ -1,8 +1,8 @@
 import React, {useState, useEffect, useCallback} from "react";
-import {IFrameDef, IFrame, FrameValueTypes, PropTypes, unitMap} from "variojs";
+import {IFrameDef, IFrame, FrameValueTypes, PropTypes, unitMap, NoBreakpointIdentifier} from "variojs";
 import {useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
 import FormFrame from "@components/forms/FormFrame";
-import {uuidv4} from "@helpers/guid";
+import {uuidv4} from "variojs";
 import {processFrameDef} from "variojs";
 import CtaMain from '@components/cta/CtaMain';
 import Button from '@components/Button';
@@ -13,7 +13,7 @@ export const emptyFrame = (propType: PropTypes, frameValueType:FrameValueTypes):
         frameValueType: frameValueType,
         unit: ((unitMap as any)[propType])?(unitMap as any)[propType][0]:undefined,
         valueDef: {
-            default:''
+            [NoBreakpointIdentifier]:''
         },
     }
 };

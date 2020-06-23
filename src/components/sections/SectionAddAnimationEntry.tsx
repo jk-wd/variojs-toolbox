@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {uuidv4} from "@helpers/guid"
+import {uuidv4} from "variojs"
 import {useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
 import FormHeading from "@components/form-elements/FormHeading";
 import FormFieldset from "@components/form-elements/FormFieldset";
@@ -37,55 +37,7 @@ const SectionAddAnimationEntry = () => {
 
     return (
         <div>
-            <form onSubmit={(event:any) => {
-                event.preventDefault();
-                if(!timelineId) {
-                    return
-                }
-                if(selectRef.current && selectRef.current.value && activeTimeline) {
-                    const animationDefinitionId = uuidv4();
-                    animationDataDispatch({
-                        type: AnimationDataActions.addAnimationDefinition,
-                        animationDefinition: {
-                            id:animationDefinitionId,
-                            props: {}
-                        }
-                    });
-                    const animationEntryId = uuidv4();
-                    animationDataDispatch( {
-                        type: AnimationDataActions.addAnimationEntry,
-                        animationEntry: {
-                            id: animationEntryId,
-                            domReference: selectRef.current.value,
-                            name,
-                            animationConnection: {
-                                animationDefinitionId
-                            } 
-                        },
-                    });
-
-                    animationDataDispatch({
-                        type: AnimationDataActions.connectTimelineAnimationEntry,
-                        timelineId: timelineId,
-                        animationEntryId,
-                    });
-                    animationDataDispatch({
-                        type: AnimationDataActions.setFilterByFrameId,
-                        frameId: undefined
-                    })
-                    animationDataDispatch({
-                        type: AnimationDataActions.setActiveAnimationEntry,
-                        activeAnimationEntry: {
-                            id: animationEntryId
-                        }
-                    });
-                    navigationDispatch({
-                        type: NavigationActions.setActiveSection,
-                        section: Sections.ANIMATION_ENTRY,
-                    });
-                }
-                
-            }}>
+            <div>
                 <FormHeading className="large">Add animation entry</FormHeading>
                 <FormFieldset>
                     <FormLabel className="small">Name</FormLabel><br />
@@ -123,9 +75,58 @@ const SectionAddAnimationEntry = () => {
                     </select>
                 </FormFieldset><br/>
                 <FormFieldset>
-                    <button type="submit" ><CtaMain>Add Animation entry</CtaMain></button>
+                    <button onClick={
+                        
+                        () => {
+                            if(!timelineId) {
+                                return
+                            }
+                            if(selectRef.current && selectRef.current.value && activeTimeline) {
+                                const animationDefinitionId = uuidv4();
+                                animationDataDispatch({
+                                    type: AnimationDataActions.addAnimationDefinition,
+                                    animationDefinition: {
+                                        id:animationDefinitionId,
+                                        props: {}
+                                    }
+                                });
+                                const animationEntryId = uuidv4();
+                                animationDataDispatch( {
+                                    type: AnimationDataActions.addAnimationEntry,
+                                    animationEntry: {
+                                        id: animationEntryId,
+                                        domReference: selectRef.current.value,
+                                        name,
+                                        animationConnection: {
+                                            animationDefinitionId
+                                        } 
+                                    },
+                                });
+            
+                                animationDataDispatch({
+                                    type: AnimationDataActions.connectTimelineAnimationEntry,
+                                    timelineId: timelineId,
+                                    animationEntryId,
+                                });
+                                animationDataDispatch({
+                                    type: AnimationDataActions.setFilterByFrameId,
+                                    frameId: undefined
+                                })
+                                animationDataDispatch({
+                                    type: AnimationDataActions.setActiveAnimationEntry,
+                                    activeAnimationEntry: {
+                                        id: animationEntryId
+                                    }
+                                });
+                                navigationDispatch({
+                                    type: NavigationActions.setActiveSection,
+                                    section: Sections.ANIMATION_ENTRY,
+                                });
+                            }
+                        }
+                    }><CtaMain>Add Animation entry</CtaMain></button>
                 </FormFieldset>
-            </form>
+            </div>
         </div>
     )
 }

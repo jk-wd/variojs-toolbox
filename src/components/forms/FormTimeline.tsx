@@ -8,11 +8,11 @@ import FormFieldset from '@components/form-elements/FormFieldset';
 
 interface IProps {
     timeline: ITimeline
-    parallax: boolean
+    pixelBased: boolean
 }
 
 
-const FormTimeline = ({timeline, parallax = false}: IProps) => {
+const FormTimeline = ({timeline, pixelBased = false}: IProps) => {
     const animationDataDispatch = useAnimationDataDispatch();
 
     
@@ -23,7 +23,7 @@ const FormTimeline = ({timeline, parallax = false}: IProps) => {
         <div>
             <FormHeading subHeading={timeline.id} className="large">Timeline</FormHeading>
             {
-                (!parallax)?
+                (!pixelBased)?
                 <FormFieldset>
                     <FormLabel className="small">Loop timeline</FormLabel><br />
                     <input checked={timeline.loop} type="checkbox" onChange={
@@ -32,8 +32,8 @@ const FormTimeline = ({timeline, parallax = false}: IProps) => {
                                 type: AnimationDataActions.editTimeline,
                                 timeline: {
                                     ...timeline,
-                                    loop: (event.target.value === 'on'),
-                                    parallax
+                                    loop: event.target.checked,
+                                    pixelBased
                                 }
                             });
                         }

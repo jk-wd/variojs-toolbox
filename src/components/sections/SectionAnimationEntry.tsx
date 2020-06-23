@@ -1,12 +1,15 @@
-import React from "react";
+import React, {useEffect} from "react";
+import {uuidv4} from "variojs"
 import FormAnimationEntry from "@components/forms/FormAnimationEntry";
 import {getAnimationEntryById} from "variojs";
-import { useAnimationDataState } from '@context/animation-data/AnimaitonDataContext';
 import FormAnimationDefinition from '@components/forms/FormAnimationDefinition';
+import {IAnimationEntry} from "variojs";
+import {useAnimationDataDispatch, AnimationDataActions, useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
 
 const SectionAnimationEntry = () => {
     const {animationData, activeAnimationEntry} = useAnimationDataState();
-    let animationEntry;
+    const animationDataDispatch = useAnimationDataDispatch();
+    let animationEntry:IAnimationEntry | undefined;
     if(activeAnimationEntry) {
         animationEntry = getAnimationEntryById(animationData, activeAnimationEntry.id);    
     }
@@ -14,6 +17,29 @@ const SectionAnimationEntry = () => {
         return null;
     }
     
+    useEffect(() => {
+        if(animationEntry && !animationEntry.animationConnection) {
+            const animationDefinitionId = uuidv4();
+            animationDataDispatch({
+                type: AnimationDataActions.addAnimationDefinition,
+                animationDefinition: {
+                    id:animationDefinitionId,
+                    props: {}
+                }
+            });
+            animationDataDispatch(
+                {
+                    type: AnimationDataActions.addAnimationEntryConnection,
+                    local: true,
+                    animationConnection:{
+                        animationDefinitionId
+                    },
+                    animationEntryId: animationEntry.id
+                }
+            );
+        }
+    }, [animationEntry])
+
     return (
     <div>
         <FormAnimationEntry animationEntry={animationEntry}/>

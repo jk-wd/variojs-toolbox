@@ -1,5 +1,5 @@
 import React, {useCallback} from "react";
-import {uuidv4} from "@helpers/guid";
+import {uuidv4} from "variojs";
 import styled from "styled-components";
 import DeleteLabel from "@components/typography/DeleteLabel";
 import BlockLine from "@components/block-elements/BlockLine";

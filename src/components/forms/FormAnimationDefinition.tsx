@@ -190,7 +190,7 @@ const FormAnimationDefinition = ({animationDefinitionId, propsOfEntry = false} :
                     </div>
                 
                     <BottomSection>
-                        <FormLabel>{(propsOfEntry)?'Create global definition': 'Definition name'}</FormLabel>
+                        <FormLabel>{(propsOfEntry)?'Promote to animation definition': 'Definition name'}</FormLabel>
                         <FormInputString defaultValue={name} onChange={(event: any) => {
                             setName(event.target.value);
                         }} />
