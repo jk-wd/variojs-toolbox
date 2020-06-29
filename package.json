@@ -37,7 +37,7 @@
     "react-dom": "^16.13.1",
     "source-map-loader": "^0.2.4",
     "styled-components": "^5.1.0",
-    "variojs": "^1.0.0-beta.0",
+    "variojs": "^1.0.0-beta.1",
     "open-cli": "^6.0.1",
     "shelljs": "^0.8.4",
     "ws": "^7.3.0"
