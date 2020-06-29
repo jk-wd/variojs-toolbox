@@ -1,7 +1,9 @@
 import React, {useState, useEffect, useCallback} from "react";
-import {IFrameDef, EasingFunctions, IBreakpoint} from "variojs";
+import {IFrameDef, EasingFunctions, IBreakpoint, calculateSumString, unitMap, FrameValueTypes, NoBreakpointIdentifier} from "variojs";
 import FormLine from "@components/form-elements/FormLine";
 import styled from "styled-components";
+import {useSiteState} from "@context/sites/SiteContext";
+import { ISite } from '@interfaces/site';
 import FormLineSection from "@components/form-elements/FormLineSection";
 import Button from "@components/Button";
 import DeleteLabel from "@components/typography/DeleteLabel";
@@ -9,13 +11,14 @@ import FormElementLabel from "@components/form-elements/FormElementLabel";
 import {useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
 import FormFrameBlock from "@components/form-elements/FormFrameBlock";
 import FormInputText from "@components/form-elements/FormInputText";
-import {FrameValueTypes, NoBreakpointIdentifier} from "variojs";
 
 interface Props {
     onChange: (frame:IFrameDef) => void,
     onDelete: (frame:IFrameDef) => void,
-    frameType?: FrameValueTypes,
+    usePercentual?: boolean,
+    frameValueType?: FrameValueTypes,
     frame: IFrameDef,
+    frameType?: string,
 }
 
 const BreakpointLabel = styled.div`
@@ -26,9 +29,13 @@ const BreakpointLabel = styled.div`
 `
 
 
-const FormFrameNumber = ({onChange = () => {}, frameType=FrameValueTypes.number, onDelete = () => {}, frame:frameFromProps} : Props) => {
+const FormFrameNumber = ({onChange = () => {}, usePercentual=false, frameType="", frameValueType=FrameValueTypes.number, onDelete = () => {}, frame:frameFromProps} : Props) => {
     const [frame, setFrame] = useState<IFrameDef>(frameFromProps);
     const {animationData} = useAnimationDataState();
+    const {sites} = useSiteState();
+    const activeSite = sites.find((site: ISite) => (site.active));
+    const numbers = (activeSite && activeSite.numbers)?activeSite.numbers:{};
+    const animationDataNumbers = (animationData && animationData.numbers)?animationData.numbers:{};
     const [activeBreakpoints, setActiveBreakpoints] = useState<string[]>(Object.keys(frameFromProps.valueDef || {}));
     const breakpointSelectRef = React.createRef<HTMLSelectElement>();
     let breakpoints = (animationData.breakpoints)?animationData.breakpoints : [];
@@ -41,7 +48,7 @@ const FormFrameNumber = ({onChange = () => {}, frameType=FrameValueTypes.number,
     useEffect(() => {
         onChange({
             ...frame,
-            frameValueType: frameType
+            frameValueType
         });
     }, [frame]);
 
@@ -50,7 +57,9 @@ const FormFrameNumber = ({onChange = () => {}, frameType=FrameValueTypes.number,
             breakpointSelectRef.current.value = "Add a breakpoint value";
         }
     }, [activeBreakpoints]);
-
+    const getValueFroFrame = (frame:IFrameDef, breakpoint:string) => {
+        return (frame.valueDef && frame.valueDef[breakpoint])?frame.valueDef[breakpoint]:''
+    }
     const placeValueSection = useCallback((breakpoint = NoBreakpointIdentifier, label?:string) => {
         
         return (
@@ -58,7 +67,8 @@ const FormFrameNumber = ({onChange = () => {}, frameType=FrameValueTypes.number,
                 {
                     <FormInputText 
                     label={label}
-                    unit={frame.unit}
+                    unit={frame.unit || (unitMap as any)[frameType]}
+                    subLabel={''+calculateSumString(getValueFroFrame(frame, breakpoint), numbers, animationDataNumbers)}
                     onChange={(event: any) => {
                         const valueDef = event.target.value;
                         if(valueDef === '' && frame && frame.valueDef && frame.valueDef[breakpoint]) {
@@ -77,7 +87,7 @@ const FormFrameNumber = ({onChange = () => {}, frameType=FrameValueTypes.number,
                             });
                         }
                     }}
-                    defaultValue={(frame.valueDef && frame.valueDef[breakpoint])?frame.valueDef[breakpoint]:''} />
+                    defaultValue={getValueFroFrame(frame, breakpoint)} />
                 }
                 
             </FormLineSection>
@@ -87,9 +97,14 @@ const FormFrameNumber = ({onChange = () => {}, frameType=FrameValueTypes.number,
     return (
         <FormFrameBlock>
             <FormLine>
-                <FormLineSection>
+                
+                {
+                    (!usePercentual)?
+                    <>
+                    <FormLineSection>
                     <FormInputText 
                         label="px"
+                        subLabel={(frame.pxDef)?''+calculateSumString(frame.pxDef, numbers, animationDataNumbers):''}
                         onChange={(event: any) => {
                             const pxDef = event.target.value;
                             if(pxDef) {
@@ -105,6 +120,7 @@ const FormFrameNumber = ({onChange = () => {}, frameType=FrameValueTypes.number,
                 <FormLineSection>
                     <FormInputText 
                             label="ms"
+                            subLabel={(frame.msDef)?''+calculateSumString(frame.msDef, numbers, animationDataNumbers):''}
                             onChange={(event: any) => {
                                 const msDef = event.target.value;
                                 if(msDef) {
@@ -115,7 +131,29 @@ const FormFrameNumber = ({onChange = () => {}, frameType=FrameValueTypes.number,
                                 }
                             }}
                             defaultValue={frame.msDef} />
+                </FormLineSection></>:
+                <>
+                <FormLineSection>
+                    <FormInputText 
+                            label="percent"
+                            unit="%"
+                            subLabel={(frame.percentDef)?''+calculateSumString(frame.percentDef, numbers, animationDataNumbers):''}
+                            onChange={(event: any) => {
+                                const percentDef = event.target.value;
+                                if(percentDef) {
+                                    setFrame({
+                                        ...frame,
+                                        percentDef
+                                    });
+                                }
+                            }}
+                            defaultValue={frame.percentDef} />
                 </FormLineSection>
+                <FormLineSection>
+                </FormLineSection>
+                </>
+                }
+               
                 {
                     placeValueSection(NoBreakpointIdentifier, "value")
                 }

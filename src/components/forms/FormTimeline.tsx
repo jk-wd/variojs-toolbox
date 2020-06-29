@@ -5,6 +5,7 @@ import FormHeading from '@components/form-elements/FormHeading';
 import FormLabel from '@components/form-elements/FormLabel';
 import {useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
 import FormFieldset from '@components/form-elements/FormFieldset';
+import FormInputText from '@components/form-elements/FormInputText';
 
 interface IProps {
     timeline: ITimeline
@@ -22,6 +23,18 @@ const FormTimeline = ({timeline, pixelBased = false}: IProps) => {
     return (
         <div>
             <FormHeading subHeading={timeline.id} className="large">Timeline</FormHeading>
+            <FormFieldset>
+                    <FormInputText defaultValue={timeline.duration} label="Duration" onChange={(event: any) => {
+                        animationDataDispatch({
+                            type: AnimationDataActions.editTimeline,
+                            timeline: {
+                                ...timeline,
+                                duration: event.target.value,
+                                pixelBased
+                            }
+                        });
+                    }}></FormInputText>
+                </FormFieldset>
             {
                 (!pixelBased)?
                 <FormFieldset>

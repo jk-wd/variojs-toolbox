@@ -1,11 +1,15 @@
 import React, {useCallback} from "react";
 import styled from "styled-components";
-import { IFrame, IFrameDef, IAnimationConnection, calculateSumString, processFrameDef, getEndOfTimeline } from 'variojs';
+import { IFrameDef, IAnimationConnection, calculateSumString } from 'variojs';
 import {useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
+import {getEndOfActiveTimeline} from "@helpers/timeline";
+
 import {useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
 import {Sections} from "@enums/navigation";
+import {useSiteState} from "@context/sites/SiteContext";
 import { Colors } from '@enums/colors';
+import { ISite } from '@interfaces/site';
 
 interface IProps {
     frames: IFrameDef[]
@@ -69,28 +73,43 @@ const KeyFrame = styled.button`
 const TimelineAnimationFrames = ({animationConnection, className, frames = []}: IProps) => {
     const {animationData, activeTimeline} = useAnimationDataState();
     const animationDataDispatch = useAnimationDataDispatch();
+    const {sites} = useSiteState();
+    const activeSite = sites.find((site: ISite) => (site.active));
+    const numbers = (activeSite && activeSite.numbers)?activeSite.numbers:{};
+    const animationDataNumbers = (animationData && animationData.numbers)?animationData.numbers:{};
     const navigationDispatch = useNavigationDispatch();
 
-    const calculatePosition = useCallback((frame: IFrame) => {
+    const calculatePosition = useCallback((frame: IFrameDef) => {
         if(!activeTimeline) {
             return;
         }
         const indexAnimationConnection = (activeTimeline.pixelBased)? 'startPx': 'startMs';
-        const timelineEnd = getEndOfTimeline(animationData, activeTimeline.timelineId);
-        const indexFrame = (activeTimeline.pixelBased)? 'px': 'ms';
-        const startValue = calculateSumString(animationData, animationConnection[indexAnimationConnection] || '');
-        let value = frame[indexFrame] || 0;
-        value = value + startValue;
-        return (value / timelineEnd) * innerWidth
-    }, [activeTimeline, animationConnection, animationData]);
 
-    const placeTime = useCallback((frame:IFrame) => {
+        const indexFrame = (activeTimeline.pixelBased)? 'pxDef': 'msDef';
+        const timelineEnd = getEndOfActiveTimeline(activeTimeline, activeSite);
+
+        const startValue = calculateSumString(animationConnection[indexAnimationConnection] || '', numbers, animationDataNumbers);
+        let value = calculateSumString(frame[indexFrame] || '', numbers, animationDataNumbers);
+        value = value + startValue;
+        if(frame.percentDef && timelineEnd) {
+            const percentValue = calculateSumString(frame.percentDef || '', numbers, animationDataNumbers);
+            value = (percentValue / 100) * timelineEnd;
+        }
+        return (value / timelineEnd) * innerWidth
+    }, [activeTimeline, animationConnection, sites, animationData]);
+
+    const placeTime = useCallback((frameDef:IFrameDef) => {
         if(!activeTimeline) {
             return;
         }
-        const index = (activeTimeline.pixelBased)? 'px': 'ms';
-        return frame[index];
-    }, [activeTimeline]);
+        
+        const index = (activeTimeline.pixelBased)? 'pxDef': 'msDef';
+        if(frameDef.percentDef) {
+            const percentValue = calculateSumString(frameDef.percentDef || '', numbers, animationDataNumbers);
+            return percentValue + '%';
+        }
+        return calculateSumString(frameDef[index] || '', numbers, animationDataNumbers);
+    }, [activeTimeline, sites]);
 
     return (
         <TimelineAnimationFramesEl className={className}>
@@ -99,9 +118,8 @@ const TimelineAnimationFrames = ({animationConnection, className, frames = []}: 
                 if(!frameDef) {
                     return;
                 }
-                const frame = processFrameDef(animationData, frameDef);
                 //@ts-ignore
-                return <KeyFrame key={frame.id +''+ index} left={`${calculatePosition(frame)}px`} 
+                return <KeyFrame key={frameDef.id +''+ index} left={`${calculatePosition(frameDef)}px`} 
                 onClick={() => {
                     animationDataDispatch({
                         type: AnimationDataActions.setActiveAnimationDefinition,
@@ -116,7 +134,7 @@ const TimelineAnimationFrames = ({animationConnection, className, frames = []}: 
                         section: Sections.ANIMATION_DEFINITION,
                     });
                 }} 
-                ><span></span>{placeTime(frame)}</KeyFrame>
+                ><span></span>{placeTime(frameDef)}</KeyFrame>
                 })}
             </TimelineAnimationFramesInner>
         </TimelineAnimationFramesEl>

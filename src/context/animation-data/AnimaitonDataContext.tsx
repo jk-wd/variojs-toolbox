@@ -1,7 +1,7 @@
 
 import React from 'react';
 import devSocket from "@socketserver/client/dev-socket";
-import { IAnimationData, IAnimationDefinition, IAnimationEntry, ITimeline, getEndOfTimeline, IAnimationConnection, IBreakpoint } from 'variojs';
+import { IAnimationData, IAnimationDefinition, IAnimationEntry, ITimeline, IAnimationConnection, IBreakpoint, saveAnimationDataNumbers } from 'variojs';
 import { 
   deleteAnimationEntryConnection,
   addAnimationEntryConnection,
@@ -283,7 +283,6 @@ function animationDataReducer(state: AnimationDataState,
             ...state,
             activeTimeline: {
               ...action.timeline,
-              end: getEndOfTimeline(state.animationData, action.timeline.timelineId),
             }
         }
       }
@@ -440,7 +439,8 @@ function animationDataReducer(state: AnimationDataState,
 
       // NUMBER VARIABLES
       case AnimationDataActions.addEditNumberVariable: {
-        const animationData = cloneObject(addEditNumberVariable(state.animationData, action.name, action.value));
+        addEditNumberVariable(action.name, action.value, true)
+        const animationData = cloneObject(saveAnimationDataNumbers(state.animationData));
         devSocket.updateAnimationData(animationData);
         return {
             ...state,
@@ -449,7 +449,8 @@ function animationDataReducer(state: AnimationDataState,
       }
 
       case AnimationDataActions.deleteNumberVariable: {
-        const animationData = cloneObject(deleteNumberVariable(state.animationData, action.name));
+        deleteNumberVariable(action.name, true)
+        const animationData = cloneObject(saveAnimationDataNumbers(state.animationData));
         devSocket.updateAnimationData(animationData);
         return {
             ...state,

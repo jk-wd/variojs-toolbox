@@ -5,15 +5,21 @@ import socketConnect from '@socketserver/client/socket-connect.js';
 
 const sendSiteData = (ws, variojs) => {
   const animationData = variojs.getAnimationData();
+  const timelineStates = variojs.getTimelineStates();
+  const pixelTimelineStates = variojs.getPixelTimelineStates();
   if(!animationData) {
     return;
   }
   const domNodes = [].slice.call(document.querySelectorAll('[data-v]'));
+
   ws.send(JSON.stringify({
     action: 'siteData',
     payload: {
       animationData,
+      numbers: variojs.getNumbers(),
       siteUrl: window.location.href,
+      timelineStates,
+      pixelTimelineStates,
       placeholders: domNodes.reduce((result, domNode) => {
         const name = domNode.getAttribute('data-v');
         if(name && name!= "") {
@@ -28,7 +34,9 @@ const sendSiteData = (ws, variojs) => {
 export default {
     init: async (variojs) => {
       const ws = await socketConnect();
-
+      variojs.onUpdateAnimationData((animationData)=> {
+        sendSiteData(ws, variojs)
+      })
       window.addEventListener('scroll', () => {
         ws.send(JSON.stringify({
           action: 'calculatePageScroll',
@@ -42,9 +50,17 @@ export default {
         const dataParsed = JSON.parse(data);
         if(dataParsed.action === 'updateAnimationData'){
           variojs.updateAnimationData(dataParsed.payload)
+          
+          sendSiteData(ws, variojs);
         }
         if(dataParsed.action === 'getSiteData'){
           sendSiteData(ws, variojs)
+        }
+        if(dataParsed.action === 'calculateSumString'){
+          ws.send(JSON.stringify({
+            action: 'calculateSumStringReturnValue',
+            payload: variojs.calculateSumString(dataParsed.payload)
+          }));
         }
       });
 

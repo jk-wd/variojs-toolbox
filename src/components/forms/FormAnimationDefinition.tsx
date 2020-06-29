@@ -140,7 +140,7 @@ const FormAnimationDefinition = ({animationDefinitionId, propsOfEntry = false} :
                             <span>Unit:</span>{placeUnitSelect(key, unit)}
                         </UnitSelect>
                         </FormLabel>
-                        <FormFrameNumberArray propType={key as PropTypes} frameType={(key === "display" || key === "visibility" )?FrameValueTypes.string: FrameValueTypes.number} frames={props[key]} filterByFrameId={filterByFrameId} onChange={(frames) => {
+                        <FormFrameNumberArray propType={key as PropTypes} frameType={key} frameValueType={(key === "display" || key === "visibility" )?FrameValueTypes.string: FrameValueTypes.number} frames={props[key]} filterByFrameId={filterByFrameId} onChange={(frames) => {
                             const newProps = {
                                 ...animationDefinition.props,
                                 [key]: frames

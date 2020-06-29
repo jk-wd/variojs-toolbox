@@ -50,6 +50,9 @@ function siteReducer(state: SiteState,
         const site: ISite = {
           animationData:action.siteData.animationData,
           animationDataIndex:0,
+          timelineStates:action.siteData.timelineStates,
+          pixelTimelineStates:action.siteData.pixelTimelineStates,
+          numbers:action.siteData.numbers,
           placeholders:action.siteData.placeholders,
           url:action.siteData.siteUrl,
           active: false
@@ -58,11 +61,11 @@ function siteReducer(state: SiteState,
         let sites: ISite[] = state.sites.map((siteTarget:ISite) => {
           if(siteTarget.url === site.url) {
             updated = true;
-
             return {
               ...siteTarget,
-              animationData: site.animationData,
-              placeholders:site.placeholders,
+              ...site,
+              animationDataIndex: siteTarget.animationDataIndex,
+              active: siteTarget.active
             }
           } else {
             return siteTarget;

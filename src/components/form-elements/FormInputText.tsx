@@ -1,12 +1,25 @@
-import React, {ChangeEvent, useEffect, createRef} from "react";
+import React, {ChangeEvent, useEffect, useCallback, createRef} from "react";
 import styled from "styled-components";
 import FormElementLabel from "@components/form-elements/FormElementLabel";
 import {Colors} from "@enums/colors";
+
+const debounce = (fn:Function, time:number) => {
+    let timeout:any;
+  
+    return function() {
+        //@ts-ignore
+      const functionCall = () => fn.apply(this, arguments);
+      
+      clearTimeout(timeout);
+      timeout = setTimeout(functionCall, time);
+    }
+  }
 
 interface IProps {
     defaultValue?: string | number,
     disabled?: boolean,
     label?: string,
+    subLabel?: string,
     numberInput?: boolean,
     unit?: string,
     onChange?: (event: ChangeEvent<HTMLInputElement>) => void
@@ -14,14 +27,14 @@ interface IProps {
 
 const FormInputStringEl = styled.div`
     position: relative;
-    > input {
+    div > input {
         padding: 6px;
         font-size: 13px;
         width: 100%;
         background: ${Colors.white};
         border: 1px solid ${Colors.darkGrey};
     }
-    &.with-unit > input {
+    &.with-unit div > input {
         padding-right: 40px;
     }
 `;
@@ -32,14 +45,25 @@ const Unit = styled.span`
     opacity: 0.6;
     color: ${Colors.darkGrey};
     right: 8px;
-    bottom: 5px;
+    top: 5px;
     padding-left: 2px;
+`;
+const SubLabel = styled.span`
+    display:block;
+    padding: 4px 0 0 6px;
+    font-size: 10px;
+    color: ${Colors.darkGrey};
 `;
 
 
-const FormInputText = ({defaultValue = "", label = "", numberInput = false, unit, disabled, onChange= () => {}}: IProps) => {
+
+const FormInputText = ({defaultValue = "", label = "",subLabel, numberInput = false, unit, disabled, onChange= () => {}}: IProps) => {
     const inputRef = createRef<HTMLInputElement>();
-    
+
+    const onChangeDebounced = useCallback(debounce((event:any) => {
+        onChange(event);
+    }, 500), [onChange]);
+
     useEffect(() => {
         if(inputRef.current) {
             inputRef.current.value = ''+defaultValue || '';
@@ -52,10 +76,21 @@ const FormInputText = ({defaultValue = "", label = "", numberInput = false, unit
                 <><FormElementLabel>{label}</FormElementLabel><br /></>
                 : null
             }
-            <input type={(numberInput)?'number':'text'} ref={inputRef} onChange={onChange} disabled={disabled} defaultValue={defaultValue} />
+            <div style={{position:'relative'}}>
+            <input type={(numberInput)?'number':'text'} ref={inputRef} onChange={(event:any)=> {
+                event.persist();
+                //@ts-ignore
+                onChangeDebounced(event);
+            }} disabled={disabled} defaultValue={defaultValue} />
             {
                 (unit)?
                 <Unit>{unit}</Unit>:null
+            }
+            </div>
+           
+            {
+                (subLabel && subLabel !== defaultValue)?
+            <SubLabel>{subLabel}</SubLabel>:null
             }
         </FormInputStringEl>
     )

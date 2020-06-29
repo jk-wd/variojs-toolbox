@@ -54,7 +54,7 @@ const TimelineSelect = () => {
                        animationDispatch({
                         type: AnimationDataActions.setActiveTimeline,
                         timeline: {
-                            pixelBased: usePixelBasedTimelines,
+                            pixelBased: (event.target.value==='pixelBased'),
                             timelineId: undefined,
                         },
                         });
