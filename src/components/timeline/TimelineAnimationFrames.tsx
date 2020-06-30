@@ -93,7 +93,7 @@ const TimelineAnimationFrames = ({animationConnection, className, frames = []}: 
         value = value + startValue;
         if(frame.percentDef && timelineEnd) {
             const percentValue = calculateSumString(frame.percentDef || '', numbers, animationDataNumbers);
-            value = (percentValue / 100) * timelineEnd;
+            value = startValue + ((percentValue / 100) * (timelineEnd - startValue));
         }
         return (value / timelineEnd) * innerWidth
     }, [activeTimeline, animationConnection, sites, animationData]);

@@ -35,8 +35,6 @@ const FormTimeline = ({timeline, pixelBased = false}: IProps) => {
                         });
                     }}></FormInputText>
                 </FormFieldset>
-            {
-                (!pixelBased)?
                 <FormFieldset>
                     <FormLabel className="small">Loop timeline</FormLabel><br />
                     <input checked={timeline.loop} type="checkbox" onChange={
@@ -51,8 +49,7 @@ const FormTimeline = ({timeline, pixelBased = false}: IProps) => {
                             });
                         }
                     } />
-                </FormFieldset>:null
-            }
+                </FormFieldset>
             
             
         </div>

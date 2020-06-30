@@ -1,6 +1,8 @@
 import React, {useCallback, useEffect} from "react";
 import styled from "styled-components";
 import DeleteLabel from "@components/typography/DeleteLabel";
+import {useSiteState} from "@context/sites/SiteContext";
+import { ISite } from '@interfaces/site';
 import BlockLine from "@components/block-elements/BlockLine";
 import { IAnimationEntry, IAnimationConnection } from 'variojs/lib/types-interfaces';
 import FormInputString from '@components/form-elements/FormInputText';
@@ -8,7 +10,7 @@ import FormLabel from '@components/form-elements/FormLabel';
 import {usePlaceholders} from "@context/placeholders/PlaceholdersContext";
 import Button from '@components/Button';
 import FormHeading from '@components/form-elements/FormHeading';
-import {getAnimationDefinitionById, IAnimationDefinition} from 'variojs';
+import {getAnimationDefinitionById, IAnimationDefinition, calculateSumString} from 'variojs';
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
 import {useAnimationDataDispatch, AnimationDataActions, useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
 import {Sections} from "@enums/navigation";
@@ -26,6 +28,12 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
     const animationDataDispatch = useAnimationDataDispatch();
     const placeholders = usePlaceholders();
     const {animationData} = useAnimationDataState();
+
+    const {sites} = useSiteState();
+    const activeSite = sites.find((site: ISite) => (site.active));
+    const numbers = (activeSite && activeSite.numbers)?activeSite.numbers:{};
+    const animationDataNumbers = (animationData && animationData.numbers)?animationData.numbers:{};
+
     const refSelectDomReference = React.createRef<HTMLSelectElement>();
     const navigationDispatch = useNavigationDispatch();
     
@@ -114,7 +122,9 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
             </RemoveButtonHolder>
 
             <br />
-            <FormInputString defaultValue={animationConnection.startPx} label="Starting point px" onChange={(event: any) => {
+            <FormInputString 
+                subLabel={(animationConnection.startPx)?''+calculateSumString(animationConnection.startPx, numbers, animationDataNumbers):''}
+                defaultValue={animationConnection.startPx} label="Starting point px" onChange={(event: any) => {
                 animationDataDispatch(
                     {
                         type: AnimationDataActions.editAnimationEntryConnection,
@@ -127,7 +137,9 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                     }
                 );
             }} />
-            <FormInputString defaultValue={animationConnection.startMs} label="Starting point ms" onChange={(event: any) => {
+            <FormInputString 
+                subLabel={(animationConnection.startMs)?''+calculateSumString(animationConnection.startMs, numbers, animationDataNumbers):''}
+                defaultValue={animationConnection.startMs} label="Starting point ms" onChange={(event: any) => {
                 animationDataDispatch(
                     {
                         type: AnimationDataActions.editAnimationEntryConnection,
