@@ -9,6 +9,7 @@ interface IProps {
 
 const ButtonEl = styled.button`
   border: none;
+  padding: 0;
   &.text-align-left {
       text-align: left;
   }

@@ -15,7 +15,7 @@ import CtaMain from '@components/cta/CtaMain';
 
 
 const SectionBreakpoints = () => {
-    const dispatchAnimationData = useAnimationDataDispatch();
+    const animationDataDispatch = useAnimationDataDispatch();
     const [breakPoint, setBreakpoint] = useState<any>({});
     const {animationData} = useAnimationDataState();
 
@@ -38,9 +38,12 @@ const SectionBreakpoints = () => {
                             <FormLineSection>
                                 <Button onClick={
                                     () => {
-                                        dispatchAnimationData({
+                                        animationDataDispatch({
                                             type: AnimationDataActions.deleteBreakpoint,
                                             breakpointId: breakpoint.id,
+                                        });
+                                        animationDataDispatch({
+                                            type: AnimationDataActions.syncAnimationData,
                                         });
                                     }
                                 }><DeleteLabel>Delete</DeleteLabel></Button>
@@ -49,7 +52,7 @@ const SectionBreakpoints = () => {
                         <FormLine>
                             <FormLineSection>
                                 <FormInputText onChange={(event: any) => {
-                                     dispatchAnimationData({
+                                     animationDataDispatch({
                                         type: AnimationDataActions.editBreakpoint,
                                         breakpoint: {
                                             id: breakpoint.id,
@@ -57,17 +60,23 @@ const SectionBreakpoints = () => {
                                             order: parseInt(event.target.value, 10),
                                         }
                                     });
+                                    animationDataDispatch({
+                                        type: AnimationDataActions.syncAnimationData,
+                                    });
                                 }} label="Importance" defaultValue={breakpoint.order}/>
                             </FormLineSection>
                             <FormLineSection>
                                 <FormInputText onChange={(event: any) => {
-                                     dispatchAnimationData({
+                                     animationDataDispatch({
                                         type: AnimationDataActions.editBreakpoint,
                                         breakpoint: {
                                             id: breakpoint.id,
                                             definition: event.target.value,
                                             order: breakpoint.order,
                                         }
+                                    });
+                                    animationDataDispatch({
+                                        type: AnimationDataActions.syncAnimationData,
                                     });
                                 }} label="Definition" defaultValue={breakpoint.definition}/>
                             </FormLineSection>
@@ -82,13 +91,16 @@ const SectionBreakpoints = () => {
         <form onSubmit={(event:any) => {
                 event.preventDefault();
                 if(breakPoint.id && breakPoint.definition) {
-                    dispatchAnimationData({
+                    animationDataDispatch({
                         type: AnimationDataActions.addBreakpoint,
                         breakpoint: {
                             id: breakPoint.id,
                             definition: breakPoint.definition,
                             order: breakPoint.order,
                         }
+                    });
+                    animationDataDispatch({
+                        type: AnimationDataActions.syncAnimationData,
                     });
                 }
             }}>

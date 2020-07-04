@@ -4,7 +4,7 @@ import {Sections} from "@enums/navigation";
 import Button from "@components/Button";
 import styled from "styled-components";
 
-const MenuEl = styled.nav`
+export const MenuEl = styled.nav`
     width:100%;
     & > button {
         text-decoration:underline;
@@ -21,6 +21,12 @@ const Menu = () => {
     
     return (
     <MenuEl>
+        <Button onClick={() => {
+            dispatch({
+                type: NavigationActions.setActiveSection,
+                section: Sections.SAVE,
+            });
+        }}>Save</Button>
         <Button onClick={() => {
             dispatch({
                 type: NavigationActions.setActiveSection,

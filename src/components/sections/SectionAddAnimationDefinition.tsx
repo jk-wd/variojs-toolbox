@@ -31,7 +31,9 @@ const SectionAddAnimationDefinition = () => {
                         }
                     });
 
-
+                    animationDataDispatch({
+                        type: AnimationDataActions.syncAnimationData,
+                    });
                     animationDataDispatch({
                         type: AnimationDataActions.setActiveAnimationDefinition,
                         animationDefinitionId: animationDefinitionId

@@ -51,6 +51,9 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
                             props: {}
                         }
                     });
+                    animationDataDispatch({
+                        type: AnimationDataActions.syncAnimationData,
+                    });
 
                     animationDataDispatch({
                         type: AnimationDataActions.setActiveAnimationDefinition,
@@ -79,6 +82,9 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
                             },
                             animationEntryId: animationEntry.id,
                             local: false
+                        });
+                        animationDataDispatch({
+                            type: AnimationDataActions.syncAnimationData,
                         });
                     }
                 }>
@@ -135,6 +141,9 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
                         animationEntryId: animationEntry.id,
                         local: false
                     });
+                    animationDataDispatch({
+                        type: AnimationDataActions.syncAnimationData,
+                    });
                 }}><DeleteLabel>Disconnect</DeleteLabel></Button>
             </RemoveButtonHolder>
 
@@ -151,6 +160,9 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
                         local: false
                     }
                 );
+                animationDataDispatch({
+                    type: AnimationDataActions.syncAnimationData,
+                });
             }} />
             <FormInputText defaultValue={animationConnection.startMs} label="Start milliseconds" onChange={(event: any) => {
                 animationDataDispatch(
@@ -164,6 +176,9 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
                         local: false
                     }
                 );
+                animationDataDispatch({
+                    type: AnimationDataActions.syncAnimationData,
+                });
             }} />
         </>
         
@@ -198,6 +213,9 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
                                 }
                             }
                         );
+                        animationDataDispatch({
+                            type: AnimationDataActions.syncAnimationData,
+                        });
             }} /> <br/>
             {animationEntry.domReference}
         </BlockSection>

@@ -37,6 +37,9 @@ const SectionAnimationEntry = () => {
                     animationEntryId: animationEntry.id
                 }
             );
+            animationDataDispatch({
+                type: AnimationDataActions.syncAnimationData,
+            });
         }
     }, [animationEntry])
 

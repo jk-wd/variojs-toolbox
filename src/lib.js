@@ -31,9 +31,20 @@ const sendSiteData = (ws, variojs) => {
   }));
 }
 
+const getPortParam = () => {
+  const url = new URL(window.location);
+  const portParam = url.searchParams.get("variojsp");
+  return portParam || '';
+}
+
 export default {
     init: async (variojs) => {
-      const ws = await socketConnect();
+      const port = getPortParam();
+      if(!port) {
+        return;
+      }
+      const ws = await socketConnect(port);
+
       variojs.onUpdateAnimationData((animationData)=> {
         sendSiteData(ws, variojs)
       })

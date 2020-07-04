@@ -19,7 +19,9 @@ interface IProps {
     defaultValue?: string | number,
     disabled?: boolean,
     label?: string,
+    debounceChange?: boolean,
     subLabel?: string,
+    id?: string,
     numberInput?: boolean,
     unit?: string,
     onChange?: (event: ChangeEvent<HTMLInputElement>) => void
@@ -57,7 +59,7 @@ const SubLabel = styled.span`
 
 
 
-const FormInputText = ({defaultValue = "", label = "",subLabel, numberInput = false, unit, disabled, onChange= () => {}}: IProps) => {
+const FormInputText = ({defaultValue = "", label = "",subLabel, debounceChange = true, id, numberInput = false, unit, disabled, onChange= () => {}}: IProps) => {
     const inputRef = createRef<HTMLInputElement>();
 
     const onChangeDebounced = useCallback(debounce((event:any) => {
@@ -70,15 +72,19 @@ const FormInputText = ({defaultValue = "", label = "",subLabel, numberInput = fa
         }
     }, [defaultValue]);
     return (
-        <FormInputStringEl className={(unit)?"with-unit":""}>
+        <FormInputStringEl  className={(unit)?"with-unit":""}>
              {
                 (label != "")?
                 <><FormElementLabel>{label}</FormElementLabel><br /></>
                 : null
             }
             <div style={{position:'relative'}}>
-            <input type={(numberInput)?'number':'text'} ref={inputRef} onChange={(event:any)=> {
+            <input id={id} type={(numberInput)?'number':'text'} ref={inputRef} onChange={(event:any)=> {
                 event.persist();
+                if(!debounceChange) {
+                    onChange(event);
+                    return;
+                }
                 //@ts-ignore
                 onChangeDebounced(event);
             }} disabled={disabled} defaultValue={defaultValue} />

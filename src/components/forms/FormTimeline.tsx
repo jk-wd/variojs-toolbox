@@ -33,6 +33,9 @@ const FormTimeline = ({timeline, pixelBased = false}: IProps) => {
                                 pixelBased
                             }
                         });
+                        animationDataDispatch({
+                            type: AnimationDataActions.syncAnimationData,
+                        });
                     }}></FormInputText>
                 </FormFieldset>
                 <FormFieldset>
@@ -46,6 +49,9 @@ const FormTimeline = ({timeline, pixelBased = false}: IProps) => {
                                     loop: event.target.checked,
                                     pixelBased
                                 }
+                            });
+                            animationDataDispatch({
+                                type: AnimationDataActions.syncAnimationData,
                             });
                         }
                     } />

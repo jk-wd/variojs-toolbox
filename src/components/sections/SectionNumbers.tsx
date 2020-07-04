@@ -14,7 +14,7 @@ import { useAnimationDataState, useAnimationDataDispatch, AnimationDataActions }
 import CtaMain from '@components/cta/CtaMain';
 
 const SectionNumbers = () => {
-    const dispatchAnimationData = useAnimationDataDispatch();
+    const animationDataDispatch = useAnimationDataDispatch();
     const {sites} = useSiteState();
     const activeSite = sites.find((site: ISite) => (site.active));
     const numbers = (activeSite && activeSite.numbers)?activeSite.numbers:{};
@@ -71,10 +71,13 @@ const SectionNumbers = () => {
                             </FormLineSection>
                             <FormLineSection>
                             <FormInputText onChange={(event: any) => {
-                                     dispatchAnimationData({
+                                     animationDataDispatch({
                                         type: AnimationDataActions.addEditNumberVariable,
                                         name: numberKey,
                                         value: parseInt(event.target.value,10),
+                                    });
+                                    animationDataDispatch({
+                                        type: AnimationDataActions.syncAnimationData,
                                     });
                                 }} defaultValue={value}/>
                             </FormLineSection>
@@ -83,9 +86,12 @@ const SectionNumbers = () => {
                             <FormLineSection>
                                 <Button onClick={
                                     () => {
-                                        dispatchAnimationData({
+                                        animationDataDispatch({
                                             type: AnimationDataActions.deleteNumberVariable,
                                             name: numberKey,
+                                        });
+                                        animationDataDispatch({
+                                            type: AnimationDataActions.syncAnimationData,
                                         });
                                     }
                                 }><DeleteLabel>Delete</DeleteLabel></Button>
@@ -100,10 +106,13 @@ const SectionNumbers = () => {
         <form onSubmit={(event:any) => {
             event.preventDefault();
             if(numberVariable.name && numberVariable.value) {
-                dispatchAnimationData({
+                animationDataDispatch({
                     type: AnimationDataActions.addEditNumberVariable,
                     name: numberVariable.name,
                     value: parseInt(numberVariable.value, 10),
+                });
+                animationDataDispatch({
+                    type: AnimationDataActions.syncAnimationData,
                 });
             }
         }}>

@@ -24,9 +24,7 @@ const SectionTimelines = ({pixelBased}: Props) => {
     const animationDataDispatch = useAnimationDataDispatch();
     const navigationDispatch = useNavigationDispatch();
     const {animationData} = useAnimationDataState();
-    const timelines: any = (pixelBased)?
-    animationData.timelines.filter((timeline:ITimeline) => (timeline.pixelBased === true)): 
-    animationData.timelines.filter((timeline:ITimeline) => (!timeline.pixelBased));
+    const timelines: ITimeline[] = (animationData && animationData.timelines)?animationData.timelines:[];
 
     return (
     <div>
@@ -38,7 +36,7 @@ const SectionTimelines = ({pixelBased}: Props) => {
         {
             (timelines)?
             timelines.map((timeline:ITimeline) => {
-                if(!timeline) {
+                if(!timeline || (timeline.pixelBased && !pixelBased) || (!timeline.pixelBased && pixelBased)) {
                     return;
                 }
                 return (
@@ -69,6 +67,9 @@ const SectionTimelines = ({pixelBased}: Props) => {
                                     animationDataDispatch({
                                         type: AnimationDataActions.deleteTimeline,
                                         timelineId: timeline.id,
+                                    });
+                                    animationDataDispatch({
+                                        type: AnimationDataActions.syncAnimationData,
                                     });
                                 }}><DeleteLabel>Delete</DeleteLabel></Button>
                             </RemoveButtonHolder>

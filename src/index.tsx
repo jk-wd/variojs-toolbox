@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import devSocket from "@socketserver/client/dev-socket";
 import ChooseSite from "@components/ChooseSite";
 import Main from "@components/Main";
 import {SiteProvider, useSiteState, useSiteDispatch, SiteActions} from "@context/sites/SiteContext";
-
 import ReactDOM from "react-dom";
 import { ISocketSiteData } from '@interfaces/data';
 import { ISite } from '@interfaces/site';
+const { ipcRenderer } = window.require('electron');
 
 (window as any).VarioJsDevTools = {
     scrollPos: {
@@ -27,9 +27,16 @@ const handleScroll = ({scrollOffset, scrollPercentage}: any) => {
 const SiteSwitcher = () => {
     const {sites} = useSiteState();
     const siteDispatch = useSiteDispatch();
-
+    const [port, setPort] = useState<string>();
 
     useEffect(() => {
+        setPort(ipcRenderer.sendSync('GET_PORT', ''));
+    }, []);
+
+    useEffect(() => {
+        if(!port) {
+            return
+        }
         devSocket.init((socketData:ISocketSiteData) => {
             siteDispatch(
                 {
@@ -37,8 +44,8 @@ const SiteSwitcher = () => {
                     siteData: socketData
                 }
             );
-        }, handleScroll);
-    }, [])
+        }, handleScroll, port);
+    }, [port])
     return (
             <>
                 {

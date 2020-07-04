@@ -12,7 +12,7 @@ interface Props {
 }
 
 const SectionAddTimeline = ({pixelBased}: Props) => {
-    const dispatchAnimationData = useAnimationDataDispatch();
+    const animationDataDispatch = useAnimationDataDispatch();
     const navigationDispatch = useNavigationDispatch();
     const [timeline, setTimeline] = useState<any>({});
 
@@ -22,16 +22,22 @@ const SectionAddTimeline = ({pixelBased}: Props) => {
         <form onSubmit={(event:any) => {
             event.preventDefault();
             if(timeline.id) {
-                dispatchAnimationData({
+                animationDataDispatch({
                     type: AnimationDataActions.addTimeline,
                     timeline: {
                         id: timeline.id,
                         pixelBased
                     }
                 });
-                dispatchAnimationData({
+                animationDataDispatch({
+                    type: AnimationDataActions.syncAnimationData,
+                });
+                animationDataDispatch({
                     type: AnimationDataActions.setActiveTimeline,
-                    timeline: timeline
+                    timeline: {
+                        timelineId: timeline.id,
+                        pixelBased
+                    }
                 });
                 navigationDispatch({
                     type: NavigationActions.setActiveSection,

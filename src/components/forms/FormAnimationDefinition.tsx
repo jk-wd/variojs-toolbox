@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useCallback} from "react";
-import {PropTypes, unitMap, FrameValueTypes, IFrame} from "variojs";
+import React, {useState, useEffect} from "react";
+import {PropTypes, FrameValueTypes} from "variojs";
 import styled from "styled-components";
 import FormFieldset from "@components/form-elements/FormFieldset";
 import FormFrameNumberArray from "@components/forms/FormFrameArray";
@@ -22,16 +22,6 @@ const Frames = styled.div`
     padding-bottom: 10px;
 `
 
-const UnitSelect = styled.div`
-    float: right;
-    span {
-        position: relative;
-        top: 1px;
-        padding-right: 8px;
-        font-family: "ProximaNova-Bold";
-    }
-`;
-
 const BottomSection = styled.fieldset`
     display:block;
     margin-bottom:30px;
@@ -50,49 +40,7 @@ const FormAnimationDefinition = ({animationDefinitionId, propsOfEntry = false} :
     const [name, setName] = useState((animationDefinition)?animationDefinition.name:undefined);
     const animationDataDispatch = useAnimationDataDispatch();
 
-    const placeUnitSelect = useCallback((key:string, unit: string) => {
-        const units = (unitMap as any)[key];
-        if(!units || units.length <= 0) {
-            return null;
-        }
 
-        return (
-            <select defaultValue={unit} onChange={
-                (event: any) => {
-
-                    if(animationDefinition && animationDefinition.props) {
-                        const changedProps: {[key:string]:IFrame} = {};
-                        for(let propKey of Object.keys(animationDefinition.props)) {
-                            if(key === propKey) {
-                                changedProps[propKey] = animationDefinition.props[propKey].map((frame: IFrame) => {
-                                    return {
-                                        ...frame,
-                                        unit: event.target.value
-                                    }
-                                })  
-                            } else {
-                                changedProps[propKey] = animationDefinition.props[propKey]
-                            }
-                        }
-                        animationDataDispatch(
-                            {
-                                type: AnimationDataActions.editAnimationDefinition,
-                                animationDefinition: {
-                                    ...animationDefinition,
-                                    props:changedProps
-                                }
-                            }
-                        );
-                    }
-                    
-                }
-            }>
-                {units.map((unit:string) => {
-                    return <option value={unit} key={unit}>{unit}</option>
-                })}
-            </select>
-        )
-    }, []);
 
     useEffect(() => {
         if(animationDefinition) {
@@ -135,12 +83,8 @@ const FormAnimationDefinition = ({animationDefinitionId, propsOfEntry = false} :
                 ){
                     return (
                     <Frames key={animationDefinition.id +''+ key + unit}>
-                        <FormLabel className="line">{key}
-                        <UnitSelect>
-                            <span>Unit:</span>{placeUnitSelect(key, unit)}
-                        </UnitSelect>
-                        </FormLabel>
-                        <FormFrameNumberArray propType={key as PropTypes} frameType={key} frameValueType={(key === "display" || key === "visibility" )?FrameValueTypes.string: FrameValueTypes.number} frames={props[key]} filterByFrameId={filterByFrameId} onChange={(frames) => {
+
+                        <FormFrameNumberArray propType={key as PropTypes} frameType={key} animationDefinitionId={animationDefinition.id} frameValueType={(key === "display" || key === "visibility" )?FrameValueTypes.string: FrameValueTypes.number} frames={props[key]} filterByFrameId={filterByFrameId} onChange={(frames) => {
                             const newProps = {
                                 ...animationDefinition.props,
                                 [key]: frames
@@ -157,6 +101,9 @@ const FormAnimationDefinition = ({animationDefinitionId, propsOfEntry = false} :
                                     }
                                 }
                             );
+                            animationDataDispatch({
+                                type: AnimationDataActions.syncAnimationData,
+                            });
                         }}
                         />
                     </Frames>)
@@ -205,6 +152,9 @@ const FormAnimationDefinition = ({animationDefinitionId, propsOfEntry = false} :
                                         }
                                     }
                                 );
+                                animationDataDispatch({
+                                    type: AnimationDataActions.syncAnimationData,
+                                });
                                 setName(undefined);
                             }}><CtaMain className="small orange">{(propsOfEntry)?'Create global definition': 'Set name'}</CtaMain></Button>
                         </div>

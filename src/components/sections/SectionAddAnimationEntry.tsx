@@ -51,7 +51,7 @@ const SectionAddAnimationEntry = () => {
                         setTimelineId(event.target.value);
                     }}>
                         {
-                            animationData.timelines.map((timeline: ITimeline) => {
+                            (animationData.timelines||[]).map((timeline: ITimeline) => {
                                 return (
                                     <option key={timeline.id} value={timeline.id}>{timeline.id}</option>
                                 )
@@ -107,6 +107,9 @@ const SectionAddAnimationEntry = () => {
                                     type: AnimationDataActions.connectTimelineAnimationEntry,
                                     timelineId: timelineId,
                                     animationEntryId,
+                                });
+                                animationDataDispatch({
+                                    type: AnimationDataActions.syncAnimationData,
                                 });
                                 animationDataDispatch({
                                     type: AnimationDataActions.setFilterByFrameId,

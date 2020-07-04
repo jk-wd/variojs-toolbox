@@ -40,7 +40,7 @@ const TimeLineTop = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: ${Colors.lightGrey};
+    background-color: ${Colors.darkGrey};
     button {
         margin-left: 10px;
         margin-right: 62px;

@@ -92,6 +92,9 @@ const SectionAnimationDefinitions = () => {
                                                 type: AnimationDataActions.deleteAnimationDefinition,
                                                 animationDefinitionId: animationDefinition.id,
                                             });
+                                            animationDataDispatch({
+                                                type: AnimationDataActions.syncAnimationData,
+                                            });
                                         }}><DeleteLabel>Delete</DeleteLabel></Button>
                                     </RemoveButtonHolder>
                                 </BlockLine>

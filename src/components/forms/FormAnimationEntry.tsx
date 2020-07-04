@@ -59,6 +59,9 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                             animationEntryId: animationEntry.id,
                             local: false
                         });
+                        animationDataDispatch({
+                            type: AnimationDataActions.syncAnimationData,
+                        });
                     }
                 }>
                     <option selected disabled>Connect animation definition</option>
@@ -118,6 +121,9 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                         animationEntryId: animationEntry.id,
                         local: false
                     });
+                    animationDataDispatch({
+                        type: AnimationDataActions.syncAnimationData,
+                    });
                 }}><DeleteLabel>Disconnect</DeleteLabel></Button>
             </RemoveButtonHolder>
 
@@ -136,6 +142,9 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                         local: false
                     }
                 );
+                animationDataDispatch({
+                    type: AnimationDataActions.syncAnimationData,
+                });
             }} />
             <FormInputString 
                 subLabel={(animationConnection.startMs)?''+calculateSumString(animationConnection.startMs, numbers, animationDataNumbers):''}
@@ -151,6 +160,9 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                         local: false
                     }
                 );
+                animationDataDispatch({
+                    type: AnimationDataActions.syncAnimationData,
+                });
             }} />
         </>
         
@@ -186,6 +198,9 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                                         }
                                     }
                                 );
+                                animationDataDispatch({
+                                    type: AnimationDataActions.syncAnimationData,
+                                });
                     }} />
             </FormFieldset>
             {
@@ -206,6 +221,9 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                                             }
                                         }
                                     );
+                                    animationDataDispatch({
+                                        type: AnimationDataActions.syncAnimationData,
+                                    });
                         }} />
                 </FormFieldset>
                 <FormFieldset>
@@ -222,6 +240,9 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                                             }
                                         }
                                     );
+                                    animationDataDispatch({
+                                        type: AnimationDataActions.syncAnimationData,
+                                    });
                         }} />
                 </FormFieldset>
                 </>:null
@@ -239,6 +260,9 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                                 }
                             }
                         );
+                        animationDataDispatch({
+                            type: AnimationDataActions.syncAnimationData,
+                        });
                     }}>
                         {
                             placeholders.reduce((result: React.ReactNode[], id:string, index: number) => {
