@@ -192,7 +192,6 @@ const App = ({siteData}:IProps) => {
     useEffect(() => {
         
         if(animationData && JSON.stringify(animationData) !== JSON.stringify(siteData.animationData)) {
-            console.log(JSON.stringify(animationData), JSON.stringify(siteData.animationData));
             modalDispatch({
                 type: ModalActions.setActiveModal,
                 modal: modalId
