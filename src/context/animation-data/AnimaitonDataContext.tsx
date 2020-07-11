@@ -41,7 +41,6 @@ interface Props {
 
 enum AnimationDataActions {
     setActiveAnimationEntry = 'setActiveAnimationEntry',
-    syncAnimationData = 'syncAnimationData',
     setFilterByFrameId = 'setFilterByFrameId',
     setActiveTimeline = 'setActiveTimeline',
     setAnimationData = 'setAnimationData',
@@ -77,6 +76,8 @@ enum AnimationDataActions {
     addBreakpoint = 'addBreakpoint',
     editBreakpoint = 'editBreakpoint',
     deleteBreakpoint = 'deleteBreakpoint',
+
+    syncAnimationData = 'syncAnimationData',
 }
 type ActionSetActiveAnimationEntry = {
     type: AnimationDataActions.setActiveAnimationEntry
@@ -90,9 +91,6 @@ type ActionSetFilterByFrameId = {
   frameId:string | undefined
 }
 
-type ActionSyncAnimationData = {
-  type: AnimationDataActions.syncAnimationData
-}
 
 type ActionSetActiveTimeline = {
     type: AnimationDataActions.setActiveTimeline
@@ -251,6 +249,12 @@ type ActionEditBreakpoint = {
   breakpoint: IBreakpoint,
 }
 
+//SYNC ANIMATION DATA
+type ActionSyncAnimationData = {
+  type: AnimationDataActions.syncAnimationData
+  url?: string
+}
+
 
 type Dispatch = (action: 
   ActionSetActiveAnimationEntry |
@@ -280,8 +284,8 @@ type Dispatch = (action:
   ActionAddEditNumberVariable |
   ActionAddBreakpoint |
   ActionDeleteBreakpoint |
-  ActionSyncAnimationData |
-  ActionEditBreakpoint
+  ActionEditBreakpoint |
+  ActionSyncAnimationData
 ) => void
 
 type AnimationDataState = {
@@ -350,7 +354,6 @@ function animationDataReducer(state: AnimationDataState,
       //ANIMATION ENTRY
       case AnimationDataActions.deleteAnimationEntryConnection: {
         const animationData = cloneObject(deleteAnimationEntryConnection(state.animationData, action.animationEntryId, action.animationDefinitionId, action.local));
-        devSocket.updateAnimationData(animationData);
         return {
             ...state,
             animationData,
@@ -527,14 +530,18 @@ function animationDataReducer(state: AnimationDataState,
 
       case AnimationDataActions.deleteBreakpoint: {
         const animationData = cloneObject(deleteBreakpoint(state.animationData, action.breakpointId));
-        devSocket.updateAnimationData(animationData);
         return {
             ...state,
             animationData,
         }
       }
       case AnimationDataActions.syncAnimationData: {
-        devSocket.updateAnimationData(state.animationData);
+        if(!action.url) {
+          return {
+              ...state
+          }  
+        }
+        devSocket.updateAnimationData(state.animationData, action.url);
         return {
             ...state
         }

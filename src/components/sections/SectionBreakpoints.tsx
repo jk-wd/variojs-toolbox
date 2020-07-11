@@ -11,14 +11,17 @@ import DeleteLabel from "@components/typography/DeleteLabel";
 import Button from "@components/Button";
 import { useAnimationDataState, useAnimationDataDispatch, AnimationDataActions } from '@context/animation-data/AnimaitonDataContext';
 import CtaMain from '@components/cta/CtaMain';
-
+import {useSiteState} from "@context/sites/SiteContext";
+import {ISite} from "@interfaces/site";
 
 
 const SectionBreakpoints = () => {
     const animationDataDispatch = useAnimationDataDispatch();
     const [breakPoint, setBreakpoint] = useState<any>({});
     const {animationData} = useAnimationDataState();
-
+    const {sites} = useSiteState();
+    const activeSite = sites.find((site: ISite) => (site.active));
+    const url = (activeSite)?activeSite.url:undefined;
     return (
     <div>
         <FormHeading className="large">Breakpoints</FormHeading>
@@ -44,7 +47,8 @@ const SectionBreakpoints = () => {
                                         });
                                         animationDataDispatch({
                                             type: AnimationDataActions.syncAnimationData,
-                                        });
+                                            url
+                                        })
                                     }
                                 }><DeleteLabel>Delete</DeleteLabel></Button>
                             </FormLineSection>
@@ -62,7 +66,8 @@ const SectionBreakpoints = () => {
                                     });
                                     animationDataDispatch({
                                         type: AnimationDataActions.syncAnimationData,
-                                    });
+                                        url
+                                    })
                                 }} label="Importance" defaultValue={breakpoint.order}/>
                             </FormLineSection>
                             <FormLineSection>
@@ -77,7 +82,8 @@ const SectionBreakpoints = () => {
                                     });
                                     animationDataDispatch({
                                         type: AnimationDataActions.syncAnimationData,
-                                    });
+                                        url
+                                    })
                                 }} label="Definition" defaultValue={breakpoint.definition}/>
                             </FormLineSection>
                         </FormLine>
@@ -101,7 +107,8 @@ const SectionBreakpoints = () => {
                     });
                     animationDataDispatch({
                         type: AnimationDataActions.syncAnimationData,
-                    });
+                        url
+                    })
                 }
             }}>
                 <FormHeading>

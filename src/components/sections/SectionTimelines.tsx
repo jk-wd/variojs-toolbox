@@ -9,6 +9,8 @@ import {Sections} from "@enums/navigation";
 import BlockLine from "@components/block-elements/BlockLine";
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
 import { useAnimationDataState, useAnimationDataDispatch, AnimationDataActions } from '@context/animation-data/AnimaitonDataContext';
+import {useSiteState} from "@context/sites/SiteContext";
+import {ISite} from "@interfaces/site";
 
 interface Props {
     pixelBased: boolean
@@ -24,6 +26,9 @@ const SectionTimelines = ({pixelBased}: Props) => {
     const animationDataDispatch = useAnimationDataDispatch();
     const navigationDispatch = useNavigationDispatch();
     const {animationData} = useAnimationDataState();
+    const {sites} = useSiteState();
+    const activeSite = sites.find((site: ISite) => (site.active));
+    const url = (activeSite)?activeSite.url:undefined;
     const timelines: ITimeline[] = (animationData && animationData.timelines)?animationData.timelines:[];
 
     return (
@@ -70,7 +75,8 @@ const SectionTimelines = ({pixelBased}: Props) => {
                                     });
                                     animationDataDispatch({
                                         type: AnimationDataActions.syncAnimationData,
-                                    });
+                                        url
+                                    })
                                 }}><DeleteLabel>Delete</DeleteLabel></Button>
                             </RemoveButtonHolder>
                         </BlockLine>

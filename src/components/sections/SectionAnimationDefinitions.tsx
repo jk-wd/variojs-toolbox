@@ -10,6 +10,8 @@ import {useNavigationDispatch, NavigationActions} from "@context/navigation/Navi
 import CtaMain from "@components/cta/CtaMain";
 import {useAnimationDataDispatch, AnimationDataActions, useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
 import {Sections} from "@enums/navigation";
+import {useSiteState} from "@context/sites/SiteContext";
+import {ISite} from "@interfaces/site";
 
 const RemoveButtonHolder = styled.div`
     float: right;
@@ -19,6 +21,9 @@ const SectionAnimationDefinitions = () => {
     const animationDataDispatch = useAnimationDataDispatch();
     const [onlyShowForActiveTime, setOnlyShowForActiveTime] = useState(false);
     const {animationData, activeTimeline} = useAnimationDataState();
+    const {sites} = useSiteState();
+    const activeSite = sites.find((site: ISite) => (site.active));
+    const url = (activeSite)?activeSite.url:undefined;
     const navigationDispatch = useNavigationDispatch();
 
     let timeline:any;
@@ -94,7 +99,8 @@ const SectionAnimationDefinitions = () => {
                                             });
                                             animationDataDispatch({
                                                 type: AnimationDataActions.syncAnimationData,
-                                            });
+                                                url
+                                            })
                                         }}><DeleteLabel>Delete</DeleteLabel></Button>
                                     </RemoveButtonHolder>
                                 </BlockLine>

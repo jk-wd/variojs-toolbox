@@ -1,8 +1,13 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
+import {useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
+import {useSiteState} from "@context/sites/SiteContext";
 import {Sections} from "@enums/navigation";
 import Button from "@components/Button";
 import styled from "styled-components";
+import {ISite} from "@interfaces/site";
+
+const { ipcRenderer } = window.require('electron');
 
 export const MenuEl = styled.nav`
     width:100%;
@@ -18,7 +23,25 @@ export const MenuEl = styled.nav`
 
 const Menu = () => {
     const dispatch = useNavigationDispatch();
-    
+    const animationDataDispatch = useAnimationDataDispatch();
+    const {sites} = useSiteState();
+    const activeSite = sites.find((site: ISite) => (site.active));
+    const url = (activeSite)?activeSite.url:undefined;
+
+    useEffect(() => {
+        // @ts-ignore
+        ipcRenderer.on('UPDATE_ANIMATION_DATA', (event?: any, args?:any) => {
+            animationDataDispatch({
+                type: AnimationDataActions.setAnimationData,
+                animationData: args
+            })
+            animationDataDispatch({
+                type: AnimationDataActions.syncAnimationData,
+                url
+            })
+        });
+    }, []);
+
     return (
     <MenuEl>
         <Button onClick={() => {
@@ -26,7 +49,10 @@ const Menu = () => {
                 type: NavigationActions.setActiveSection,
                 section: Sections.SAVE,
             });
-        }}>Save</Button>
+        }}>Save animaiton json</Button>
+        <Button onClick={() => {
+            ipcRenderer.send('LOAD_FILE');
+        }}>Load animaiton json</Button>
         <Button onClick={() => {
             dispatch({
                 type: NavigationActions.setActiveSection,
@@ -70,7 +96,12 @@ const Menu = () => {
                 section: Sections.BREAKPOINTS,
             });
         }}>Breakpoint definitions</Button>
-
+        <Button onClick={() => {
+            dispatch({
+                type: NavigationActions.setActiveSection,
+                section: Sections.ADD_ANIMATION_ENTRY
+            });
+        }}>Add animation entry</Button>
         
     </MenuEl>
     )

@@ -5,9 +5,14 @@ import {getAnimationEntryById} from "variojs";
 import FormAnimationDefinition from '@components/forms/FormAnimationDefinition';
 import {IAnimationEntry} from "variojs";
 import {useAnimationDataDispatch, AnimationDataActions, useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
+import {useSiteState} from "@context/sites/SiteContext";
+import {ISite} from "@interfaces/site";
 
 const SectionAnimationEntry = () => {
     const {animationData, activeAnimationEntry} = useAnimationDataState();
+    const {sites} = useSiteState();
+    const activeSite = sites.find((site: ISite) => (site.active));
+    const url = (activeSite)?activeSite.url:undefined;
     const animationDataDispatch = useAnimationDataDispatch();
     let animationEntry:IAnimationEntry | undefined;
     if(activeAnimationEntry) {
@@ -39,7 +44,8 @@ const SectionAnimationEntry = () => {
             );
             animationDataDispatch({
                 type: AnimationDataActions.syncAnimationData,
-            });
+                url
+            })
         }
     }, [animationEntry])
 

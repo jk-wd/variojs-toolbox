@@ -9,7 +9,8 @@ interface IProps {
 
 const FormHeadingEl = styled.div`
     margin-top: 20px;
-    margin-bottom: 10px;
+    margin-bottom: 4px;
+    line-height: 1.3;
     font-size: 16px;
     font-family: "ProximaNova-Bold";
     &.large {

@@ -28,9 +28,9 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
     const animationDataDispatch = useAnimationDataDispatch();
     const placeholders = usePlaceholders();
     const {animationData} = useAnimationDataState();
-
     const {sites} = useSiteState();
     const activeSite = sites.find((site: ISite) => (site.active));
+    const url = (activeSite)?activeSite.url:undefined;
     const numbers = (activeSite && activeSite.numbers)?activeSite.numbers:{};
     const animationDataNumbers = (animationData && animationData.numbers)?animationData.numbers:{};
 
@@ -61,7 +61,8 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                         });
                         animationDataDispatch({
                             type: AnimationDataActions.syncAnimationData,
-                        });
+                            url
+                        })
                     }
                 }>
                     <option selected disabled>Connect animation definition</option>
@@ -123,7 +124,8 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                     });
                     animationDataDispatch({
                         type: AnimationDataActions.syncAnimationData,
-                    });
+                        url
+                    })
                 }}><DeleteLabel>Disconnect</DeleteLabel></Button>
             </RemoveButtonHolder>
 
@@ -144,7 +146,8 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                 );
                 animationDataDispatch({
                     type: AnimationDataActions.syncAnimationData,
-                });
+                    url
+                })
             }} />
             <FormInputString 
                 subLabel={(animationConnection.startMs)?''+calculateSumString(animationConnection.startMs, numbers, animationDataNumbers):''}
@@ -162,7 +165,8 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                 );
                 animationDataDispatch({
                     type: AnimationDataActions.syncAnimationData,
-                });
+                    url
+                })
             }} />
         </>
         
@@ -200,7 +204,8 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                                 );
                                 animationDataDispatch({
                                     type: AnimationDataActions.syncAnimationData,
-                                });
+                                    url
+                                })
                     }} />
             </FormFieldset>
             {
@@ -223,7 +228,8 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                                     );
                                     animationDataDispatch({
                                         type: AnimationDataActions.syncAnimationData,
-                                    });
+                                        url
+                                    })
                         }} />
                 </FormFieldset>
                 <FormFieldset>
@@ -242,7 +248,8 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                                     );
                                     animationDataDispatch({
                                         type: AnimationDataActions.syncAnimationData,
-                                    });
+                                        url
+                                    })
                         }} />
                 </FormFieldset>
                 </>:null
@@ -262,7 +269,8 @@ const FormAnimationEntry = ({animationEntry}: IProps) => {
                         );
                         animationDataDispatch({
                             type: AnimationDataActions.syncAnimationData,
-                        });
+                            url
+                        })
                     }}>
                         {
                             placeholders.reduce((result: React.ReactNode[], id:string, index: number) => {

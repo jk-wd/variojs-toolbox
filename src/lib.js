@@ -59,19 +59,16 @@ export default {
       ws.addEventListener('message', function (event) {
         const data = event.data
         const dataParsed = JSON.parse(data);
-        if(dataParsed.action === 'updateAnimationData'){
-          variojs.updateAnimationData(dataParsed.payload)
-          
+
+
+
+        if(dataParsed.action === 'updateAnimationData' && dataParsed.payload.url === window.location.href){
+          console.log(dataParsed.payload.animationData);
+          variojs.updateAnimationData(dataParsed.payload.animationData)
           sendSiteData(ws, variojs);
         }
-        if(dataParsed.action === 'getSiteData'){
+        if(dataParsed.action === 'getAnimationData'){
           sendSiteData(ws, variojs)
-        }
-        if(dataParsed.action === 'calculateSumString'){
-          ws.send(JSON.stringify({
-            action: 'calculateSumStringReturnValue',
-            payload: variojs.calculateSumString(dataParsed.payload)
-          }));
         }
       });
 

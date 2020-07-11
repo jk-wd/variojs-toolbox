@@ -24,7 +24,7 @@ const Title = styled.span`
     font-size: 15px;
     font-family: "ProximaNova-Bold";
     text-decoration: underline;
-    background-color: ${Colors.midGrey};
+    background-color: ${Colors.freshGreen};
     color: ${Colors.white};
     padding-left: ${offsetLeft}px;
     height: 30px;

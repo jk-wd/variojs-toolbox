@@ -2,14 +2,16 @@ import React, {useState, useEffect} from "react";
 import styled from "styled-components";
 import { Colors } from '@enums/colors';
 import FormLabel from '@components/form-elements/FormLabel';
-
+import Button from '@components/Button';
+import CtaMain from '@components/cta/CtaMain';
+const { ipcRenderer } = window.require('electron');
 
 const SiteFrameEl = styled.div`
     position:fixed;
     top: 0;
     right: 0;
     width:74vw;
-    height: 65vh;
+    height: 70vh;
     padding-top: 40px;
     display: flex;
     justify-content: center;
@@ -94,7 +96,9 @@ const SiteFrame = ({siteUrl}:Props) => {
         //@ts-ignore
         <SiteFrameEl frameWidth={(width)?width+"px":"100%"} >
             <SiteFrameMenu>
-
+                <Button onClick={()=> {
+                    ipcRenderer.sendSync('OPEN_BROWSER', siteUrl)
+                }}><CtaMain className="tiny light">Open site in browser</CtaMain></Button>
                 <div id="position_indicator" className="position-indicator"></div>
                 <div className="width-screen">
                     <FormLabel className="small">Width of screen: </FormLabel>

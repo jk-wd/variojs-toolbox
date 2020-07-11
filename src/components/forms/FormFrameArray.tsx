@@ -4,11 +4,11 @@ import {useAnimationDataState, useAnimationDataDispatch, AnimationDataActions} f
 import FormLabel from "@components/form-elements/FormLabel";
 import styled from "styled-components";
 import FormFrame from "@components/forms/FormFrame";
+import {useSiteState} from "@context/sites/SiteContext";
 import {uuidv4} from "variojs";
 import {processFrameDef} from "variojs";
 import CtaMain from '@components/cta/CtaMain';
 import Button from '@components/Button';
-import {useSiteState} from "@context/sites/SiteContext";
 import { ISite } from '@interfaces/site';
 
 
@@ -49,9 +49,10 @@ let newFrames:string[] = [];
 const FormFrameNumberArray = ({frames:framesFromProps = [], filterByFrameId, propType, frameType="", animationDefinitionId = "", frameValueType = FrameValueTypes.number, onChange=() => {}}: Props) => {
     const foundPercentValue =  framesFromProps.find((frame:IFrameDef) => (!!frame.percentDef));
     const {animationData} = useAnimationDataState();
-    const animationDataDispatch = useAnimationDataDispatch();
     const {sites} = useSiteState();
     const activeSite = sites.find((site: ISite) => (site.active));
+    const url = (activeSite)?activeSite.url:undefined;
+    const animationDataDispatch = useAnimationDataDispatch();
     const numbers = (activeSite && activeSite.numbers)?activeSite.numbers:{};
     const animationDataNumbers = (animationData && animationData.numbers)?animationData.numbers:{};
     const [usePercentual, setUsePercentual] = useState<boolean>(!!foundPercentValue);
@@ -111,7 +112,8 @@ const FormFrameNumberArray = ({frames:framesFromProps = [], filterByFrameId, pro
                        
                         animationDataDispatch({
                             type: AnimationDataActions.syncAnimationData,
-                        });
+                            url
+                        })
                     }
                     
                 }

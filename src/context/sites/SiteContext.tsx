@@ -9,10 +9,12 @@ interface Props {
 
 enum SiteActions {
     setActiveSite = 'setActiveSite',
-    registerSite = 'registerSite',
+    removeSite = 'removeSite',
+    updateSite = 'updateSite',
 }
-type ActionRegisterSite = {
-    type: SiteActions.registerSite
+
+type ActionUpdateSite = {
+    type: SiteActions.updateSite
     siteData: ISocketSiteData
 }
 
@@ -21,9 +23,15 @@ type ActionSetActiveSite = {
     url: string
 }
 
+type ActionRemoveSite = {
+    type: SiteActions.removeSite
+    url?: string
+}
+
 type Dispatch = (action: 
   ActionSetActiveSite | 
-  ActionRegisterSite 
+  ActionUpdateSite |
+  ActionRemoveSite
 ) => void
 
 type SiteState = {
@@ -46,7 +54,19 @@ function siteReducer(state: SiteState,
             }),
         }
       }
-      case SiteActions.registerSite: {
+      case SiteActions.removeSite: {
+        let sites: ISite[] = state.sites.reduce((result:ISite[], siteTarget:ISite) => {
+          if(siteTarget.url !== action.url) {
+            result.push(siteTarget);
+          } 
+          return result;
+        }, []);
+        return {
+          ...state,
+          sites,
+      }
+      }
+      case SiteActions.updateSite: {
         const site: ISite = {
           animationData:action.siteData.animationData,
           animationDataIndex:0,
@@ -81,7 +101,6 @@ function siteReducer(state: SiteState,
             sites,
         }
       }
-
       default: {
         throw new Error(`Unhandled action type: ${(action as any).type}`)
       }

@@ -39,10 +39,10 @@ const TitleWrapper = styled.div`
     height: 30px;
     top: 0;
     width: ${300}px;
-    border-bottom: 1px solid ${Colors.darkGrey};
-    background-color: ${Colors.softGrey};
+    border-bottom: 1px solid ${Colors.lightGrey};
+    background-color: ${Colors.softWhite};
     &.first {
-        border-top: 1px solid ${Colors.darkGrey};
+        border-top: 1px solid ${Colors.lightGrey};
     }
 `;
 

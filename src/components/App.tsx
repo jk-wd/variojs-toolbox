@@ -1,9 +1,10 @@
 import React, {useEffect, useCallback} from "react";
 import styled from "styled-components";
+import TimelineSelect from '@components/timeline/TimelineSelect';
 import {useNavigationState, useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
 import {useAnimationDataState, useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
-import devSocket from "@socketserver/client/dev-socket";
 import {Sections} from "@enums/navigation";
+import CtaMain from "@components/cta/CtaMain";
 import Panel from "@components/Panel";
 import SectionAnimationEntries from "@components/sections/SectionAnimationEntries";
 import SectionAnimationEntry from "@components/sections/SectionAnimationEntry";
@@ -28,6 +29,7 @@ import {Modals} from "@enums/modals";
 import Modal from "@components/modal/Modal";
 import Button from "@components/Button";
 import {useModalDispatch, ModalActions} from "@context/modal/ModalContext";
+import {useSiteState, useSiteDispatch, SiteActions} from "@context/sites/SiteContext";
 
 const AppContent = styled.div`
   border: none;
@@ -61,6 +63,7 @@ const Loading = styled.div`
 
 const LoadingHolder = styled.div`
     position: fixed;
+    text-align:center;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -101,6 +104,16 @@ const Logo = styled.img`
     width: 300px;
 `;
 
+const AppBottom = styled.div`
+    height: 140px;
+    background-color: ${Colors.midGrey};
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+`
+
 const AppTopSection = styled.div`
   position:fixed;
   display: flex;
@@ -133,7 +146,7 @@ const LogoHolder = styled.div`
     top: 0;
     right: 0;
     width:60vw;
-    height: 65vh;
+    height: 70vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -166,14 +179,20 @@ interface IProps {
 const App = ({siteData}:IProps) => {
     const {sections} = useNavigationState();
     const animationDataDispatch = useAnimationDataDispatch();
+    const siteDispatch = useSiteDispatch();
     const {animationData} = useAnimationDataState();
     const dispatchNavigation = useNavigationDispatch();
+    const {sites} = useSiteState();
+    const activeSite = sites.find((site: ISite) => (site.active));
+    const url = (activeSite)?activeSite.url:undefined;
     const lastActiveSection = sections[sections.length-1];
     const modalId = `${Modals.CONFIRM_DATA_CHANGE}_${siteData.url}`;
     const modalDispatch = useModalDispatch();
 
     useEffect(() => {
+        
         if(animationData && JSON.stringify(animationData) !== JSON.stringify(siteData.animationData)) {
+            console.log(JSON.stringify(animationData), JSON.stringify(siteData.animationData));
             modalDispatch({
                 type: ModalActions.setActiveModal,
                 modal: modalId
@@ -208,7 +227,15 @@ const App = ({siteData}:IProps) => {
             <Loading className={`${(animationData)?'hide':''}`}>
                 {JSON.stringify(animationData)}
                 <LoadingHolder>
-                    <LoadingIcon />
+                    <LoadingIcon /><br/><br/>
+                    <Button onClick={() => {
+                        siteDispatch(
+                            {
+                                type: SiteActions.removeSite,
+                                url
+                            }
+                        );
+                    }}><CtaMain className="light small">Cancel</CtaMain></Button>
                 </LoadingHolder>
             </Loading>
             
@@ -223,7 +250,10 @@ const App = ({siteData}:IProps) => {
                             type: ModalActions.setActiveModal,
                             modal: undefined
                         });
-                        devSocket.updateAnimationData(animationData);
+                        animationDataDispatch({
+                            type: AnimationDataActions.syncAnimationData,
+                            url
+                        })
                     }}
                     onClickNo={() => {
                         onSelectUpdateAnimationData();
@@ -255,7 +285,12 @@ const App = ({siteData}:IProps) => {
                         contentMap[lastActiveSection]
                     }
                 </AppContent>
-               
+                {
+                    (lastActiveSection === Sections.MENU)?
+                    <AppBottom>
+                        <TimelineSelect />
+                    </AppBottom>:null
+                }
             </Panel>
             <Timeline></Timeline>
         </>

@@ -14,7 +14,8 @@ import {getAnimationDefinitionById, IAnimationDefinition} from 'variojs';
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
 import {useAnimationDataDispatch, AnimationDataActions, useAnimationDataState} from "@context/animation-data/AnimaitonDataContext";
 import {Sections} from "@enums/navigation";
-
+import {useSiteState} from "@context/sites/SiteContext";
+import { ISite } from '@interfaces/site';
 interface IProps {
     animationEntry: IAnimationEntry
 }
@@ -26,7 +27,9 @@ const RemoveButtonHolder = styled.div`
 const BlockAnimationEntry = ({animationEntry}: IProps) => {
     const animationDataDispatch = useAnimationDataDispatch();
     const {animationData} = useAnimationDataState();
-
+    const {sites} = useSiteState();
+    const activeSite = sites.find((site: ISite) => (site.active));
+    const url = (activeSite)?activeSite.url:undefined;
     const navigationDispatch = useNavigationDispatch();
     const placeAddAnimation = useCallback(() => {
         if(!animationData) {
@@ -53,7 +56,8 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
                     });
                     animationDataDispatch({
                         type: AnimationDataActions.syncAnimationData,
-                    });
+                        url
+                    })
 
                     animationDataDispatch({
                         type: AnimationDataActions.setActiveAnimationDefinition,
@@ -85,7 +89,8 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
                         });
                         animationDataDispatch({
                             type: AnimationDataActions.syncAnimationData,
-                        });
+                            url
+                        })
                     }
                 }>
                     <option selected disabled>Connect animation definition</option>
@@ -143,7 +148,8 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
                     });
                     animationDataDispatch({
                         type: AnimationDataActions.syncAnimationData,
-                    });
+                        url
+                    })
                 }}><DeleteLabel>Disconnect</DeleteLabel></Button>
             </RemoveButtonHolder>
 
@@ -162,7 +168,8 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
                 );
                 animationDataDispatch({
                     type: AnimationDataActions.syncAnimationData,
-                });
+                    url
+                })
             }} />
             <FormInputText defaultValue={animationConnection.startMs} label="Start milliseconds" onChange={(event: any) => {
                 animationDataDispatch(
@@ -178,7 +185,8 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
                 );
                 animationDataDispatch({
                     type: AnimationDataActions.syncAnimationData,
-                });
+                    url
+                })
             }} />
         </>
         
@@ -215,7 +223,8 @@ const BlockAnimationEntry = ({animationEntry}: IProps) => {
                         );
                         animationDataDispatch({
                             type: AnimationDataActions.syncAnimationData,
-                        });
+                            url
+                        })
             }} /> <br/>
             {animationEntry.domReference}
         </BlockSection>

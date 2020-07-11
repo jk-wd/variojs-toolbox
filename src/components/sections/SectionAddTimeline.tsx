@@ -3,9 +3,11 @@ import FormInputText from "@components/form-elements/FormInputText";
 import FormFieldset from "@components/form-elements/FormFieldset";
 import FormHeading from "@components/form-elements/FormHeading";
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
-import { useAnimationDataDispatch, AnimationDataActions } from '@context/animation-data/AnimaitonDataContext';
+import {useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
 import {Sections} from "@enums/navigation";
 import CtaMain from '@components/cta/CtaMain';
+import {useSiteState} from "@context/sites/SiteContext";
+import {ISite} from "@interfaces/site";
 
 interface Props {
     pixelBased: boolean
@@ -15,6 +17,9 @@ const SectionAddTimeline = ({pixelBased}: Props) => {
     const animationDataDispatch = useAnimationDataDispatch();
     const navigationDispatch = useNavigationDispatch();
     const [timeline, setTimeline] = useState<any>({});
+    const {sites} = useSiteState();
+    const activeSite = sites.find((site: ISite) => (site.active));
+    const url = (activeSite)?activeSite.url:undefined;
 
     return (
     <div>
@@ -31,7 +36,8 @@ const SectionAddTimeline = ({pixelBased}: Props) => {
                 });
                 animationDataDispatch({
                     type: AnimationDataActions.syncAnimationData,
-                });
+                    url
+                })
                 animationDataDispatch({
                     type: AnimationDataActions.setActiveTimeline,
                     timeline: {

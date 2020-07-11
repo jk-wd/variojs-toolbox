@@ -18,6 +18,9 @@ const FormLabelEl = styled.label`
         font-size: 13px;
         line-height: 1.2
     }
+    &.white {
+        color: ${Colors.white};
+    }
     &.line {
         display: block;
         padding: 4px 8px;

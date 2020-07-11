@@ -15,6 +15,7 @@ const CtaMainEl = styled.span`
     padding: 10px 20px;
     font-size: 14px;
     color: ${Colors.white};
+    white-space: nowrap;
     &.small {
         padding: 8px 14px;
         font-size: 12px;

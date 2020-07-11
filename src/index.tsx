@@ -6,7 +6,9 @@ import {SiteProvider, useSiteState, useSiteDispatch, SiteActions} from "@context
 import ReactDOM from "react-dom";
 import { ISocketSiteData } from '@interfaces/data';
 import { ISite } from '@interfaces/site';
+import styled from "styled-components";
 const { ipcRenderer } = window.require('electron');
+var pjson = require('node_modules/variojs/package.json');
 
 (window as any).VarioJsDevTools = {
     scrollPos: {
@@ -14,6 +16,18 @@ const { ipcRenderer } = window.require('electron');
         scrollPercentage: 0,
     }
 };
+
+const LandingBox = styled.div`
+    width: 320px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    img {
+        width: 320px;
+        margin-bottom:10px;
+    }
+`;
 
 
 const handleScroll = ({scrollOffset, scrollPercentage}: any) => {
@@ -37,13 +51,24 @@ const SiteSwitcher = () => {
         if(!port) {
             return
         }
-        devSocket.init((socketData:ISocketSiteData) => {
-            siteDispatch(
-                {
-                    type: SiteActions.registerSite,
-                    siteData: socketData
-                }
-            );
+        devSocket.init((socketData:ISocketSiteData, invalidVersionUsed:boolean = false) => {
+            if(!invalidVersionUsed) {
+                siteDispatch(
+                    {
+                        type: SiteActions.updateSite,
+                        siteData: socketData
+                    }
+                );
+            } else {
+                siteDispatch(
+                    {
+                        type: SiteActions.removeSite,
+                        url: socketData.siteUrl
+                    }
+                );
+                const versionInAnimationData = (socketData && socketData.animationData && socketData.animationData.variojsVersion)?socketData.animationData.variojsVersion:'[no version information available]';
+                ipcRenderer.sendSync('SHOW_MESSAGE', `VarioJS version on site: ${versionInAnimationData} incompatible with version: ${pjson.version}`)
+            }
         }, handleScroll, port);
     }, [port])
     return (
@@ -55,7 +80,10 @@ const SiteSwitcher = () => {
                }
                {
                     (!sites.find((site:ISite) => (site.active  === true)))?
-                    <ChooseSite />: null
+                    <LandingBox>
+                        <img src="./public/logo.png" />
+                        <ChooseSite />
+                    </LandingBox>: null
                }
             </>            
     );

@@ -2,14 +2,33 @@
   "name": "variojs-toolbox",
   "version": "1.0.0-beta.2",
   "description": "Create/maintain variojs (parallax)animations",
-  "main": "dist/index.js",
+  "main": "./dist",
   "scripts": {
     "watch": "NODE_ENV=development webpack --config webpack-lib.config.js --watch",
     "build-lib": "NODE_ENV=production webpack --mode production --config webpack-lib.config.js",
     "webpack-dev-server": "NODE_ENV=development webpack-dev-server --mode development --config webpack.config.js",
-    "start": "electron ./main.js",
+    "start": "electron ./main-dev.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "check-types": "tsc"
+    "check-types": "tsc",
+    "pack": "NODE_ENV=production webpack --mode production && electron-builder --dir",
+    "dist": "NODE_ENV=production webpack --mode production && electron-builder"
+  },
+  "build": {
+    "appId": "variojsapp",
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    }
   },
   "repository": {
     "type": "git",
@@ -31,6 +50,7 @@
     "open-cli": "^6.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "semver": "^7.3.2",
     "shelljs": "^0.8.4",
     "source-map-loader": "^0.2.4",
     "styled-components": "^5.1.0",
@@ -46,6 +66,7 @@
     "@babel/preset-typescript": "^7.9.0",
     "babel-loader": "^8.1.0",
     "electron": "^9.0.5",
+    "electron-builder": "^22.7.0",
     "fork-ts-checker-webpack-plugin": "^4.1.5",
     "install-peers-cli": "^2.2.0",
     "script-launcher": "^1.29.0",

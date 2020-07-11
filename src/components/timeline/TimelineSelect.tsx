@@ -1,9 +1,15 @@
 import React, {useState, useEffect, createRef} from "react";
 import styled from "styled-components";
+import FormLabel from "@components/form-elements/FormLabel";
 import {useAnimationDataState, useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
 import { ITimeline } from 'variojs';
 
-const TimelineSelectEl = styled.div``;
+const TimelineSelectEl = styled.div`
+    select {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+`;
 
 const TimelineSelect = () => {
     const {animationData, activeTimeline} = useAnimationDataState();
@@ -28,12 +34,14 @@ const TimelineSelect = () => {
     
     return (
         <TimelineSelectEl>
+            <FormLabel className="white">1. select timeline mode</FormLabel>
              <select ref={selectTimelineTypeRef} defaultValue={(usePixelBasedTimelines)?"pixelBased":"time"} style={{marginRight:'10px'}} onChange={(event: any) => {
                        setUsePixelBasedTimelines((event.target.value==='pixelBased'));
                     }} id="selectTimelineType">
                 <option value='pixelBased'>Pixel based</option>
                 <option value='time'>Time based</option>
             </select>
+            <FormLabel className="white">2. select a timeline</FormLabel>
             <select ref={selectRef} value={(activeTimeline)?activeTimeline.timelineId:"none"} onChange={(event: any) => {
                         animationDispatch({
                             type: AnimationDataActions.setActiveTimeline,

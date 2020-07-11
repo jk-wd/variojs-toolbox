@@ -4,6 +4,7 @@ import styled from "styled-components";
 import FormFieldset from "@components/form-elements/FormFieldset";
 import FormFrameNumberArray from "@components/forms/FormFrameArray";
 import {getAnimationDefinitionById} from "variojs";
+import {useSiteState} from "@context/sites/SiteContext";
 import FormInputString from "@components/form-elements/FormInputText";
 import {useAnimationDataState, useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
 import FormLabel from "@components/form-elements/FormLabel";
@@ -11,6 +12,7 @@ import FormHeading from "@components/form-elements/FormHeading";
 import Button from '@components/Button';
 import CtaMain from '@components/cta/CtaMain';
 import { Colors } from '@enums/colors';
+import { ISite } from '@interfaces/site';
 
 interface Props {
     animationDefinitionId?: string;
@@ -35,6 +37,9 @@ const FormAnimationDefinition = ({animationDefinitionId, propsOfEntry = false} :
     const [activeProps, setActiveProps] = useState<string[]>([]);
     const selectPropRef = React.createRef<HTMLSelectElement>();
     const {activeAnimationDefinition, filterByFrameId, animationData} = useAnimationDataState();
+    const {sites} = useSiteState();
+    const activeSite = sites.find((site: ISite) => (site.active));
+    const url = (activeSite)?activeSite.url:undefined;
     const targetAnimationDefinitionId = (animationDefinitionId)? animationDefinitionId: activeAnimationDefinition;
     const animationDefinition = getAnimationDefinitionById(animationData, targetAnimationDefinitionId)
     const [name, setName] = useState((animationDefinition)?animationDefinition.name:undefined);
@@ -103,7 +108,8 @@ const FormAnimationDefinition = ({animationDefinitionId, propsOfEntry = false} :
                             );
                             animationDataDispatch({
                                 type: AnimationDataActions.syncAnimationData,
-                            });
+                                url
+                            })
                         }}
                         />
                     </Frames>)
@@ -154,7 +160,8 @@ const FormAnimationDefinition = ({animationDefinitionId, propsOfEntry = false} :
                                 );
                                 animationDataDispatch({
                                     type: AnimationDataActions.syncAnimationData,
-                                });
+                                    url
+                                })
                                 setName(undefined);
                             }}><CtaMain className="small orange">{(propsOfEntry)?'Create global definition': 'Set name'}</CtaMain></Button>
                         </div>

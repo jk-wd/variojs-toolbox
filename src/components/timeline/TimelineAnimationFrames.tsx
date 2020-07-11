@@ -35,9 +35,9 @@ const TimelineAnimationFramesEl = styled.div`
     position: relative;
     width: ${frameLineWidth}px;
     height: ${frameLineHeight}px;
-    border-bottom: 1px solid ${Colors.darkGrey};
+    border-bottom: 1px solid ${Colors.lightGrey};
     &.first {
-        border-top: 1px solid ${Colors.darkGrey};
+        border-top: 1px solid ${Colors.lightGrey};
     }
 `;
 

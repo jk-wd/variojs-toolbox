@@ -6,6 +6,8 @@ import FormLabel from '@components/form-elements/FormLabel';
 import {useAnimationDataDispatch, AnimationDataActions} from "@context/animation-data/AnimaitonDataContext";
 import FormFieldset from '@components/form-elements/FormFieldset';
 import FormInputText from '@components/form-elements/FormInputText';
+import {useSiteState} from "@context/sites/SiteContext";
+import {ISite} from "@interfaces/site";
 
 interface IProps {
     timeline: ITimeline
@@ -15,7 +17,9 @@ interface IProps {
 
 const FormTimeline = ({timeline, pixelBased = false}: IProps) => {
     const animationDataDispatch = useAnimationDataDispatch();
-
+    const {sites} = useSiteState();
+    const activeSite = sites.find((site: ISite) => (site.active));
+    const url = (activeSite)?activeSite.url:undefined;
     
     if(!timeline) {
         return null
@@ -35,7 +39,8 @@ const FormTimeline = ({timeline, pixelBased = false}: IProps) => {
                         });
                         animationDataDispatch({
                             type: AnimationDataActions.syncAnimationData,
-                        });
+                            url
+                        })
                     }}></FormInputText>
                 </FormFieldset>
                 <FormFieldset>
@@ -52,7 +57,8 @@ const FormTimeline = ({timeline, pixelBased = false}: IProps) => {
                             });
                             animationDataDispatch({
                                 type: AnimationDataActions.syncAnimationData,
-                            });
+                                url
+                            })
                         }
                     } />
                 </FormFieldset>

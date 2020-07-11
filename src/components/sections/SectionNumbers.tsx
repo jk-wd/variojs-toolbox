@@ -17,6 +17,7 @@ const SectionNumbers = () => {
     const animationDataDispatch = useAnimationDataDispatch();
     const {sites} = useSiteState();
     const activeSite = sites.find((site: ISite) => (site.active));
+    const url = (activeSite)?activeSite.url:undefined;
     const numbers = (activeSite && activeSite.numbers)?activeSite.numbers:{};
     const [numberVariable, setNumberVariable] = useState<any>({});
     const {animationData} = useAnimationDataState();
@@ -78,7 +79,8 @@ const SectionNumbers = () => {
                                     });
                                     animationDataDispatch({
                                         type: AnimationDataActions.syncAnimationData,
-                                    });
+                                        url
+                                    })
                                 }} defaultValue={value}/>
                             </FormLineSection>
                         </FormLine>
@@ -92,7 +94,8 @@ const SectionNumbers = () => {
                                         });
                                         animationDataDispatch({
                                             type: AnimationDataActions.syncAnimationData,
-                                        });
+                                            url
+                                        })
                                     }
                                 }><DeleteLabel>Delete</DeleteLabel></Button>
                             </FormLineSection>
@@ -113,7 +116,8 @@ const SectionNumbers = () => {
                 });
                 animationDataDispatch({
                     type: AnimationDataActions.syncAnimationData,
-                });
+                    url
+                })
             }
         }}>
             <FormHeading>

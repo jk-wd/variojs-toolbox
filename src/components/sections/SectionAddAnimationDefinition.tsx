@@ -5,16 +5,19 @@ import FormHeading from "@components/form-elements/FormHeading";
 import FormFieldset from "@components/form-elements/FormFieldset";
 import FormLabel from "@components/form-elements/FormLabel";
 import {useNavigationDispatch, NavigationActions} from "@context/navigation/NavigationContext";
-
+import {useSiteState} from "@context/sites/SiteContext";
 import {Sections} from "@enums/navigation";
 import FormInputString from "@components/form-elements/FormInputText";
 import CtaMain from '@components/cta/CtaMain';
+import {ISite} from "@interfaces/site";
 
 const SectionAddAnimationDefinition = () => {
     const animationDataDispatch = useAnimationDataDispatch();
     const navigationDispatch = useNavigationDispatch();
     const [name, setName] = useState<string | undefined>();
-
+    const {sites} = useSiteState();
+    const activeSite = sites.find((site: ISite) => (site.active));
+    const url = (activeSite)?activeSite.url:undefined;
     return (
         <div>
             <form onSubmit={(event:any) => {
@@ -33,7 +36,8 @@ const SectionAddAnimationDefinition = () => {
 
                     animationDataDispatch({
                         type: AnimationDataActions.syncAnimationData,
-                    });
+                        url
+                    })
                     animationDataDispatch({
                         type: AnimationDataActions.setActiveAnimationDefinition,
                         animationDefinitionId: animationDefinitionId

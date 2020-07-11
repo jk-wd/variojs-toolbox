@@ -13,7 +13,7 @@ const PanelEl = styled.div`
   padding: 0 10px;
   top:0;
   left:0;
-  height: 65vh;
+  height: 70vh;
   max-height: 100vh;
   overflow: auto;
   background: ${Colors.white};

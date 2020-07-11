@@ -30,6 +30,7 @@ interface IProps {
 const FormInputStringEl = styled.div`
     position: relative;
     div > input {
+        box-sizing:border-box;
         padding: 6px;
         font-size: 13px;
         width: 100%;

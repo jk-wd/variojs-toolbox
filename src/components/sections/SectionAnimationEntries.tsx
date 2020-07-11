@@ -10,6 +10,8 @@ import {Sections} from "@enums/navigation";
 import {IAnimationEntry, getTimelineById} from "variojs";
 import Button from "@components/Button";
 import CtaMain from "@components/cta/CtaMain";
+import {useSiteState} from "@context/sites/SiteContext";
+import {ISite} from "@interfaces/site";
 
 const RemoveButtonHolder = styled.div`
     float: right;
@@ -21,6 +23,9 @@ const SectionAnimationEntries = () => {
     const animationDataDispatch = useAnimationDataDispatch();
 
     const {animationData, activeTimeline} = useAnimationDataState();
+    const {sites} = useSiteState();
+    const activeSite = sites.find((site: ISite) => (site.active));
+    const url = (activeSite)?activeSite.url:undefined;
     let timeline:any;
     if(activeTimeline) {
         timeline = getTimelineById(animationData, activeTimeline.timelineId);
@@ -86,7 +91,8 @@ const SectionAnimationEntries = () => {
                                     });
                                     animationDataDispatch({
                                         type: AnimationDataActions.syncAnimationData,
-                                    });
+                                        url
+                                    })
                                 }}><DeleteLabel>Delete</DeleteLabel></Button>
                             </RemoveButtonHolder>
                         </BlockLine>

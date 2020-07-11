@@ -11,12 +11,17 @@ import {Sections} from "@enums/navigation";
 import FormInputString from "@components/form-elements/FormInputText";
 import CtaMain from '@components/cta/CtaMain';
 import { IAnimationEntry, ITimeline, NoBreakpointIdentifier } from 'variojs';
+import {useSiteState} from "@context/sites/SiteContext";
+import {ISite} from "@interfaces/site";
 
 const SectionAddAnimationEntry = () => {
     const animationDataDispatch = useAnimationDataDispatch();
     const navigationDispatch = useNavigationDispatch();
     const [name, setName] = useState<string | undefined>();
     const {animationData, activeTimeline} = useAnimationDataState();
+    const {sites} = useSiteState();
+    const activeSite = sites.find((site: ISite) => (site.active));
+    const url = (activeSite)?activeSite.url:undefined;
     const timelineSelectRef = React.createRef<HTMLSelectElement>();
     const [timelineId, setTimelineId] = useState<string | undefined>((activeTimeline)?activeTimeline.timelineId:undefined);
     let breakpoints = (animationData.breakpoints)?animationData.breakpoints : [];
@@ -110,7 +115,8 @@ const SectionAddAnimationEntry = () => {
                                 });
                                 animationDataDispatch({
                                     type: AnimationDataActions.syncAnimationData,
-                                });
+                                    url
+                                })
                                 animationDataDispatch({
                                     type: AnimationDataActions.setFilterByFrameId,
                                     frameId: undefined
