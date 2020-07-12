@@ -1,35 +1,5 @@
 {
-  "name": "variojs-toolbox",
-  "version": "1.0.0-beta.2",
-  "description": "Create/maintain variojs (parallax)animations",
-  "main": "./dist",
-  "scripts": {
-    "watch": "NODE_ENV=development webpack --config webpack-lib.config.js --watch",
-    "build-lib": "NODE_ENV=production webpack --mode production --config webpack-lib.config.js",
-    "webpack-dev-server": "NODE_ENV=development webpack-dev-server --mode development --config webpack.config.js",
-    "start": "electron ./main-dev.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "check-types": "tsc",
-    "pack": "NODE_ENV=production webpack --mode production && electron-builder --dir",
-    "dist": "NODE_ENV=production webpack --mode production && electron-builder"
-  },
-  "build": {
-    "appId": "variojsapp",
-    "dmg": {
-      "contents": [
-        {
-          "x": 110,
-          "y": 150
-        },
-        {
-          "x": 240,
-          "y": 150,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ]
-    }
-  },
+  "name": "root",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jk-wd/variojs-toolbox.git"
@@ -58,6 +28,7 @@
     "ws": "^7.3.0"
   },
   "devDependencies": {
+    "lerna": "^3.15.0",
     "@babel/core": "^7.9.6",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/plugin-proposal-object-rest-spread": "^7.9.6",
@@ -76,3 +47,4 @@
     "webpack-dev-server": "^3.11.0"
   }
 }
+
