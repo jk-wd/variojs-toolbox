@@ -1,5 +1,4 @@
-const WebSocket = require('ws');
-
+const WebSocket = require("ws");
 
 module.exports = (callback) => {
   const wss = new WebSocket.Server({
@@ -9,10 +8,10 @@ module.exports = (callback) => {
         // See zlib defaults.
         chunkSize: 1024,
         memLevel: 7,
-        level: 3
+        level: 3,
       },
       zlibInflateOptions: {
-        chunkSize: 10 * 1024
+        chunkSize: 10 * 1024,
       },
       // Other options settable:
       clientNoContextTakeover: true, // Defaults to negotiated value.
@@ -20,24 +19,27 @@ module.exports = (callback) => {
       serverMaxWindowBits: 10, // Defaults to negotiated value.
       // Below options specified as default values.
       concurrencyLimit: 10, // Limits zlib concurrency for perf.
-      threshold: 1024 // Size (in bytes) below which messages
+      threshold: 1024, // Size (in bytes) below which messages
       // should not be compressed.
-    }
+    },
   });
-  wss.on('listening', function connection() {
-    console.log('VarioJs Socket-server listening on port ' + wss.address().port);
-    if(callback) {
+  wss.on("listening", function connection() {
+    console.log(
+      "VarioJs Socket-server listening on port " + wss.address().port
+    );
+    if (callback) {
       callback(wss.address().port);
     }
   });
-  
-  wss.on('connection', function connection(ws, req) {
-    ws.on('message', function incoming(message) {
+
+  wss.on("connection", function connection(ws, req) {
+    ws.on("message", function incoming(message) {
       wss.clients.forEach(function each(client) {
+        console.log("--->", client);
         if (client !== ws && client.readyState === WebSocket.OPEN) {
           client.send(message);
         }
       });
     });
   });
-}
+};

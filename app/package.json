@@ -1,9 +1,11 @@
 {
-  "name": "@variojs-toolbox/app",
+  "name": "variojs-toolbox-app",
+  "private": true,
   "version": "1.0.0-beta.2",
   "description": "Create/maintain variojs (parallax)animations",
   "main": "./main.js",
   "scripts": {
+    "webpack-dev-server": "NODE_ENV=development webpack-dev-server --mode development --config webpack.config.js",
     "start": "electron ./main-dev.js",
     "pack": "NODE_ENV=production webpack --mode production && electron-builder --dir --config ./build-config.json",
     "dist": "NODE_ENV=production webpack --mode production && electron-builder --config ./build-config.json"
